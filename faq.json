@@ -355,5 +355,25 @@
   ],
   "a": "Legion: the text after it works only if you've already played another card this turn. Temporary: the unit dies at the start of your Beginning Phase, before scoring, so it can't score a hold. Deathknell: \"when I die\", which only triggers if it actually goes to the trash. Ambush: the unit can be played to a battlefield where you have units, and has [Reaction] there, so it can come down mid-combat.",
   "r": "CR 805-829"
+ },
+ {
+  "t": "Angler Wyrm, Charm and other \"move an enemy unit\" effects",
+  "k": [
+   "angler",
+   "wyrm",
+   "drag",
+   "pull",
+   "move an enemy",
+   "charm",
+   "faefolk",
+   "entrancing",
+   "siren's song"
+  ],
+  "a": "Angler Wyrm: exhaust it and choose an opponent; THEY pick one of their units and move it to the Wyrm's battlefield. A move made by an effect doesn't exhaust the unit and isn't a standard move, so it can happen outside their turn and needs no Ganking. Their unit arriving makes your battlefield contested, so a combat starts at the next cleanup. Their unit is the attacker and it fights ALL of your units there, not just the Wyrm: damage is assigned as usual (Tank first, Backline last). If your units survive, their unit dies or is sent back to base and you keep the battlefield. If only their unit is left, they take control of it, which counts as a conquer for them. They will usually pick the unit most likely to win, or the one they mind losing least. Charm, Evelynn, Entrancing and Irresistible Faefolk work the same way when they pull an enemy unit to a battlefield where you have units.",
+  "r": [
+   "190.3",
+   "464",
+   "466"
+  ]
  }
 ]

@@ -2,68 +2,91 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Riftbound Genie 2.0</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* VOICE: a game client's deck screen: calm, precise, fast to read
-   IDEA: the rune-forge test bench, with a card library and a meta board beside it
-   PICTURE: the live result board in Deck Lab; colour bars per rune in Meta
-   COLOUR and TYPE: slate ground, the six rune colours only on bars and chips; Chakra Petch titles, Inter body
-   LAYOUT: tab row under the title; two columns on wide screens, one column under 900px */
-:root{color-scheme:light dark;--bg:light-dark(#f4f3ef,#15171c);--panel:light-dark(#ffffff,#1d2027);--ink:light-dark(#1b1d22,#eceae4);--mute:light-dark(#5d6270,#9aa0ad);--line:light-dark(#dcdad3,#2d313b);--fury:#d9453b;--calm:#3f9a54;--mind:#3a74c9;--body:#e0822c;--chaos:#8e4bc0;--order:#d1a51c;--acc:light-dark(#3a2f8f,#a99cff)}
+/* The Riftbound Genie, Nov 21 redesign
+   IDEA: a pocket companion that feels like part of the game: night-sky "rift" ground, the Genie's lamp gold for anything you tap,
+         and the six rune colours as the one decorative device (the seam under the title, deck edges, chips, bars).
+   TYPE: Unbounded for titles and big numbers, Figtree for reading.
+   LAYOUT: one column on phones with an app-style tab bar at the bottom; two columns and top tabs on wide screens. */
+:root{color-scheme:dark light;
+ --bg:light-dark(#f3f1fb,#17132b);--panel:light-dark(#ffffff,#221c3f);--raise:light-dark(#ebe7f8,#2b2450);--ink:light-dark(#1d1934,#efeaff);
+ --mute:light-dark(#5f5a7a,#aaa3c9);--line:light-dark(#dcd6ef,#372f60);--gold:light-dark(#8a5a00,#e8b44c);--gold-ink:light-dark(#fff,#1b1530);
+ --fury:#e2493e;--calm:#3fa65a;--mind:#3f7fd9;--body:#ec8a30;--chaos:#9b57d1;--order:#d9ad22;--acc:var(--gold)}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip}
-h1,h2,h3{font-family:"Chakra Petch",Inter,sans-serif;line-height:1.1;margin:0;text-wrap:balance}
-h1{font-size:clamp(32px,5vw,44px)}h2{font-size:20px}h3{font-size:16px;margin-top:14px}
-.band{padding:clamp(18px,3vw,36px) max(4vw,16px);max-width:1240px;margin:0 auto}
-.runes{display:flex;gap:6px;margin:10px 0 0}.runes i{width:28px;height:6px;border-radius:3px}
-.sub{color:var(--mute);max-width:70ch;margin:8px 0 0}
-.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:16px}
-.tabs button{border-radius:999px}
-.tabs button[aria-selected=true]{background:var(--acc);color:light-dark(#fff,#15171c);border-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Figtree,system-ui,sans-serif;overflow-x:clip;
+ background-image:radial-gradient(1200px 500px at 85% -120px,light-dark(#e2dbfb,#2e2366) 0,transparent 70%);background-repeat:no-repeat}
+h1,h2,h3{font-family:Unbounded,Figtree,sans-serif;line-height:1.15;margin:0;text-wrap:balance;letter-spacing:-.01em}
+h1{font-size:clamp(26px,6vw,40px);font-weight:700}h2{font-size:19px;font-weight:600}h3{font-size:15px;font-weight:600;margin-top:18px}
+.band{padding:clamp(16px,3vw,32px) max(4vw,16px);max-width:1180px;margin:0 auto}
+.runes{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;margin:12px 0 0;max-width:420px}
+.runes i{height:5px;border-radius:3px;transform-origin:left;animation:seam .7s cubic-bezier(.2,.8,.2,1) both}
+.runes i:nth-child(2){animation-delay:.06s}.runes i:nth-child(3){animation-delay:.12s}.runes i:nth-child(4){animation-delay:.18s}.runes i:nth-child(5){animation-delay:.24s}.runes i:nth-child(6){animation-delay:.3s}
+@keyframes seam{from{transform:scaleX(0);opacity:0}to{transform:none;opacity:1}}
+.sub{color:var(--mute);max-width:62ch;margin:10px 0 0}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:18px}
+.tabs button{border-radius:999px;display:inline-flex;align-items:center;gap:8px;background:var(--panel)}
+.tabs button::before{content:"";width:18px;height:18px;background:currentColor;-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;flex:none}
+.tabs button[aria-selected=true]{background:var(--gold);color:var(--gold-ink);border-color:transparent}
+.tabs button[data-v=mine]::before{-webkit-mask-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='3' width='11' height='15' rx='2'/%3E%3Cpath d='M9 21h9a2 2 0 0 0 2-2V7'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='3' width='11' height='15' rx='2'/%3E%3Cpath d='M9 21h9a2 2 0 0 0 2-2V7'/%3E%3C/svg%3E")}.tabs button[data-v=mu]::before{-webkit-mask-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 20V10M10 20V4M16 20v-7M22 20H2'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 20V10M10 20V4M16 20v-7M22 20H2'/%3E%3C/svg%3E")}.tabs button[data-v=ev]::before{-webkit-mask-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z'/%3E%3Ccircle cx='12' cy='10' r='2.5'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z'/%3E%3Ccircle cx='12' cy='10' r='2.5'/%3E%3C/svg%3E")}.tabs button[data-v=cards]::before{-webkit-mask-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z'/%3E%3Cpath d='M4 19V5M9 8h6M9 12h4'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z'/%3E%3Cpath d='M4 19V5M9 8h6M9 12h4'/%3E%3C/svg%3E")}.tabs button[data-v=meta]::before{-webkit-mask-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z'/%3E%3C/svg%3E")}.tabs button[data-v=lab]::before{-webkit-mask-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 3h6M10 3v6L4.5 18.5A1.6 1.6 0 0 0 5.9 21h12.2a1.6 1.6 0 0 0 1.4-2.5L14 9V3'/%3E%3Cpath d='M7 15h10'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 3h6M10 3v6L4.5 18.5A1.6 1.6 0 0 0 5.9 21h12.2a1.6 1.6 0 0 0 1.4-2.5L14 9V3'/%3E%3Cpath d='M7 15h10'/%3E%3C/svg%3E")}
 .view{display:none}.view.on{display:block}.view.grid.on{display:grid}.view:not(.on){display:none!important}
-.grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:24px;align-items:start}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
-label{font-size:14px;font-weight:600;display:block;margin:12px 0 6px}
-textarea,select,input{width:100%;font:16px Inter,sans-serif;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
-textarea{min-height:280px;resize:vertical;font-size:14px;line-height:1.5}
-textarea:focus,select:focus,input:focus,button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:20px;align-items:start}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:20px}
+label{font-size:14px;font-weight:600;display:block;margin:14px 0 6px}
+textarea,select,input{width:100%;font:16px Figtree,sans-serif;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:11px 12px}
+textarea{min-height:260px;resize:vertical;font-size:14px;line-height:1.5}
+textarea:focus,select:focus,input:focus,button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}.row>*{flex:1 1 140px}.row>button{flex:0 0 auto}
-button{font:600 16px Inter,sans-serif;min-height:44px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:0 16px;cursor:pointer}
-button.go{background:var(--acc);color:light-dark(#fff,#15171c);border-color:transparent}
+button{font:600 15px Figtree,sans-serif;min-height:44px;border-radius:12px;border:1px solid var(--line);background:var(--raise);color:var(--ink);padding:0 16px;cursor:pointer}
+button:hover{border-color:var(--gold)}
+button.go{background:var(--gold);color:var(--gold-ink);border-color:transparent}
 button:disabled{opacity:.5;cursor:default}
-.check{font-size:14px;margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--bg);border:1px solid var(--line)}
+.check{font-size:14px;margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--bg);border:1px solid var(--line)}
 .bad{color:var(--fury)}.ok{color:var(--calm)}
 .status{font-size:14px;color:var(--mute);margin-top:8px}
 .opps{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:6px;font-size:14px}
 .opps label{display:flex;gap:8px;align-items:center;margin:0;font-weight:500;min-height:36px}
-.opps input{width:20px;height:20px}
+.opps input{width:20px;height:20px;accent-color:var(--gold)}
 .big{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
-.big b{font:700 clamp(56px,9vw,88px)/1 "Chakra Petch",sans-serif;font-variant-numeric:tabular-nums}
+.big b{font:700 clamp(52px,9vw,84px)/1 Unbounded,sans-serif;font-variant-numeric:tabular-nums;color:var(--gold)}
 .big span{color:var(--mute)}
-.bar{display:grid;grid-template-columns:10em minmax(0,1fr) 4.2em;gap:10px;align-items:center;padding:6px 0;border-top:1px solid var(--line);font-size:14px}
-.bar .t{height:14px;border-radius:7px;background:var(--bg);position:relative;overflow:hidden}
-.bar .t i{position:absolute;inset:0 auto 0 0;border-radius:7px;transition:width .4s}
-.bar .t.half:after{content:"";position:absolute;left:50%;top:0;bottom:0;border-left:1px dashed var(--mute)}
+.bar{display:grid;grid-template-columns:10em minmax(0,1fr) 4.2em;gap:10px;align-items:center;padding:7px 0;border-top:1px solid var(--line);font-size:14px}
+.bar .t{height:12px;border-radius:6px;background:var(--raise);position:relative;overflow:hidden}
+.bar .t i{position:absolute;inset:0 auto 0 0;border-radius:6px;transition:width .4s}
+.bar .t.half:after{content:"";position:absolute;left:50%;top:-2px;bottom:-2px;border-left:2px dotted var(--mute)}
 .bar b{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .note{font-size:13px;color:var(--mute);margin-top:12px}
-.prog{height:4px;background:var(--line);border-radius:2px;margin-top:12px;overflow:hidden}.prog i{display:block;height:100%;width:0;background:var(--acc);transition:width .3s}
+.prog,.track{height:4px;background:var(--line);border-radius:2px;margin-top:12px;overflow:hidden}.prog i,.track i{display:block;height:100%;width:0;background:var(--gold);transition:width .3s}
 .empty{color:var(--mute);padding:18px 0}
-.chip{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;border:1px solid var(--line);margin-right:4px}
+.chip{display:inline-block;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--raise);border:1px solid var(--line);margin:0 4px 4px 0}
+.chip.bad{background:color-mix(in srgb,var(--fury) 16%,transparent);border-color:color-mix(in srgb,var(--fury) 40%,transparent)}
 .res{display:grid;gap:10px;margin-top:12px}
-.res article{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--bg)}
-.res h3{margin:0 0 4px}.res p{margin:6px 0 0;font-size:15px}
-.links{display:flex;gap:14px;flex-wrap:wrap;margin:10px 0 0;font-size:15px}.links a{color:var(--acc);font-weight:600}
-.tw{overflow-x:auto}.tw table{border-collapse:collapse;font-size:14px;min-width:520px}.tw th,.tw td{padding:6px 8px;border-bottom:1px solid var(--line, #ddd);text-align:left}.tw td.low{color:var(--fury);font-weight:600}
-.dchips{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 10px}.dchips button{border-radius:999px;padding:6px 12px;font-size:14px}.dchips button[aria-pressed=true]{background:var(--acc);color:light-dark(#fff,#15171c);border-color:transparent}
-.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin:2px 0 8px}.seg button{border:0;border-radius:0;padding:6px 14px;font-size:14px}.seg button[aria-pressed=true]{background:var(--acc);color:light-dark(#fff,#15171c)}
-.mdv{font-size:15px;line-height:1.5}.mdv h2{font-size:22px;margin:10px 0 6px}.mdv h3,.mdv h4{font-size:17px;margin:16px 0 6px}.mdv ul{padding-left:20px;margin:6px 0}.mdv li{margin:4px 0}.mdv p{margin:8px 0}
+.res article{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--bg)}
+.res h3{margin:0 0 6px;font-size:15px}.res p{margin:6px 0 0;font-size:15px}
+.links{display:flex;gap:14px;flex-wrap:wrap;margin:10px 0 0;font-size:15px}.links a{color:var(--gold);font-weight:600}
+.tw{overflow-x:auto}.tw table{border-collapse:collapse;font-size:14px;min-width:520px}.tw th,.tw td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left}.tw th{color:var(--mute);font-weight:600}.tw td.low{color:var(--fury);font-weight:600}
+.dchips{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 12px}.dchips button{border-radius:999px;padding:6px 14px;font-size:14px;min-height:40px}
+.dchips .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-left:5px;vertical-align:1px}.dchips .dot+.dot{margin-left:3px}
+.dchips button[aria-pressed=true]{background:var(--gold);color:var(--gold-ink);border-color:transparent}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin:2px 0 10px;background:var(--bg)}.seg button{border:0;border-radius:0;padding:6px 16px;font-size:14px;background:transparent;min-height:38px}
+.seg button[aria-pressed=true]{background:var(--gold);color:var(--gold-ink)}
+.mdv{font-size:15px;line-height:1.55}.mdv h2{font-size:21px;margin:12px 0 8px}.mdv h3,.mdv h4{font-size:15px;margin:20px 0 8px}.mdv ul{padding-left:20px;margin:6px 0}.mdv li{margin:5px 0}.mdv p{margin:8px 0}
 .mdv .tw table{min-width:0;width:100%}.mdv td,.mdv th{vertical-align:top}
-.big{font-size:40px;font-weight:700;line-height:1}.realrow{display:flex;gap:18px;align-items:baseline;flex-wrap:wrap;margin:6px 0 12px}
-.meta6{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.realrow{display:flex;gap:22px;align-items:end;flex-wrap:wrap;margin:6px 0 14px}.realrow .big{display:block;font:700 44px/1 Unbounded,sans-serif;color:var(--gold);font-variant-numeric:tabular-nums}.realrow .big[style]{color:var(--ink)}.realrow .status{display:block;margin-top:6px}
+.meta6{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
 .ans{white-space:pre-wrap;font-size:15px;margin-top:12px}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
-@media(max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}.board{order:-1}#v-cards .grid>.card:nth-child(2){order:-1}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media(max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}#v-cards .grid>.card:nth-child(2){order:-1}}
+@media(max-width:700px){
+ body{padding-bottom:calc(78px + env(safe-area-inset-bottom))}
+ .card{border-radius:18px;padding:16px}
+ .tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;margin:0;gap:0;flex-wrap:nowrap;justify-content:space-around;
+  padding:6px 4px calc(6px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--panel) 92%,transparent);backdrop-filter:blur(10px);border-top:1px solid var(--line)}
+ .tabs button{flex:1 1 0;flex-direction:column;gap:3px;border:0;background:transparent;border-radius:12px;font-size:11px;font-weight:600;min-height:54px;padding:4px 2px;line-height:1.1;text-align:center;color:var(--mute)}
+ .tabs button::before{width:22px;height:22px}
+ .tabs button[aria-selected=true]{background:transparent;color:var(--gold)}
+}
 @media(max-width:520px){.bar{grid-template-columns:7.5em minmax(0,1fr) 3.6em}}
 </style><link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#3a2d8f">
@@ -161,7 +184,7 @@ button:disabled{opacity:.5;cursor:default}
     <div class="big"><b id="overall">–</b><span id="osub">overall win rate</span></div>
     <div class="prog"><i id="prog"></i></div>
     <div id="bars"><div class="empty">Results appear here, one opponent at a time, as the games finish.</div></div>
-    <p class="note">50% (dashed line) is an even matchup. With 100 games a result can swing about 5 points either way, with 20 games about 11; use 250+ fast games before changing real cards. Look-ahead plays closer to how good players play, so use it to double-check a close call. "Real-world adjusted" shifts each legend's strength to match real tournament win rates (riftbound.gg, before the Nov 23 bans), because the engine underrates control decks and overrates unit decks; compare versions of the same deck with the plain number. Meta decks are the RQ Los Angeles top lists with the Nov 23 bans applied, including Azir, Akali and Ornn.</p>
+    <p class="note">50% (dashed line) is an even matchup. With 100 games a result can swing about 5 points either way, with 20 games about 11; use 250+ fast games before changing real cards. Look-ahead plays closer to how good players play, so use it to double-check a close call. "Real-world adjusted" shifts each legend's strength to match real tournament win rates (riftbound.gg, before the Nov 23 bans), because the engine underrates control decks and overrates unit decks; compare versions of the same deck with the plain number. Meta decks are the RQ Los Angeles top lists with the current bans applied, including Azir, Akali and Ornn.</p>
   </div>
 </section>
 
@@ -188,7 +211,7 @@ button:disabled{opacity:.5;cursor:default}
     </div>
     <div class="card" style="margin-top:16px">
       <h2>Rules reference</h2>
-      <p class="sub" style="margin-top:6px">Notes on every part of the Core Rules (July 16 2026 version) that matters in a 1v1 game, plus the Nov 23 ban list. These are summaries in plain words, not Riot's wording; when a card and the rules disagree, the card wins.</p>
+      <p class="sub" style="margin-top:6px">Notes on every part of the Core Rules (July 16 2026 version) that matters in a 1v1 game, plus the full Standard ban list. These are summaries in plain words, not Riot's wording; when a card and the rules disagree, the card wins.</p>
       <label for="rq">Search the rules</label>
       <input id="rq" type="search" placeholder="Hidden, showdown, final point, mulligan…" autocomplete="off">
       <p class="sub" id="rcount" style="margin-top:8px"></p>
@@ -201,7 +224,7 @@ button:disabled{opacity:.5;cursor:default}
   <div class="card">
     <h2 id="mtitle">Meta</h2>
     <p class="status" id="mupd"></p>
-    <h3>Banned from Nov 23</h3>
+    <h3>Banned in Standard</h3>
     <div id="mban"></div>
     <h3>Most played legends (Day 2 share)</h3>
     <div id="mleg"></div>
@@ -264,7 +287,7 @@ function check(){
   if (parsed.nosim.length){ ok = false; msg.push(`<span class="bad">Not in the test engine yet: ${parsed.nosim.map(esc).join(', ')}</span>`); }
   msg.push(tot === 40 ? '<span class="ok">40 cards</span>' : `<span class="bad">${tot} cards</span> (main deck is 40 with the champion)`); if (tot < 40) ok = false;
   const over = Object.entries(L).filter(([c,q]) => q > 3).map(([c]) => c); if (over.length){ ok = false; msg.push(`<span class="bad">More than 3 copies: ${over.map(esc).join(', ')}</span>`); }
-  const banned = Object.keys(L).filter(c => LIB[c] && LIB[c].ban); if (banned.length) msg.push(`<span class="bad">Banned from Nov 23: ${banned.map(esc).join(', ')}</span>`);
+  const banned = Object.keys(L).filter(c => LIB[c] && LIB[c].ban); if (banned.length) msg.push(`<span class="bad">Banned in Standard: ${banned.map(esc).join(', ')}</span>`);
   if (!leg){ ok = false; msg.push('<span class="bad">Add a champion unit for a legend the engine knows.</span>'); }
   else { const doms = new Set(); for (const c of Object.keys(L)) for (const d of LIB[c].d || []) if (RUNE[d]) doms.add(d);
     msg.push(`Legend: <b>${esc(leg)}</b> · ${[...doms].map(d => `<span style="color:${RUNE[d]}">${d}</span>`).join(', ')}`); }
@@ -292,7 +315,7 @@ async function run(){
   const opps = [...document.querySelectorAll('#opps input:checked')].map((x,i) => ({name:x.value, deck:DECKS[x.value], seed:1000*(i+1)})); if (!opps.length) return;
   running = true; res = {}; doneN = 0; const n = +$('n').value; total = n * opps.length; const look = $('ai').value === 'look' ? 6 : 0;
   $('bars').innerHTML = '<div class="empty">Playing…</div>'; $('overall').textContent = '…'; $('prog').style.width = '0';
-  const ch = $('champ').value; $('btitle').textContent = `Results: ${ch}`; $('run').disabled = true; $('run').textContent = 'Testing…';
+  const ch = $('champ').value; $('btitle').textContent = `Results: ${ch}`; if (innerWidth < 900) document.querySelector('.board').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start'}); $('run').disabled = true; $('run').textContent = 'Testing…';
   myLeg = legendOf(ch); const me = JSON.stringify({legend: myLeg, champ: ch, list: parsed.list});
   try {
     for (const o of opps){ let left = n, seed = 7 + o.seed; const od = JSON.stringify(o.deck);
@@ -333,7 +356,7 @@ async function startEngine(){
 
 /* cards & rules */
 function cardHTML(n){ const c = LIB[n]; const cost = [c.e != null ? c.e + ' energy' : '', c.p ? c.p + ' power' : ''].filter(Boolean).join(' + ');
-  return `<article><h3>${esc(n)}</h3><div>${(c.d||[]).map(d => `<span class="chip" style="color:${RUNE[d]||'inherit'}">${esc(d)}</span>`).join('')}<span class="chip">${esc(c.t||'')}</span>${c.r ? `<span class="chip">${esc(c.r)}</span>` : ''}${c.ban ? '<span class="chip bad">Banned Nov 23</span>' : ''}${c.sim ? '' : '<span class="chip">not in test engine</span>'}</div>
+  return `<article><h3>${esc(n)}</h3><div>${(c.d||[]).map(d => `<span class="chip" style="color:${RUNE[d]||'inherit'}">${esc(d)}</span>`).join('')}<span class="chip">${esc(c.t||'')}</span>${c.r ? `<span class="chip">${esc(c.r)}</span>` : ''}${c.ban ? `<span class="chip bad">Banned (${esc(String(c.ban))})</span>` : ''}${c.sim === 'partial' ? '<span class="chip">Test engine: most of its text</span>' : c.sim === 'stats' ? '<span class="chip">Test engine: stats and keywords only</span>' : c.sim ? '' : '<span class="chip">Not in test engine</span>'}</div>
   <p>${cost ? esc(cost) : ''}${c.m != null ? ` · ${c.m} Might` : ''}</p><p>${esc(c.x || 'No rules text.')}</p></article>`; }
 function search(q, col, type, max){ q = norm(q || ''); const words = q.split(/\s+/).filter(Boolean);
   const out = [];
@@ -409,7 +432,8 @@ QUESTION: ${q}`, {
 /* meta */
 function renderMeta(){ if (META && META.common) setTimeout(() => renderCommon(META.common), 0); const M = META; if (!M) return;
   $('mupd').textContent = `Last updated ${M.updated} · ${M.event}`;
-  $('mban').innerHTML = `<p>${(M.bans.cards || []).map(c => `<span class="chip bad">${esc(c)}</span>`).join(' ')} ${(M.bans.battlefields || []).map(c => `<span class="chip bad">${esc(c)} (battlefield)</span>`).join(' ')}</p>`;
+  const NEWB = new Set(M.bans.new || []); const bch = (c, x) => `<span class="chip bad">${esc(c)}${x}${NEWB.has(c) ? ' · new Nov 23' : ''}</span>`;
+  $('mban').innerHTML = `<p>${(M.bans.cards || []).map(c => bch(c, '')).join(' ')} ${(M.bans.battlefields || []).map(c => bch(c, ' (battlefield)')).join(' ')}</p>`;
   const mx = Math.max(...M.legends.map(l => l[1]));
   $('mleg').innerHTML = M.legends.map(([n, p]) => `<div class="bar"><span>${esc(n)}</span><div class="t"><i style="width:${100*p/mx}%;background:var(--acc)"></i></div><b>${p}%</b></div>`).join('');
   $('mtop').innerHTML = Object.entries(M.topCards).map(([col, rows]) => { const m2 = Math.max(...rows.map(r => r[1]));

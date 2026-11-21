@@ -25,7 +25,10 @@ h1{font-size:clamp(26px,6vw,40px);font-weight:700}h2{font-size:19px;font-weight:
 .runes i:nth-child(2){animation-delay:.06s}.runes i:nth-child(3){animation-delay:.12s}.runes i:nth-child(4){animation-delay:.18s}.runes i:nth-child(5){animation-delay:.24s}.runes i:nth-child(6){animation-delay:.3s}
 @keyframes seam{from{transform:scaleX(0);opacity:0}to{transform:none;opacity:1}}
 .sub{color:var(--mute);max-width:62ch;margin:10px 0 0}
-.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:18px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;position:sticky;top:0;z-index:20;max-width:1180px;margin:0 auto;padding:10px max(4vw,16px);
+ background:color-mix(in srgb,var(--bg) 88%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.tabs.endnav{display:none;position:static;background:none;backdrop-filter:none;padding-bottom:28px}
+:root.framed .tabs.endnav{display:flex}
 .tabs button{border-radius:999px;display:inline-flex;align-items:center;gap:8px;background:var(--panel)}
 .tabs button::before{content:"";width:18px;height:18px;background:currentColor;-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;flex:none}
 .tabs button[aria-selected=true]{background:var(--gold);color:var(--gold-ink);border-color:transparent}
@@ -79,13 +82,19 @@ button:disabled{opacity:.5;cursor:default}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 @media(max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}#v-cards .grid>.card:nth-child(2){order:-1}}
 @media(max-width:700px){
- body{padding-bottom:calc(78px + env(safe-area-inset-bottom))}
+ :root.framed .tabs{flex-wrap:nowrap;overflow-x:auto;padding:8px 12px;gap:6px}
+ :root.framed .tabs button{flex:0 0 auto;min-height:40px;font-size:13px;padding:0 12px}
+ :root.framed .tabs.endnav{flex-wrap:wrap}
+}
+@media(max-width:700px){
+ :root:not(.framed) body{padding-bottom:calc(78px + env(safe-area-inset-bottom))}
  .card{border-radius:18px;padding:16px}
- .tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;margin:0;gap:0;flex-wrap:nowrap;justify-content:space-around;
+ :root:not(.framed) .tabs{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:20;margin:0;gap:0;flex-wrap:nowrap;justify-content:space-around;max-width:none;
   padding:6px 4px calc(6px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--panel) 92%,transparent);backdrop-filter:blur(10px);border-top:1px solid var(--line)}
- .tabs button{flex:1 1 0;flex-direction:column;gap:3px;border:0;background:transparent;border-radius:12px;font-size:11px;font-weight:600;min-height:54px;padding:4px 2px;line-height:1.1;text-align:center;color:var(--mute)}
- .tabs button::before{width:22px;height:22px}
- .tabs button[aria-selected=true]{background:transparent;color:var(--gold)}
+ :root:not(.framed) .tabs button{flex:1 1 0;flex-direction:column;gap:3px;border:0;background:transparent;border-radius:12px;font-size:11px;font-weight:600;min-height:54px;padding:4px 2px;line-height:1.1;text-align:center;color:var(--mute)}
+ :root:not(.framed) .tabs button::before{width:22px;height:22px}
+ :root:not(.framed) .tabs button[aria-selected=true]{background:transparent;color:var(--gold)}
+ :root:not(.framed) .tabs.endnav{display:none}
 }
 @media(max-width:520px){.bar{grid-template-columns:7.5em minmax(0,1fr) 3.6em}}
 </style><link rel="manifest" href="manifest.webmanifest">
@@ -252,7 +261,13 @@ const cu = n => (window.claude && window.claude.use) ? window.claude.use(n) : Pr
 const simCards = () => Object.keys(LIB).filter(k => LIB[k].sim);
 
 /* tabs */
-for (const b of document.querySelectorAll('.tabs button')) b.addEventListener('click', () => show(b.dataset.v));
+/* tab bar: lives right under the title so it can stay on screen (sticky on wide screens, fixed at the bottom on phones);
+   inside the Claude app (a frame) a second copy sits at the end of the page so you can always switch tabs */
+{ const tb = document.querySelector('.tabs'), hd = document.querySelector('body > .band'); if (tb && hd) hd.after(tb);
+  let framed = false; try { framed = window.self !== window.top; } catch (e) { framed = true; }
+  if (framed) document.documentElement.classList.add('framed');
+  if (tb) { const end = tb.cloneNode(true); end.classList.add('endnav'); end.removeAttribute('role'); end.setAttribute('aria-label', 'Go to another tab'); document.body.appendChild(end); } }
+for (const b of document.querySelectorAll('.tabs button')) b.addEventListener('click', () => { show(b.dataset.v); try { window.scrollTo({top: 0}); } catch (e) {} });
 function show(v){ for (const b of document.querySelectorAll('.tabs button')) b.setAttribute('aria-selected', b.dataset.v === v);
   for (const s of document.querySelectorAll('.view')) s.classList.toggle('on', s.id === 'v-' + v);
   if (location.hash.slice(1) !== v) history.replaceState(null, '', '#' + v); }

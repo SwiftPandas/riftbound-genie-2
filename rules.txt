@@ -1,0 +1,266 @@
+# Riftbound Core Rules notes (rules effective July 16 2026), condensed section by section from the full Core Rules.
+# These are notes, not the official wording. When a note and a card disagree, the card wins (CR 002).
+
+## Ban list (announced by Riot, effective Nov 23 2026)
+- Banned cards: Riven, Broken Blade; Zhonya's Hourglass; Stellacorn Herder; Nocturne, Horrifying; Rhasa the Sunderer; Brynhir Thundersong; Dazzling Aurora; Baited Hook.
+- Banned battlefields: Emperor's Dais; Star Spring.
+- None of Justin's six decks (Ambessa, Fiora, Ziggs, K'Sante, Jarvan, Orianna) play a banned card.
+
+## Quick answers to common questions
+- Duel: first to 8 points wins, and you need more points than the opponent (CR 194.2, 472, 485).
+- Turn: Awaken (ready everything) -> Beginning (Hold points) -> Channel 2 runes -> Draw 1 -> Main -> End (heal all units, "this turn" effects end, rune pools empty) (CR 315-317).
+- Conquer = take control of a battlefield you haven't scored this turn; Hold = still control it in your Beginning Phase. Each battlefield scores you at most once per turn (CR 469-470).
+- Final point: the point that would reach 8 by conquering only counts if you have scored every battlefield this turn; otherwise you draw a card instead (CR 471).
+- Units enter exhausted unless Accelerate or an effect says otherwise; gear enters ready (CR 143.4, 149.1, 805).
+- Lethal damage = at least 1 damage and damage >= Might; Stunned units deal no combat damage (CR 142.4.b, 423).
+- Damage heals at the end of every turn and after each combat (CR 143.3.b).
+- Tank units must be assigned lethal first; Backline units last (CR 815, 826).
+- A spell with an illegal target still resolves for its other parts; a countered card is not "played" (CR 359.3.e, 425).
+- Might doesn't decide who controls a battlefield: a unit with 0 Might (e.g. Scuttle Crab) can move onto an empty battlefield, take control (conquer) and hold it.
+- Power can come from runes (recycling them), Seals or Gold; using Seal or Gold power first keeps your runes on the board.
+
+## 000-178
+- 002 card text beats rules; 054 "can't" beats "can"; 054.2 "only" restricts; 055 do as much as possible, ignore impossible; 055.1 all impossible = still resolves.
+- 056 owned cards go to owner's zones.
+- 103 deck: legend, 40+ main incl chosen champion, max 3 by name, max 3 Signature total (legend tag), 12 runes, domain identity.
+- 107.3 facedown zone per battlefield, cap 1 (can change); only if controller controls bf; lost control -> removed next cleanup; cap decrease -> trash excess.
+- 108.3.c chosen champion can't normally return to champion zone; played from there normally.
+- 116 draw 4; 117 mulligan up to 2 set aside, draw that many, recycle set-aside.
+- 124 zone change to/from non-board = new object; temporary mods drop.
+- 137 Might bonus applies only while attached; ignored if host has no Might.
+- 142.4.b lethal = non-zero damage >= Might. 143.2.b negative Might counts as 0 for references and combat sums (real value kept for math).
+- 143.3.b damage heals at end of EACH player's turn and at combat cleanup.
+- 143.4 units enter exhausted (Accelerate etc. alters).
+- 144 standard move: exhaust; own Main Phase, open state, not showdown/combat; group move same destination; base->bf, bf->base, bf->bf only with Ganking.
+- 145.2/151.2 unit & gear activated abilities: own Main, open, not showdown (unless Action/Reaction).
+- 149.1 gear enters ready; 149.2 gear to base unless stated; 149.3 unattached non-unit gear at bf recalled in cleanup.
+- 155 spell: own turn, open state, not in showdown. 158.3 nothing else resolves mid-resolution; triggers wait.
+- 159 Action: also in showdowns (open state); Reaction: also closed states, resolves first.
+- 164 rune: [E]: add 1 energy; recycle: add 1 power of domain (both Reaction speed).
+- 167 rune pool empties at start of each player's Main Phase and end of each turn.
+- 170.11 bf "occupied"=unit present; "uncontrolled"; "open"=unoccupied+uncontrolled.
+
+## 178-355
+- 182-186 tokens: controller = creator; cost 0; no domain; cease to exist in non-board zone (except chain). Token list 187: Recruit 1, Sprite 3 Temporary, Sand Soldier 2, Mech 3, Gold gear ([Reaction] kill this, exhaust: add any power), Reflection 0, Bird 1 Deflect, Brush bf token, Baron Pit bf token, Tentacle 1, Shadow Clone 0 (attack: may banish unit from trash -> Assault 4).
+- 190.3 Contested applied when a unit of a non-controller moves/is played there; 190.4 control established at end of showdown/combat; kept while units there; lose control in cleanup if no units, open state, no combat/showdown there.
+- 190.6.d bf "you" = its controller; uncontrolled bf -> "you" instructions ignored.
+- 194.2 win checked in cleanup: >= victory score AND more points than any other; tie at/above -> play continues. 194.4 points never below 0.
+- 203.3 can't pay cost -> no effect. 206 card cost for effects = printed cost.
+- 303.2.a simultaneous triggers ordered turn player first.
+- 308-310 states: Neutral/Showdown x Open/Closed. Showdown state: only Action/Reaction. Closed: only Reaction.
+- 315 Awaken (ready all) -> Beginning step effects -> Scoring step: Hold every bf you control -> Channel 2 (as many as possible) -> Draw 1 (empty: Burn Out, then still draw 1).
+- 316.3 pools empty at start of Main, then "start of main phase" effects.
+- 317 Ending step effects -> Expiration: cleanup + heal ALL units + "this turn" effects expire + pools empty.
+- 323 CLEANUP ORDER: 1 win check; 2 combat designations; 3a lethal units' deathknells trigger; 3b lethal units killed; 4 lose control of empty bfs (open state, no combat/showdown there); 5 recall unattached non-unit gear at bfs, remove hidden cards at bfs you don't control; 6 stage showdown where contested; 7 stage combat where opposing units; 8 remove contested if applier has no units; 9 neutral open -> turn player picks a staged showdown; 10 neutral open -> combat begins.
+- 337.2 units/gear/Add abilities resolve immediately after finalizing (no priority).
+- 340.2.a/346 showdown: when a chain ends, focus passes to next player (not if chain started by a trigger or an Add ability). 345 contester gets focus first. 347 all pass in sequence -> showdown ends.
+- 348.2.a non-combat showdown end: if only one player's units remain and they don't control it -> they take control (conquer if not scored this turn).
+- 355.2.a unit play location: your base or a bf you control (unless effect allows). 355.4.a move destination must differ from current location.
+
+## 355-404
+- 355.9 targets must be legal when chosen; "can't be chosen by enemy spells" units are not targetable. 355.13 "up to"/"any number" may choose 0. 355.14 damage split: 1+ each, targets <= damage.
+- 356 total cost order: base mods ("for X", "ignore cost" sets base to 0) -> additional costs (Deflect = mandatory additional) -> increases -> discounts (component first, then total) -> total mods; never below 0.
+- 357.1.a may use Reaction Add abilities (runes, Gold) while paying.
+- 358 legality: targets legal, costs paid, timing permission; fail -> undone.
+- 359.2 permanents resolve immediately on finalize; unit enters exhausted at chosen location; non-unit gear enters ready at base.
+- 359.3.e spell resolves even if targets illegal; illegal targets unaffected; linked instruction skipped if its earlier part didn't execute; a target that left to a non-board zone and came back is a new object (illegal).
+- 371/383.3.e "once each turn" limits. 372 multiple replacements: affected object's controller orders.
+- 381 activated abilities: controller's turn, open state (unless Reaction/Action).
+- 383.3.a "you may" first in a trigger = decided at finalize; decline = didn't trigger. 383.3.d own simultaneous triggers: owner orders; across players turn player first.
+- 383.4.c/d CONQUER and HOLD triggers still fire even if the point is negated/replaced (e.g. final-point rule draw).
+- 383.4.e/f attack/defend triggers checked once per combat, first time designation is gained; extra conditions must be true then.
+- 390.3.a "then recycle/banish it" delayed replacements for played cards.
+- 400.2 Add abilities resolve immediately. 402.4 trigger with no legal targets removed (not countered); if legal targets exist must choose.
+
+## 404-450
+- 413.4 drawing more than deck: draw what you can, Burn Out, draw the rest. 431 Burn Out: recycle trash into deck (random), an opponent gains 1 point, finish action; repeated burn-outs; points after first burn-out win immediately; look/reveal/predict never burn out (431.1.c, 436.4.a); Burn X past deck -> burn out (440.4).
+- 414/415 exhaust/ready already-exhausted/ready = nothing. Exhaust as cost must be possible.
+- 416 recycle to bottom; several to main deck at once = random order. Recycle as effect: as many as possible.
+- 417.1.e only 1+ damage is dealt. Combat damage source = units.
+- 419.4.a "when you play" triggers only after the card resolves; countered = not played.
+- 422 discard: as many as possible if effect; must be fully possible if a cost.
+- 423 Stun: binary; ends at end-of-turn cleanup step 3d; stunned unit adds no combat damage but needs full lethal.
+- 425 countered card goes to trash, costs not refunded, not "played".
+- 426 Buff: max one buff counter per unit (unless allowed); choosing a buffed unit is legal but no new buff.
+- 427 Banish not a kill/discard. 428 kill = permanent board->trash; deathknell from kill instruction is added before it goes to trash; kill credit goes to the spell/ability that dealt the damage before the cleanup; combat kills credited to the damaging units.
+- 429 Add abilities resolve immediately, no focus/priority change; Reaction Add usable whenever paying.
+- 430 channel: top of rune deck, ready by default, as many as possible.
+- 432 Double = +current value. 433 Swap. 434/435 Attach/Detach (equipment): attached card's rules text inactive, effect text + Might bonus append; detached gear at bf recalled next cleanup; detaches to host's last location when host leaves board.
+- 436 Predict X: look at X, recycle any, rest on top any order; no burn-out.
+- 437 Prevent: replacement; prevented-to-0 = not dealt; combat assignment must count prevention for lethal; "All" = never lethal.
+- 438 Replace (token in place of card, same object). 439 Create. 441 Empower binary (Kayle can multiple). 443 Skip. 444 Pay from pool.
+- 446 move = board position change (not recall, not attached riding along); instantaneous; no chain; can't be reacted to.
+- 447.2.c move to a place it can't go -> recall instead.
+
+## 450-740
+- 453 cleanup after every move. 455-458 recall not a move: no move triggers, can't be blocked, damage/status kept.
+- 460-461 combat starts in a cleanup with empty chain, staged combat, no other showdown/combat; turn player picks order if several.
+- 464 combat open: start-of-combat effects; attacker = player who applied Contested (gets focus); defender = other; units gain designations; later arrivals gain designation at next cleanup; attacker's triggers go on chain first then defender's.
+- 465 damage step (only if both sides remain): sum current Might each side (stunned 0, negative 0); attacker assigns first; full lethal before next unit; no overkill unless nothing left; Tank first/Backline last; prevention considered; unit that can't be damaged exempt; dealt simultaneously.
+- 466 resolution: combat cleanup (heal ALL units, recall attackers if defenders still present); result: only one player's units left = they won; recall/both/neither = no result; both still present -> re-stage; winner with units establishes control (conquer if not scored this turn); no units = uncontrolled; hidden cards not matching bf controller removed; combat ends: designations cleared, "end of combat" effects, "this combat" expire.
+- 469-471 score: Conquer = gain control of bf not scored this turn; Hold = control in your Beginning Phase; once per bf per turn; FINAL POINT: conquer at (victory-1)+ only gives the point if you scored EVERY bf this turn, else draw 1; points from non-conquer sources not restricted. Conquer/Hold triggers at that bf once per turn.
+- 472 win in cleanup with >= victory score and more points than any opponent.
+- 477 layers: traits -> abilities -> arithmetic (increases then decreases); can't increase by a negative amount.
+- 485 1v1 Duel: victory 8, 2 battlefields (one random from each player), second player channels 1 extra rune on first Channel Phase. 486 Match: bo3, chosen bf; a bf used in a won game is removed for the match.
+- 702-705 buffs: +1 Might each, max 1 per unit, only spend from own units, removed when unit leaves play.
+- 708-711 Mighty: Might 5+; "becomes Mighty" when crossing from <5 to >=5; non-board = printed Might.
+- 713-715 Bonus Damage: summed once per deal; per target when multiple; added to split pool; none if no damage dealt.
+- 716-719 attachment: equipment rides with host; detach when host leaves board (stays at last location -> recalled); statuses separate.
+- 727 dependent keywords (Legion, Level, Empowered): ability inactive until condition true; trigger that becomes active simultaneously still triggers.
+- 728-733 XP: player resource, gained/spent, no limit, not an object.
+- 734-738 additional turns go next in queue.
+- 740.2 alone = no other friendly units at the location; one on one = it and the enemy unit there both alone; in combat = at bf with combat and designation. 740.3.a tie = both players' units at bf at combat cleanup step 3d.
+
+## 741-829 (keywords)
+- 745 counters spent only from objects you control; 748 lost on leaving board.
+- 757-758 "can't be chosen by enemy spells/abilities" = untargetable; becoming untargetable mid-chain = mistarget.
+- 801.3.a.3 granted keyword with no duration lasts while on board.
+- 805 Accelerate: optional additional [1]+1 Power matching the unit's domain; enters ready (not "becomes ready").
+- 806 Action: play/activate in showdowns on any turn. 813 Reaction: also closed states, any turn; units with Reaction still only to base or a bf you control.
+- 807 Assault X (default 1) +X while attacker; stacks. 814 Shield X while defender; stacks.
+- 808 Deathknell: trigger added before going to trash; not sent to trash (replaced) -> removed; each instance separate.
+- 809 Deflect X: opponents' spells/abilities choosing it pay X extra Power (any domain) per choice; stacks.
+- 810 Ganking: standard move bf->bf.
+- 811 Hidden: on your turn, open state, pay [A] to hide from hand/champion zone at a bf you control with no facedown card (cap); from NEXT turn gains Reaction and may be played ignoring base cost; hidden unit/gear must be played to that bf; hidden spell / play-effect targets must be at that bf; can't play a hidden spell with no valid targets there; may instead be played normally from hand. Hide doesn't open a chain.
+- 812 Legion: you finalized another card this turn.
+- 815 Tank: must get lethal before own non-Tank units. 826 Backline: only after all non-Backline got lethal.
+- 816 Temporary: killed at start of controller's Beginning Phase, before scoring; triggers once.
+- 817 Vision: when played, predict (each instance separate).
+- 818 Equip: [cost]: attach to a unit you control (target); Equipped event. 819 Quick-Draw: Reaction + attach on play.
+- 820 Repeat: optional extra cost, execute again (new choices allowed), played once.
+- 821 Weaponmaster: on play, choose your Equipment, pay its Equip cost minus [A] to attach.
+- 822 Ambush: may be played to a bf where you control units, with Reaction for that play.
+- 823 Hunt X: conquer/hold -> gain X XP; stacks. 824 Level N: active while you have N+ XP.
+- 825 Unique: 1 copy per deck. 827 Empower [cost]: empower this, only if not empowered. 828 Empowered dependent ability.
+- 829 Flow: play from trash for flow cost (same timing), then banish.
+
+## Keywords not in the keyword section (from the cards' own reminder text)
+- Deploy: play this card only to a battlefield (not your base). When an opponent holds that battlefield, kill it.
+- Disarm X: when this unit attacks, give an enemy unit at that battlefield -X Might this turn (e.g. Ahri, Confident -1; Mysterious Chronomancer -2).
+- Show Off [something]: as you play the card you may reveal a matching card from your hand, or pick a matching friendly card on the board, to "show off"; the card then gets its bonus (e.g. Incorrigible Construct enters ready, Rousing Display makes 4 Recruits instead of 2). The shown card stays where it is.
+
+## Detailed notes (Nov 21 pass, written from the full Core Rules, July 16 2026 version)
+### 000-099 Golden and Silver rules
+- Golden rule (002): if a card truly contradicts the rules, do what the card says.
+- Silver rule (051): read card wording through these rules. In card text "card" means a Main Deck card; runes, legends and battlefields aren't "cards" for card effects (052). Units and legends call themselves "I/me", gear and spells "this", battlefields "here" (053).
+- "Can't" beats "can" (054): an effect that forbids something wins over one that allows it; "only" limits an action to exactly those circumstances.
+- Do as much as you can (055): skip the impossible parts of an effect. A card whose every instruction is impossible still resolves and does nothing.
+- Your cards never go to another player's hand, deck, trash, champion zone or banishment (056): they go to the owner's zone instead (e.g. a stolen gear that dies goes to its owner's trash).
+### 101-103 Deck building
+- A deck is: 1 Champion Legend (sets your Domain Identity, the two domains in its corner), a Main Deck of at least 40 cards including your Chosen Champion, a Rune Deck of exactly 12 runes, and the battlefields your mode needs (3 for a 1v1 duel; no two with the same name).
+- Every card must fit your Domain Identity: a one-domain card needs that domain; a multi-domain card needs all its domains in your identity.
+- Chosen Champion: a champion unit whose champion tag matches your legend's tag (a Signature unit such as Tibbers can't be it). Any other copy with the same name also counts as your Chosen Champion.
+- Up to 3 copies of any named card, champion included (the one in the champion zone counts). Different names are different cards even for the same character.
+- At most 3 Signature cards in total, all with your legend's champion tag; Signature cards are never champions.
+- Format legality (bans) applies.
+### 104-109 Zones
+- Board: each player's Base (a location; your permanents and runes live there), the Battlefield Zone (each battlefield is a location) and one Facedown Zone per battlefield.
+- Facedown zone: holds 1 card (some effects raise or lower that; extras go to the trash). You can only hide a card there if you control that battlefield. If you lose control of the battlefield, your facedown card there is removed at the next cleanup. Facedown cards are private.
+- Legend zone: your Champion Legend can never be removed or moved. Other legends added by effects can be.
+- Non-board zones: the Chain (cards being played, public), Trash (public, unordered), Champion Zone (public; your champion can be played from it normally but never returned to it while it holds a card), Main Deck and Rune Deck (order secret), Banishment (public), Hand (private, but the number of cards is public).
+- Everything on the board, and its state (buffed, exhausted...), is public.
+### 110-116 Setup
+- Legend to the legend zone, Chosen Champion to the champion zone, battlefields set aside (1v1: each player brings 3 and one of each player's is used, chosen as the mode says), shuffle both decks, decide the first player at random, each player draws 4, then mulligans in turn order.
+### 117-118 Mulligan
+- In turn order, each player may set aside up to 2 cards from their opening 4, draws that many, then recycles the set-aside cards (to the bottom of the Main Deck). Then the first player takes the first turn.
+### 301-317 The turn, priority and focus
+- Game actions happen one at a time; simultaneous ones are ordered by turn order starting with the turn player. A phase ends when the chain is empty and the turn player won't take more actions.
+- Four turn states: Neutral Open (no showdown, no chain: by default only the turn player, with priority, can play cards/abilities in their main phase), Neutral Closed (a chain exists: only Reactions), Showdown Open (showdown or combat, no chain: only Action/Reaction, by the player with focus), Showdown Closed (showdown + chain: only Reactions).
+- Priority = the right to take an action now: you get it in your main phase when the state is neutral-open, when you gain focus in a showdown, when you control the next chain item after finalizing, or when it's passed to you. Focus = whose go it is in a showdown; gaining focus gives priority; passing priority keeps focus.
+- Turn order: Awaken (ready everything you control) → Beginning (start-of-beginning effects, e.g. Temporary units die; then you Hold every battlefield you control = score) → Channel (2 runes from your rune deck, fewer if it's short) → Draw (draw 1; with an empty deck you Burn Out, then still draw 1) → Main (your rune pool empties: unspent energy/power is lost; start-of-main effects; then you act freely; moves can start showdowns and combats) → Ending (end-of-turn effects; then a special cleanup that also heals all units, ends "this turn" effects and empties rune pools; repeats if anything triggered) → next player's turn.
+### 407-444 Game actions (exact meanings of card words)
+- You only act on your own turn unless a card says otherwise. Draw: top card of your Main Deck to hand (too few cards → Burn Out). Exhaust / Ready: mark a permanent spent / available; an exhaust cost can only be paid if it can actually be done.
+- Recycle: put cards on the BOTTOM of the matching deck (several at once go in random order). "Recycle X from [zone]" doesn't target. As an effect, recycle as many as you can.
+- Deal (damage), with possible Bonus Damage on top. Heal: remove damage (all units heal at the end of each turn and after each combat).
+- Hide: put a card facedown at a battlefield you control; if a facedown card changes zones or the game ends, its owner reveals it.
+- Discard: hand → trash without its effect. If told to discard more than you have, discard all.
+- Stun: the unit becomes Stunned (a stunned unit deals no combat damage; see the stun notes above). Counter: the card/ability on the chain is cancelled and never counts as played.
+- Buff: put a buff counter on a unit (+1 Might; a unit holds at most one; see 701). Banish: straight to the banishment zone (cards can refer to what they banished). Kill: a permanent goes from the board to its owner's trash (lethal damage kills at a cleanup).
+- Add: put resources into your rune pool; resource-adding abilities resolve immediately and can't be responded to, and Reaction add-abilities can be used whenever you need to pay. Channel: runes from the top of your rune deck onto the board (as many as possible).
+- Burn Out: if you must take more cards from your Main Deck than it has, you burn out (see the burn-out notes above: shuffle your trash in as your new deck and your opponent gains a point), then continue. Burn X: top X cards of your Main Deck to your trash; if you run out mid-burn, burn out, then burn the rest.
+- Double: add its current value again. Swap: exchange two numbers (e.g. two units' Might). Attach / Detach: equipment linked to a unit moves with it; attaching doesn't target by itself.
+- Predict: look at the top card of your Main Deck and choose whether to recycle it (Predict X = do it X times, as many as the deck allows). Prevent: reduce damage a unit would take by a tracked amount; fully prevented damage counts as not dealt.
+- Replace X with Y: a token takes X's place keeping its effects/statuses; X goes to banishment (a replaced token just stops existing); it can later be "swapped back". Create: makes a new object (owned by its creator) where the effect says.
+- Empower / Disempower: give or remove the Empowered status. Skip: an event is replaced with nothing. Pay: remove a resource from your rune pool (optional "pay" instructions can be declined).
+### 445-458 Movement and recalls
+- A move is a permanent going from one board location to another. It's instant, doesn't use the chain and can't be reacted to (you react to what it causes). Changing zones isn't a move; equipment travelling with its unit isn't a move.
+- Standard move (a unit's built-in ability): base → a battlefield, or battlefield → base; Ganking also allows battlefield → battlefield. Effects can move units too, with their own limits. Moving to an uncontested battlefield you don't control makes it Contested (→ a showdown if empty, combat if enemies are there). A cleanup follows every move.
+- Recall = sent to its base without moving: doesn't trigger "when I move", can't be stopped by movement restrictions, and keeps damage and statuses unless the recall says otherwise. Gear left at a battlefield is recalled at the next cleanup.
+### 318-324 Cleanups (the game's automatic tidy-up)
+- A cleanup happens after almost any change: a phase change, something added to or finished on the chain, cards entering or leaving the board, a status change, a completed move, or the game opening or closing. Nothing on the chain resolves during a cleanup, and no cleanup happens mid-resolution (it waits). Cleanups repeat until nothing changes.
+- Order inside a cleanup: (1) a player at or above the victory score (8 in a duel) with more points than every opponent wins; (2) attacker/defender labels are fixed for units at the combat's battlefield (units there take their controller's role; units elsewhere lose the role); (3a) units with lethal damage trigger their Deathknell / "when I die" abilities, then (3b) they die and go to their owners' trash; (4) in an open turn state, with no showdown or combat there, a player who has no units at a battlefield they control loses control of it; (5) gear and runes that ended up at a battlefield or in someone else's base go home, and hidden cards at a battlefield you don't control go to the trash; (6) a showdown becomes staged at each contested battlefield; (7) a combat becomes staged where opposing units share a contested battlefield; (8) contested status is removed where the contesting player no longer has units and nothing is ongoing; (9) in a neutral open state the turn player picks a staged showdown to start, (10) or a staged combat to start (a combat staged where a non-combat showdown is running turns that showdown into a combat showdown).
+### 325-348 Chains and showdowns (when you can respond)
+- Two windows to act outside your main phase: during a chain, and during a showdown.
+- The chain: whenever a card is played or an ability activated, it goes on the chain (only one chain at a time; anything played while one exists joins it). While a chain exists the turn is "closed": by default nothing can be played except Reactions (cards or abilities with [Reaction], or that gain it).
+- Processing order (HOT FEPR): first handle outstanding tasks (cleanups etc.), then Finalize (pending items are finished being played, oldest first; units, gear and resource-adding abilities resolve immediately once finalized, they can't be responded to), Execute (the player with priority may play a legally timed card/ability, which goes on top, or pass), Pass (priority goes round in turn order; when everyone passes in a row without adding anything) and Resolve (the newest item resolves fully). Then the next player with priority can respond again. So the last thing played resolves first.
+- When the chain empties the turn is open again. If that happened during a showdown, focus passes to the next player, unless the chain was started by a triggered ability or a resource-adding ability.
+- If nothing is pending, no tasks remain and no showdown/combat is on: in the main phase the turn player gets priority; in other phases the game moves on.
+- Showdowns: a window where players take turns ("focus") playing Action/Reaction cards in an open state, each starting its own chain. During a showdown (or combat) the turn is in a "showdown state": by default only cards with [Action] or [Reaction] can be played.
+- A showdown starts during a cleanup when a battlefield is contested in a neutral open turn state. Moving into an empty enemy-controlled battlefield gives a non-combat showdown; if opposing units are both there it opens as the first step of combat (an existing showdown there becomes a combat showdown).
+- The player who contested the battlefield gets focus first. With focus you may play a legal card/ability (focus passes after its chain closes) or pass. When every player passes in a row, the showdown closes: a combat showdown goes on to combat damage; a non-combat showdown gives control to the only player with units left there, which is a conquer if they haven't scored that battlefield this turn.
+### 349-355 Playing a card: steps and targeting
+- A card counts as "played" only once the whole process finishes (a countered card was never played). Tokens can be played too. Permanents become game objects; spells do their effect and go to the trash.
+- Steps: (1) move the card to the chain (the turn becomes closed; finish any resolving effect or tasks first); (2) make choices; (3) total cost; (4) legality; (5) pay; then it's finalized.
+- Choices made while playing: "as I am played" choices and whether to pay optional additional costs; where a unit enters (by default your base or a battlefield you control; some effects allow others); modes; move destinations; and targets. Triggered abilities choose their targets later, when they trigger.
+- What counts as a target: anything an effect specifically chooses on the board, on the chain, in a public zone (trash, legend/champion zone, facedown zone) or a player/zone. Not targets: cards in hidden zones (your hand), things only named as a restriction ("a unit at a battlefield" targets the unit, not the battlefield; "all units at a battlefield" targets the battlefield), things that are part of a cost or trigger condition, things selected automatically ("kill all units at battlefields" targets nothing), things other players pick, and "you must" instructions.
+- "Can't be chosen by enemy spells and abilities" means the unit is never a legal enemy target. A spell can't target itself, but a permanent's ability can target that permanent.
+- Group targets ("units with total Might 4 or less"): if the group stops fitting before resolution, the caster picks a fitting subset of the original targets.
+- "Any number" / "up to" allows zero targets. Split damage: each unit you pick is a target, at most one target per point of damage; the split is decided on resolution, each target must get at least 1; if there are more targets than damage left, the caster drops the fewest needed.
+- Choices are locked after this step unless an effect says to choose again. You can't choose something that's certain to make the play illegal later.
+- Costs: base cost first ("play for [X]" replaces it; "ignoring its cost" sets energy and power to 0; "ignoring its Energy cost" only the energy), then additional costs: mandatory ones ("as an additional cost", no "may"; Deflect's extra cost is one) and optional ones you chose in step 2 (e.g. Accelerate's cost still applies even if the base cost is ignored).
+### 358-359 Legality and resolving
+- Legality check: the card must be legally timed now (closed chain or showdown → only Reaction / Action as allowed). An effect that forbids a game action doesn't stop you playing a card that would do it; that part is just skipped on resolution. If any check fails, everything is undone.
+- Permanents: once finalized they leave the chain, their abilities turn on and their text executes top to bottom. Units enter EXHAUSTED at the chosen location; non-unit gear enters READY at your base.
+- Spells: stay on the chain; other players may react before it resolves; then the effect happens top to bottom and the card goes to its owner's trash.
+- Illegal targets: the spell still resolves. A target is illegal if it no longer fits the targeting text (e.g. no longer an enemy, no longer at a battlefield, Might now above the limit, no longer exhausted) or if it left the board and came back (it's a new object). Instructions about illegal targets are skipped; with several targets, only the legal ones are affected; if every instruction's targets are gone the spell does nothing but still counts as played.
+- Information about a gone or illegal target is "null" (e.g. its Might counts as nothing, so "deal damage equal to its Might" deals none).
+- A spell can "look back" at a card it moved as a cost or effect. Linked instructions: if the first part didn't happen, the dependent later part doesn't either.
+- Words like "here", "my", "its" are checked when that instruction executes (e.g. if a unit is moved back to base before its attack trigger resolves, "here" is no longer the battlefield and the trigger misses; a Might reduced in response changes the damage dealt).
+- "Friendly"/"enemy" in a triggered ability is checked when the instruction runs.
+### 459-466 Combat step by step
+- Combat happens during a cleanup when the chain is empty, a combat is staged (units of two opposing players at one battlefield) and nothing else is going on elsewhere. If several battlefields have combats staged, the turn player picks the order. Only two players can ever fight at one battlefield.
+- Step 1, combat showdown: "start of combat/showdown" effects happen; the player whose units contested the battlefield is the Attacker (the other is the Defender) and all their units there get that role (units arriving later get it at the next cleanup). The attacker gets focus. Triggered abilities from attacking/defending go on the chain: attacker's first, defender's last. Then players alternate playing Action/Reaction cards as in any showdown.
+- Step 2, combat damage (only if both sides still have units there): each side totals the current Might of its units; starting with the attacker, each assigns that much damage among the other side's units, then all damage is dealt at once. Assigning rules: a unit must be given lethal damage in full before you move to the next; you can't give a unit more than lethal unless no units are left; obey Tank/Backline-type requirements; a unit that can't be damaged never needs lethal assigned. Lethal = at least 1 damage and at least its Might.
+- Step 3, resolution: a combat cleanup kills units with lethal damage, then HEALS all units, then RECALLS the attackers (sends them back to base) if any defenders are still alive there. Result: the player who alone has units left wins the combat, the other loses; "no result" if attackers were recalled, both or neither have units. The player left at the battlefield establishes control (a conquer if they haven't scored it this turn; it can even be the defender, who keeps it without conquering if they already controlled it); contested status clears; enemy hidden cards there are removed. Then "this combat" effects end and "end of combat" effects happen.
+### 467-472 Scoring
+- Conquer: you gain control of a battlefield you haven't scored this turn. Hold: you still control a battlefield in your Beginning Phase. Each battlefield can score you only once per turn (by either method), and its conquer/hold abilities trigger only then.
+- Each score gives 1 point, except the final point by conquering: if you're 1 point from winning (7 in a duel), a conquer gives the final point only if you have scored every battlefield this turn; otherwise you draw a card instead. Points from other sources (hold, card effects) aren't limited this way.
+- You win at a cleanup when you have at least the victory score (8 in a duel) and more points than every opponent.
+### 805-829 Keywords in full
+- Accelerate: as you play the unit you may pay an extra [1] energy plus 1 power of one of the unit's domains (any domain if it has none); if you do it enters READY instead of exhausted (it never "becomes ready", so ready-triggers don't fire). Can't be paid once it's on the board; duplicates do nothing extra.
+- Action: permission only. The card or ability can also be played/activated during showdowns, on anyone's turn (as well as its normal timing). It doesn't change what the card does.
+- Reaction: everything Action allows, plus it can be played while a chain is open (closed state), on anyone's turn, i.e. in response to other cards. A unit with Reaction still has to be played to your base or a battlefield you control.
+- Assault X (X=1 if blank): +X Might while it is an attacker. Several Assault values add up.
+- Shield X (X=1 if blank): +X Might while it is a defender. Several Shield values add up.
+- Deathknell: "when I die, [effect]". It triggers only if the unit is killed and actually goes to the trash (if the death is replaced, e.g. by a recall, the trigger is removed). The game notes its location and stats just before it goes, so the effect still knows them. Each Deathknell triggers separately; you order them.
+- Deflect X (X=1 if blank): opponents' spells and abilities that choose it cost X more power (any domain) for each time they choose it. Values add up.
+- Ganking: the unit's standard move may also go battlefield → battlefield.
+- Hidden: on your turn in an open state, while the card is in your hand (or champion zone) you may pay [Rainbow] (1 power of any domain) to hide it facedown at a battlefield you control that has no facedown card. Hiding doesn't open a chain. From the next turn it has Reaction and can be played for free (ignoring its base cost) while you still control that battlefield. Played from hidden: a permanent must be played to that battlefield (gear too), and its targets and any unit it plays must be at that battlefield; a spell with no legal targets there can't be played from hidden. Instead of hiding, you can also just play it normally for its cost.
+- Legion: the text after it is active only if you've already played another card this turn (one other card satisfies every Legion you have).
+- Tank: must be assigned lethal combat damage before any of its controller's non-Tank units. With several Tanks, any order among them.
+- Temporary: killed at the start of its controller's Beginning Phase, before scoring (it can't score a hold).
+- Vision: "when this is played, predict" (look at the top card of your Main Deck; you may recycle it). Several Visions trigger separately.
+- Equip [cost]: "[cost]: attach this gear to a unit you control" (the unit is a target). The unit is "equipped" while any Equipment is attached. Each Equip ability can be used separately.
+- Quick-Draw: the Equipment has Reaction and attaches itself to a unit you control when played.
+- Repeat [cost]: an optional extra cost; if paid, the spell/ability's instructions run once more on resolution (choices for the repeat are made while playing and may differ). Each Repeat can be paid once; the card is still only played once.
+- Weaponmaster: when you play this unit, you may pick an Equipment you control and pay its Equip cost minus [Rainbow] to attach it to this unit, even outside normal timing (if the cost can't be paid or it can't move, it stays put).
+- Ambush: the unit may be played to a battlefield where you have units, and has Reaction while played there (so it can come down mid-combat). If your units leave before it finishes being played, that location is no longer valid.
+- Hunt X: when this unit conquers or holds, you gain X XP. Values add up.
+- Level N: the text after it works while you have N or more XP (it switches off as soon as you drop below N; it follows the current controller's XP).
+- Unique: deck-building only, at most 1 copy of that name (Signature + Unique: still 3 Signatures total, 1 of each Unique name).
+- Backline: must be assigned lethal combat damage after all of its controller's non-Backline units.
+- Empower [cost]: "[cost]: Empower this; only if not already Empowered". Empowered [text]: that text works while it has Empowered status; "when I become Empowered" triggers then.
+- Flow [cost]: you may play the spell from your trash for its Flow cost (same timing rules as normal), then it's banished instead of going back to the trash.
+
+## AUDIT RESULT (Nov 21 2026, AI 3.1, engine flags RULES33 + RULES34)
+FIXED: 142.4.b/417.1.e zero damage; 807/814 Assault/Shield raise lethal threshold (cmight); 431.3 burn out with empty trash; 187.5 Gold persists + usable same turn;
+471.1.b final point checked per conquer + 383.4.c conquer triggers on replaced point (conquer_score); 344-348 non-combat showdown (no attack triggers, defender may answer);
+811.1.d.2 hidden spell targets at its battlefield; 464.2.c Shadow Dash roles; card data: Ambessa R&F Assault only Empowered, Brutal Hunter Ganking only Empowered,
+Disciple of Shen double Shield, Gust Monk Assault, Plaza Guardian Deflect, Riven Deserter exhaust trigger, Sandshifter protection.
+OK (already modelled): setup/mulligan 116-117, turn structure 315-317, rune pool 167, cleanup control loss 190.4/323.4, hidden removal 107.3/323.7, gear recall, combat 459-466
+(tank/backline order, stun, simultaneous damage, heal, recall attackers on tie), scoring once per bf per turn 470, Temporary, Deathknell, Deflect, Accelerate domain,
+Ambush, Legion, Level/Hunt XP, Buff cap 702.3, Mighty 708, Flow, Repeat, Weaponmaster, Equip, second player extra rune 485.7, victory 8.
+SIMPLIFIED (AI-level, not rule errors): no full chain/priority stack (reactions handled in fixed windows), layers 473-480 resolved by direct arithmetic.
+NA (not 1v1): 487-489 FFA/2v2, 649-652 conceding, 734-738 extra turns (Time Warp handled directly), 759-763 naming.
+AI 3.1 additions: 13 tournament cards and 38 cards from the LA Regional decks coded; legends Irelia (second attack wave for 1 power), LeBlanc (Reflection on conquer), Jayce and Rengar (+1 when a unit is placed) added; Nov 23 bans applied to deck checks and battlefield pools; Baited Hook deathknell-draw crash fixed (5,070-game crash sweep: 0 errors).
+Tests: rules_test 19, rules33_test 2, rules34_test 13, microtest30 11 = 45 PASS. Data check: Might/cost/type/keywords vs official text for all cards.

@@ -1,0 +1,28 @@
+{
+ "name": "Riftbound Genie 2.0",
+ "short_name": "Genie 2.0",
+ "description": "Riftbound TCG companion: your decks, matchups vs the meta, rules answers and the meta, offline.",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "background_color": "#f4f3f0",
+ "theme_color": "#3a2d8f",
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  },
+  {
+   "src": "icon-maskable-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}

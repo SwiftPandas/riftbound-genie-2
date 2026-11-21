@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Riftbound Genie 2.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: a game client's deck screen: calm, precise, fast to read
+   IDEA: the rune-forge test bench, with a card library and a meta board beside it
+   PICTURE: the live result board in Deck Lab; colour bars per rune in Meta
+   COLOUR and TYPE: slate ground, the six rune colours only on bars and chips; Chakra Petch titles, Inter body
+   LAYOUT: tab row under the title; two columns on wide screens, one column under 900px */
+:root{color-scheme:light dark;--bg:light-dark(#f4f3ef,#15171c);--panel:light-dark(#ffffff,#1d2027);--ink:light-dark(#1b1d22,#eceae4);--mute:light-dark(#5d6270,#9aa0ad);--line:light-dark(#dcdad3,#2d313b);--fury:#d9453b;--calm:#3f9a54;--mind:#3a74c9;--body:#e0822c;--chaos:#8e4bc0;--order:#d1a51c;--acc:light-dark(#3a2f8f,#a99cff)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3{font-family:"Chakra Petch",Inter,sans-serif;line-height:1.1;margin:0;text-wrap:balance}
+h1{font-size:clamp(32px,5vw,44px)}h2{font-size:20px}h3{font-size:16px;margin-top:14px}
+.band{padding:clamp(18px,3vw,36px) max(4vw,16px);max-width:1240px;margin:0 auto}
+.runes{display:flex;gap:6px;margin:10px 0 0}.runes i{width:28px;height:6px;border-radius:3px}
+.sub{color:var(--mute);max-width:70ch;margin:8px 0 0}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:16px}
+.tabs button{border-radius:999px}
+.tabs button[aria-selected=true]{background:var(--acc);color:light-dark(#fff,#15171c);border-color:transparent}
+.view{display:none}.view.on{display:block}.view.grid.on{display:grid}.view:not(.on){display:none!important}
+.grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:24px;align-items:start}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+label{font-size:14px;font-weight:600;display:block;margin:12px 0 6px}
+textarea,select,input{width:100%;font:16px Inter,sans-serif;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+textarea{min-height:280px;resize:vertical;font-size:14px;line-height:1.5}
+textarea:focus,select:focus,input:focus,button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}.row>*{flex:1 1 140px}.row>button{flex:0 0 auto}
+button{font:600 16px Inter,sans-serif;min-height:44px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:0 16px;cursor:pointer}
+button.go{background:var(--acc);color:light-dark(#fff,#15171c);border-color:transparent}
+button:disabled{opacity:.5;cursor:default}
+.check{font-size:14px;margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--bg);border:1px solid var(--line)}
+.bad{color:var(--fury)}.ok{color:var(--calm)}
+.status{font-size:14px;color:var(--mute);margin-top:8px}
+.opps{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:6px;font-size:14px}
+.opps label{display:flex;gap:8px;align-items:center;margin:0;font-weight:500;min-height:36px}
+.opps input{width:20px;height:20px}
+.big{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.big b{font:700 clamp(56px,9vw,88px)/1 "Chakra Petch",sans-serif;font-variant-numeric:tabular-nums}
+.big span{color:var(--mute)}
+.bar{display:grid;grid-template-columns:10em minmax(0,1fr) 4.2em;gap:10px;align-items:center;padding:6px 0;border-top:1px solid var(--line);font-size:14px}
+.bar .t{height:14px;border-radius:7px;background:var(--bg);position:relative;overflow:hidden}
+.bar .t i{position:absolute;inset:0 auto 0 0;border-radius:7px;transition:width .4s}
+.bar .t.half:after{content:"";position:absolute;left:50%;top:0;bottom:0;border-left:1px dashed var(--mute)}
+.bar b{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.note{font-size:13px;color:var(--mute);margin-top:12px}
+.prog{height:4px;background:var(--line);border-radius:2px;margin-top:12px;overflow:hidden}.prog i{display:block;height:100%;width:0;background:var(--acc);transition:width .3s}
+.empty{color:var(--mute);padding:18px 0}
+.chip{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;border:1px solid var(--line);margin-right:4px}
+.res{display:grid;gap:10px;margin-top:12px}
+.res article{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--bg)}
+.res h3{margin:0 0 4px}.res p{margin:6px 0 0;font-size:15px}
+.links{display:flex;gap:14px;flex-wrap:wrap;margin:10px 0 0;font-size:15px}.links a{color:var(--acc);font-weight:600}
+.tw{overflow-x:auto}.tw table{border-collapse:collapse;font-size:14px;min-width:520px}.tw th,.tw td{padding:6px 8px;border-bottom:1px solid var(--line, #ddd);text-align:left}.tw td.low{color:var(--fury);font-weight:600}
+.dchips{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 10px}.dchips button{border-radius:999px;padding:6px 12px;font-size:14px}.dchips button[aria-pressed=true]{background:var(--acc);color:light-dark(#fff,#15171c);border-color:transparent}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;margin:2px 0 8px}.seg button{border:0;border-radius:0;padding:6px 14px;font-size:14px}.seg button[aria-pressed=true]{background:var(--acc);color:light-dark(#fff,#15171c)}
+.mdv{font-size:15px;line-height:1.5}.mdv h2{font-size:22px;margin:10px 0 6px}.mdv h3,.mdv h4{font-size:17px;margin:16px 0 6px}.mdv ul{padding-left:20px;margin:6px 0}.mdv li{margin:4px 0}.mdv p{margin:8px 0}
+.mdv .tw table{min-width:0;width:100%}.mdv td,.mdv th{vertical-align:top}
+.big{font-size:40px;font-weight:700;line-height:1}.realrow{display:flex;gap:18px;align-items:baseline;flex-wrap:wrap;margin:6px 0 12px}
+.meta6{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.ans{white-space:pre-wrap;font-size:15px;margin-top:12px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media(max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}.board{order:-1}#v-cards .grid>.card:nth-child(2){order:-1}}
+@media(max-width:520px){.bar{grid-template-columns:7.5em minmax(0,1fr) 3.6em}}
+</style><link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#3a2d8f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Genie 2.0">
+<meta name="description" content="Riftbound TCG companion: save your decks, test matchups against the meta, rules answers offline.">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+</head><body>
+<div class="band">
+  <h1>Riftbound Genie 2.0</h1>
+  <div class="runes" aria-hidden="true"><i style="background:var(--fury)"></i><i style="background:var(--calm)"></i><i style="background:var(--mind)"></i><i style="background:var(--body)"></i><i style="background:var(--chaos)"></i><i style="background:var(--order)"></i></div>
+  <p class="sub">Your Riftbound decks, matchups, rules answers and the meta, in your pocket. Works offline. Rules: Core Rules of July 16, 2026.</p>
+  
+  <div class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-v="mine">My decks</button>
+    <button role="tab" aria-selected="false" data-v="mu">Matchups</button>
+    <button role="tab" aria-selected="false" data-v="cards">Rules &amp; cards</button>
+    <button role="tab" aria-selected="false" data-v="meta">Meta</button>
+    <button role="tab" aria-selected="false" data-v="ev">Events</button>
+    <button role="tab" aria-selected="false" data-v="lab">Test a deck</button>
+  </div>
+</div>
+
+
+<section class="view on band" id="v-mine" style="padding-top:0">
+  <div class="card">
+    <h2>My decks</h2>
+    <p class="status">Saved on this phone only. Nothing is uploaded or shared.</p>
+    <div class="dchips" id="dpick"></div>
+    <div class="row" style="margin:6px 0 12px"><button class="go" id="addbtn">Add a deck</button></div>
+    <div id="myform" hidden>
+      <label for="fname">Deck name</label><input id="fname" placeholder="My Ziggs deck">
+      <label for="flist">Decklist: one card per line, like "3 Punch First". Include your champion.</label>
+      <textarea id="flist" style="min-height:220px" placeholder="1 Ziggs, Explosive&#10;3 Tideturner&#10;..."></textarea>
+      <label for="fchamp">Chosen Champion</label><select id="fchamp"></select>
+      <div class="status" id="fcheck" style="margin-top:8px"></div>
+      <label for="fside">Sideboard (optional)</label><textarea id="fside" style="min-height:90px" placeholder="3 Decree of Unity&#10;..."></textarea>
+      <label for="fnotes">Notes (optional): game plan, mulligan, what to side in</label><textarea id="fnotes" style="min-height:90px"></textarea>
+      <div class="row" style="margin-top:10px"><button class="go" id="fsave">Save deck</button><button id="fcancel">Cancel</button></div>
+    </div>
+    <div class="mdv" id="dbody"><p>No decks yet. Tap <b>Add a deck</b> and paste your list. You can also start from a meta deck in <b>Test a deck</b>.</p></div>
+  </div>
+</section>
+<section class="view band" id="v-ev" style="padding-top:0">
+  <div class="card">
+    <h2>Events near you</h2>
+    <p>Find Riftbound tournaments and casual nights at stores near you, from Riot's official event finder.</p>
+    <label for="evdist">How far will you travel?</label>
+    <select id="evdist"><option value="16093">10 miles</option><option value="40234">25 miles</option><option value="80467" selected>50 miles</option><option value="160934">100 miles</option></select>
+    <div class="row" style="margin-top:10px"><button class="go" id="evgo">Use my location</button></div>
+    <label for="evzip" style="margin-top:14px">Or type your ZIP / postal code or town</label>
+    <div class="row"><input id="evzip" placeholder="53094 or Watertown, WI" autocomplete="postal-code"><button id="evzipgo">Find events</button></div>
+    <p class="status" id="evstat"></p>
+    <div id="evout"></div>
+    <p class="status">Your location is only used to open the event finder; this app doesn't store or send it anywhere else.</p>
+  </div>
+</section>
+<section class="view band" id="v-mu" style="padding-top:0">
+  <div class="card">
+    <h2>How your decks match up</h2>
+    <div class="dchips" id="mpick"></div>
+    <div class="row" style="margin:6px 0"><select id="mn"><option value="50">50 games each (fast)</option><option value="100" selected>100 games each</option><option value="200">200 games each (steadier)</option></select><button class="go" id="mrun">Run matchups</button></div>
+    <div class="track" style="margin:8px 0"><i id="mprog"></i></div>
+    <div id="mreal"></div>
+    <div id="mbars"><p class="status">Add a deck in My decks, then run its matchups against the 10 top meta decks. Games run on your phone; 100 games each takes about a minute.</p></div>
+    <p class="status" id="mnote"></p>
+  </div>
+</section>
+<section class="view band grid" id="v-lab" style="padding-top:0">
+  <div class="card">
+    <h2>Your deck</h2>
+    <div class="row">
+      <div><label for="load">Start from a deck</label><select id="load"><option value="">Paste your own…</option></select></div>
+      <button id="loadbtn" type="button">Load</button>
+    </div>
+    <label for="list">Decklist (one card per line, like "3 Punch First")</label>
+    <textarea id="list" spellcheck="false" placeholder="1 Ambessa, The Wolf&#10;3 Pit Rookie&#10;3 Punch First&#10;…"></textarea>
+    <div class="row">
+      <div><label for="champ">Chosen Champion</label><select id="champ"></select></div>
+      <div><label for="n">Games per matchup</label><select id="n"><option>10</option><option>20</option><option>50</option><option selected>100</option><option>250</option><option>500</option></select></div>
+    </div>
+    <div class="row">
+      <div><label for="ai">Computer players</label><select id="ai"><option value="fast" selected>Fast: rule-based (quick, many games)</option><option value="look">Look-ahead: both players plan each turn (about 1 second a game)</option></select></div>
+    </div>
+    <div class="check" id="check">Paste a list to check it.</div>
+    <label>Opponents</label>
+    <div class="opps" id="opps"></div>
+    <div class="row" style="margin-top:14px"><button class="go" id="run" disabled>Starting engine…</button><button id="copy">Copy results</button></div>
+    <div class="status" id="estatus">Starting the game engine…</div>
+  </div>
+  <div class="card board" aria-live="polite">
+    <h2 id="btitle">Results</h2>
+    <div class="big"><b id="overall">–</b><span id="osub">overall win rate</span></div>
+    <div class="prog"><i id="prog"></i></div>
+    <div id="bars"><div class="empty">Results appear here, one opponent at a time, as the games finish.</div></div>
+    <p class="note">50% (dashed line) is an even matchup. With 100 games a result can swing about 5 points either way, with 20 games about 11; use 250+ fast games before changing real cards. Look-ahead plays closer to how good players play, so use it to double-check a close call. "Real-world adjusted" shifts each legend's strength to match real tournament win rates (riftbound.gg, before the Nov 23 bans), because the engine underrates control decks and overrates unit decks; compare versions of the same deck with the plain number. Meta decks are the RQ Los Angeles top lists with the Nov 23 bans applied, including Azir, Akali and Ornn.</p>
+  </div>
+</section>
+
+<section class="view band" id="v-cards" style="padding-top:0">
+  <div class="grid">
+    <div class="card">
+      <h2>Card lookup</h2>
+      <label for="q">Search by name or text</label>
+      <input id="q" type="search" placeholder="Punch First, Deflect, Bomb…" autocomplete="off">
+      <div class="row">
+        <div><label for="fcol">Color</label><select id="fcol"><option value="">Any</option><option>Fury</option><option>Calm</option><option>Mind</option><option>Body</option><option>Chaos</option><option>Order</option></select></div>
+        <div><label for="ftype">Type</label><select id="ftype"><option value="">Any</option><option>Unit</option><option>Spell</option><option>Gear</option><option>Legend</option><option>Battlefield</option></select></div>
+      </div>
+      <div class="status" id="qcount"></div>
+      <div class="res" id="qres"></div>
+    </div>
+    <div class="card">
+      <h2>Ask about cards or rules</h2>
+      <p class="sub" style="margin-top:6px">Ask in plain words, like "does Shield count when Ambessa is defending?" or "what does Riven, Deserter do with Ziggs bombs?". Answers use the official card text and the Core Rules.</p>
+      <label for="ask">Your question</label>
+      <textarea id="ask" style="min-height:96px"></textarea>
+      <div class="row" style="margin-top:10px"><button class="go" id="askbtn">Ask</button></div>
+      <div class="ans" id="ans"></div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h2>Rules reference</h2>
+      <p class="sub" style="margin-top:6px">Notes on every part of the Core Rules (July 16 2026 version) that matters in a 1v1 game, plus the Nov 23 ban list. These are summaries in plain words, not Riot's wording; when a card and the rules disagree, the card wins.</p>
+      <label for="rq">Search the rules</label>
+      <input id="rq" type="search" placeholder="Hidden, showdown, final point, mulligan…" autocomplete="off">
+      <p class="sub" id="rcount" style="margin-top:8px"></p>
+      <div id="rlist" style="max-height:520px;overflow:auto;margin-top:8px;white-space:pre-wrap;font-size:14px;line-height:1.5"></div>
+    </div>
+  </div>
+</section>
+
+<section class="view band" id="v-meta" style="padding-top:0">
+  <div class="card">
+    <h2 id="mtitle">Meta</h2>
+    <p class="status" id="mupd"></p>
+    <h3>Banned from Nov 23</h3>
+    <div id="mban"></div>
+    <h3>Most played legends (Day 2 share)</h3>
+    <div id="mleg"></div>
+    <h3>Most played cards in each color (copies across top lists)</h3>
+    <div class="meta6" id="mtop"></div>
+    <h3>What top decks have in common</h3>
+    <p class="status" id="csrc"></p>
+    <div class="tw" id="ctab"></div>
+    <div id="cstap"></div>
+    <h3>Meta decks in the engine</h3>
+    <div id="mdecks"></div>
+  </div>
+</section>
+
+<script src="engine.js"></script>
+<script>
+{
+const $ = id => document.getElementById(id);
+const RUNE = {Fury:'var(--fury)',Calm:'var(--calm)',Mind:'var(--mind)',Body:'var(--body)',Chaos:'var(--chaos)',Order:'var(--order)'};
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let LIB = {}, DECKS = {}, LEGS = {}, CAL = null, myLeg = null, META = null, RULES = '', py = null, runBatch = null, ready = false, res = {}, total = 0, doneN = 0, parsed = null, running = false;
+const norm = s => s.toLowerCase().replace(/\s+-\s+/g, ', ').replace(/[’‘]/g, "'").replace(/\s+/g, ' ').trim();
+let byNorm = {};
+const cu = n => (window.claude && window.claude.use) ? window.claude.use(n) : Promise.resolve(null);
+const simCards = () => Object.keys(LIB).filter(k => LIB[k].sim);
+
+/* tabs */
+for (const b of document.querySelectorAll('.tabs button')) b.addEventListener('click', () => show(b.dataset.v));
+function show(v){ for (const b of document.querySelectorAll('.tabs button')) b.setAttribute('aria-selected', b.dataset.v === v);
+  for (const s of document.querySelectorAll('.view')) s.classList.toggle('on', s.id === 'v-' + v);
+  if (location.hash.slice(1) !== v) history.replaceState(null, '', '#' + v); }
+window.addEventListener('hashchange', () => { const h = location.hash.slice(1); if (['mine','mu','ev','lab','cards','meta'].includes(h)) show(h); });
+
+/* deck lab */
+function legendOf(champ){ for (const [k,v] of Object.entries(LEGS)) if (v.champs.includes(champ)) return k; return null; }
+function closest(name){ const n = norm(name).replace(/[^a-z0-9 ]/g, ''); if (n.length < 3) return null;
+  const ed = (a, b) => { const m = a.length, k = b.length; let prev = Array.from({length: k + 1}, (_, j) => j);
+    for (let i = 1; i <= m; i++){ const cur = [i]; for (let j = 1; j <= k; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); prev = cur; } return prev[k]; };
+  let best = null, bs = 1e9;
+  for (const c of Object.keys(LIB)){ if (LIB[c].t === 'Legend' || LIB[c].t === 'Battlefield' || LIB[c].t === 'Rune') continue; const m = norm(c).replace(/[^a-z0-9 ]/g, '');
+    const d = Math.min(ed(n, m), m.includes(',') ? 99 : 99, ed(n, m.split(' ').slice(0, n.split(' ').length).join(' ')) + 1);
+    if (d < bs || (d === bs && LIB[c].sim && !(best && LIB[best].sim))){ bs = d; best = c; } }
+  return bs <= Math.max(2, Math.floor(n.length / 3)) ? best : null; }
+function parse(text){ const out = {}, bad = [], nosim = [];
+  for (let line of (text == null ? $('list').value : text).split('\n')){
+    line = line.replace(/\(.*?\)|\[.*?\]/g, '').trim(); if (!line || /^(main|side|sideboard|runes?|rune pool|battlefields?|legend|champion)\b.*:?$/i.test(line)) continue;
+    let m = line.match(/^(\d+)\s*x?\s+(.+)$/i) || line.match(/^(.+?)\s+x?(\d+)$/i); let q = 1, name = line;
+    if (m){ if (/^\d/.test(m[1])) { q = +m[1]; name = m[2]; } else { q = +m[2]; name = m[1]; } }
+    const c = byNorm[norm(name)];
+    if (c && LIB[c].sim) out[c] = (out[c] || 0) + q; else if (c) nosim.push(c); else bad.push(name);
+  }
+  return {list: out, bad, nosim}; }
+function champsIn(list){ const s = []; for (const v of Object.values(LEGS)) for (const c of v.champs) if (list[c]) s.push(c); return s; }
+function check(){
+  parsed = parse(); const L = parsed.list, msg = []; const tot = Object.values(L).reduce((a,b) => a + b, 0);
+  const cs = champsIn(L), cur = $('champ').value;
+  $('champ').innerHTML = cs.length ? cs.map(c => `<option${c===cur?' selected':''}>${esc(c)}</option>`).join('') : '<option value="">No champion found</option>';
+  const ch = $('champ').value, leg = legendOf(ch); let ok = true;
+  if (parsed.bad.length){ ok = false; msg.push(`<span class="bad">Not a card: ${parsed.bad.map(b => { const c = closest(b); return `"${esc(b)}"${c ? ` (did you mean ${esc(c)}?)` : ''}`; }).join(', ')}</span>`); }
+  if (parsed.nosim.length){ ok = false; msg.push(`<span class="bad">Not in the test engine yet: ${parsed.nosim.map(esc).join(', ')}</span>`); }
+  msg.push(tot === 40 ? '<span class="ok">40 cards</span>' : `<span class="bad">${tot} cards</span> (main deck is 40 with the champion)`); if (tot < 40) ok = false;
+  const over = Object.entries(L).filter(([c,q]) => q > 3).map(([c]) => c); if (over.length){ ok = false; msg.push(`<span class="bad">More than 3 copies: ${over.map(esc).join(', ')}</span>`); }
+  const banned = Object.keys(L).filter(c => LIB[c] && LIB[c].ban); if (banned.length) msg.push(`<span class="bad">Banned from Nov 23: ${banned.map(esc).join(', ')}</span>`);
+  if (!leg){ ok = false; msg.push('<span class="bad">Add a champion unit for a legend the engine knows.</span>'); }
+  else { const doms = new Set(); for (const c of Object.keys(L)) for (const d of LIB[c].d || []) if (RUNE[d]) doms.add(d);
+    msg.push(`Legend: <b>${esc(leg)}</b> · ${[...doms].map(d => `<span style="color:${RUNE[d]}">${d}</span>`).join(', ')}`); }
+  $('check').innerHTML = msg.join('<br>');
+  $('run').disabled = !(ok && ready && leg) || running;
+  if (ready && !running) $('run').textContent = Object.keys(res).length ? 'Test again' : 'Test this deck';
+  return ok && !!leg; }
+function loadDeck(){ const d = DECKS[$('load').value]; if (!d) return;
+  $('list').value = Object.entries(d.list).map(([c,q]) => `${q} ${c}`).join('\n'); check(); $('champ').value = d.champ; check(); save(); }
+function save(){ try{ localStorage.setItem('rg-list', $('list').value); }catch(e){} }
+function bars(){ const rows = Object.entries(res); if (!rows.length) return; let n = 0;
+  $('bars').innerHTML = rows.map(([name, r]) => { n += r.n; const p = Math.round(100 * r.w / r.n); const d = DECKS[name];
+    const dom = (d && LIB[d.champ] && (LIB[d.champ].d || [])[0]) || 'Mind';
+    return `<div class="bar"><span>${esc(name)}</span><div class="t half" title="${esc(name)}: ${p}% over ${r.n} games"><i style="width:${p}%;background:${RUNE[dom]||'var(--acc)'}"></i></div><b>${p}%</b></div>`; }).join('');
+  const ov = rows.reduce((s,[k,r]) => s + r.w / r.n, 0) / rows.length;
+  $('overall').textContent = Math.round(100 * ov) + '%'; $('osub').textContent = `overall (average of ${rows.length} matchups, ${n.toLocaleString('en-US')} games)`;
+  const off = CAL && CAL.offsets, lgt = p => Math.log(Math.min(.98, Math.max(.02, p)) / (1 - Math.min(.98, Math.max(.02, p))));
+  if (off && myLeg in off && rows.every(([k]) => DECKS[k] && DECKS[k].legend in off)){
+    const adj = rows.reduce((s,[k,r]) => s + 1 / (1 + Math.exp(-(lgt(r.w / r.n) + off[myLeg] - off[DECKS[k].legend]))), 0) / rows.length;
+    $('osub').textContent += ` · real-world adjusted ${Math.round(100 * adj)}%` + (myLeg === 'Ambessa' ? ' (estimate: no tournament data for Ambessa)' : ''); }
+  else if (off) $('osub').textContent += ' · no real-world adjustment for this legend yet'; }
+const tick = () => new Promise(r => setTimeout(r, 0));
+async function run(){
+  if (!check() || running) return;
+  const opps = [...document.querySelectorAll('#opps input:checked')].map((x,i) => ({name:x.value, deck:DECKS[x.value], seed:1000*(i+1)})); if (!opps.length) return;
+  running = true; res = {}; doneN = 0; const n = +$('n').value; total = n * opps.length; const look = $('ai').value === 'look' ? 6 : 0;
+  $('bars').innerHTML = '<div class="empty">Playing…</div>'; $('overall').textContent = '…'; $('prog').style.width = '0';
+  const ch = $('champ').value; $('btitle').textContent = `Results: ${ch}`; $('run').disabled = true; $('run').textContent = 'Testing…';
+  myLeg = legendOf(ch); const me = JSON.stringify({legend: myLeg, champ: ch, list: parsed.list});
+  try {
+    for (const o of opps){ let left = n, seed = 7 + o.seed; const od = JSON.stringify(o.deck);
+      while (left > 0){ const k = Math.min(look ? 1 : 5, left); const out = JSON.parse(runBatch(me, od, k, seed, look)); seed++; left -= k;
+        const r = res[o.name] || (res[o.name] = {w:0,n:0}); r.w += out.w; r.n += out.n; doneN += out.n;
+        $('prog').style.width = (100 * doneN / total) + '%'; bars(); await tick(); } }
+  } catch (err) { $('estatus').innerHTML = `<span class="bad">Engine error: ${esc(String(err.message || err).slice(-300))}</span>`; }
+  running = false; $('run').textContent = 'Test again'; check(); }
+$('list').addEventListener('input', () => { save(); check(); });
+$('champ').addEventListener('change', check);
+$('load').addEventListener('change', loadDeck); $('loadbtn').addEventListener('click', loadDeck);
+$('run').addEventListener('click', run);
+$('ai').addEventListener('change', () => { if ($('ai').value === 'look' && +$('n').value > 50) $('n').value = '20'; if ($('ai').value === 'fast' && +$('n').value < 50) $('n').value = '100'; });
+$('copy').addEventListener('click', async () => {
+  const t = [$('btitle').textContent, 'Overall ' + $('overall').textContent].concat(Object.entries(res).map(([k,r]) => `${k}: ${Math.round(100*r.w/r.n)}% (${r.n} games)`)).join('\n');
+  try{ await navigator.clipboard.writeText(t); $('copy').textContent = 'Copied'; } catch(e){ $('copy').textContent = 'Copy blocked'; }
+  setTimeout(() => $('copy').textContent = 'Copy results', 1500); });
+
+async function startEngine(){
+  try {
+    if (typeof $makeEngine !== 'function') throw new Error('the engine file did not load');
+    $('estatus').textContent = 'Loading cards and rules…';
+    const vfs = {};
+    for (const f of ['cards.txt','might.json','kw.json','domains.json','cards_official.json']){
+      const r = await fetch(f); if (!r.ok) throw new Error('missing ' + f); vfs[f] = await r.text(); }
+    const E = $makeEngine(vfs);
+    const mk = d => { const cards = []; for (const [c, q] of Object.entries(d.list)) for (let i = 0; i < q; i++) cards.push(c);
+      const i = cards.indexOf(d.champ); if (i >= 0) cards.splice(i, 1); return [d.legend, d.champ, cards]; };
+    runBatch = (meJson, oppJson, n, seed, look) => { const me = JSON.parse(meJson), op = JSON.parse(oppJson); const rng = new E.PyRandom(seed); let w = 0;
+      for (let k = 0; k < n; k++){ const g = new E.Game(mk(me), mk(op), rng); if (look){ g.P[0].look = look; g.P[1].look = look; } if (g.play() === 0) w++; }
+      return JSON.stringify({w, n}); };
+    ready = true;
+    $('estatus').innerHTML = '<span class="ok">Engine ready.</span> Every game runs on your device.'; check(); drawMu();
+  } catch (err) {
+    $('estatus').innerHTML = `<span class="bad">The engine couldn't start: ${esc(String(err.message || err).slice(0,240))}</span>. Card lookup and Meta still work. Try reloading the page; if it keeps failing, copy this message to Claude.`;
+    $('run').textContent = 'Engine unavailable'; }
+}
+
+/* cards & rules */
+function cardHTML(n){ const c = LIB[n]; const cost = [c.e != null ? c.e + ' energy' : '', c.p ? c.p + ' power' : ''].filter(Boolean).join(' + ');
+  return `<article><h3>${esc(n)}</h3><div>${(c.d||[]).map(d => `<span class="chip" style="color:${RUNE[d]||'inherit'}">${esc(d)}</span>`).join('')}<span class="chip">${esc(c.t||'')}</span>${c.r ? `<span class="chip">${esc(c.r)}</span>` : ''}${c.ban ? '<span class="chip bad">Banned Nov 23</span>' : ''}${c.sim ? '' : '<span class="chip">not in test engine</span>'}</div>
+  <p>${cost ? esc(cost) : ''}${c.m != null ? ` · ${c.m} Might` : ''}</p><p>${esc(c.x || 'No rules text.')}</p></article>`; }
+function search(q, col, type, max){ q = norm(q || ''); const words = q.split(/\s+/).filter(Boolean);
+  const out = [];
+  for (const [n, c] of Object.entries(LIB)){
+    if (col && !(c.d || []).includes(col)) continue; if (type && c.t !== type) continue;
+    const nn = norm(n), tx = ((c.x || '') + ' ' + (c.g || []).join(' ') + ' ' + (c.t || '') + ' ' + (c.sup || '')).toLowerCase(); let s = 0;
+    if (!words.length) s = 1; else { if (nn === q) s += 100; if (nn.startsWith(q)) s += 30; for (const w of words){ if (nn.includes(w)) s += 10; else if (tx.includes(w)) s += 2; else { s = -1; break; } } }
+    if (s > 0) out.push([s, n]); }
+  out.sort((a,b) => b[0] - a[0] || a[1].localeCompare(b[1])); return out.slice(0, max || 30).map(x => x[1]); }
+function doSearch(){ const r = search($('q').value, $('fcol').value, $('ftype').value, 30);
+  $('qcount').textContent = `${Object.keys(LIB).length.toLocaleString('en-US')} cards in the library · showing ${r.length}`;
+  $('qres').innerHTML = r.length ? r.map(cardHTML).join('') : '<div class="empty">No card matches that.</div>'; }
+for (const id of ['q','fcol','ftype']) $(id).addEventListener('input', doSearch);
+
+const STOP = new Set('a an the is are was be do does did can could would should will i my me you your it its of to in on at for and or but if when what how why which who with without from by as this that these those there their they them than then so not no yes any all each every get gets got have has had into out up down about after before during while just only also more most much many some such very still play played playing card cards rule rules use used using does work works happen happens'.split(' '));
+function offlineAnswer(q){
+  const nq = ' ' + norm(q).replace(/[^a-z0-9' -]/g, ' ').replace(/-/g, ' ').replace(/\s+/g, ' ').trim() + ' ';
+  const words = [...new Set(nq.trim().split(' ').filter(w => w.length > 2 && !STOP.has(w)).map(w => w.replace(/(ies)$/, 'y').replace(/([^s])s$/, '$1')))];
+  // cards named in the question: full names first; a first name alone only when it fits one card
+  const names = new Set(), heads = {};
+  for (const n of Object.keys(LIB)){ const full = norm(n).replace(/[^a-z0-9' ]/g, ' ').replace(/\s+/g, ' ').trim();
+    if (full.length >= 4 && nq.includes(' ' + full + ' ')) names.add(n);
+    else if (norm(n).includes(',')){ const h = norm(n).split(',')[0].trim(); if (h.length >= 4 && nq.includes(' ' + h + ' ')) (heads[h] = heads[h] || []).push(n); } }
+  for (const [h, ns] of Object.entries(heads)){ if ([...names].some(m => norm(m).startsWith(h))) continue; const ok = ns.filter(n => !LIB[n].ban); if (ok.length === 1) names.add(ok[0]); else if (ok.length) names.add(ok.find(n => LIB[n].sim) || ok[0]); }
+  // a plain-English answer for the most common questions
+  const ranked = (FAQ || []).map(f => { let sc = 0; for (const k of f.k){ const kk = norm(k); if (nq.includes(' ' + kk + ' ') || (kk.length > 4 && nq.includes(' ' + kk))) sc += 1 + kk.split(' ').length + (f.k.length <= 3 ? 1.5 : 0); } return [sc, f]; })
+    .filter(x => x[0] > 0).sort((a, b) => b[0] - a[0]);
+  const faq = ranked.length ? ranked[0][1] : null, faq2 = ranked.length > 1 && ranked[1][0] >= 2 ? ranked[1][1] : null;
+  const num = (q.match(/\b\d{3}\b/) || [])[0];
+  const all = RULES.split('## AUDIT')[0].split('\n').filter(l => l.trim().length > 30 && !l.startsWith('#'));
+  const lines = num ? all : all.filter(l => !/^-\s*\d{3}/.test(l));
+  const df = w => lines.reduce((c, l) => c + (norm(l).includes(w) ? 1 : 0), 0); const wt = {}; for (const w of words){ const d = df(w); wt[w] = d ? Math.log(1 + lines.length / d) : 0; }
+  const scored = lines.map(l => { const t = norm(l), lead = t.slice(0, 40); let s = 0; for (const w of words) if (t.includes(w)) s += wt[w] + (lead.includes(w) ? wt[w] : 0); if (num && t.includes(num)) s += 8; return [s, l]; })
+    .filter(x => x[0] > 0).sort((a, b) => b[0] - a[0]).slice(0, faq ? 2 : 4);
+  let h = '';
+  if (faq) h += `<div style="padding:12px 14px;border-radius:12px;background:var(--bg);border:1px solid var(--line)"><h3 style="margin:0 0 6px">${esc(faq.t)}</h3>${faq.a.split('\n').map(x => `<p style="margin:6px 0">${esc(x)}</p>`).join('')}<p class="status" style="margin:6px 0 0">${esc(faq.r)}</p></div>`;
+  if (faq2) h += `<details style="margin-top:8px"><summary><b>Also: ${esc(faq2.t)}</b></summary>${faq2.a.split('\n').map(x => `<p style="margin:6px 0">${esc(x)}</p>`).join('')}<p class="status">${esc(faq2.r)}</p></details>`;
+  if (names.size) h += '<h3>Cards in your question</h3>' + [...names].slice(0, 4).map(cardHTML).join('');
+  if (scored.length) h += `<h3>${faq ? 'More from the rules notes' : 'Matching rules notes'}</h3>` + scored.map(([, l]) => `<p style="margin:8px 0;padding:8px 10px;border-left:3px solid var(--acc);background:var(--bg)">${esc(l.replace(/^[-*]\s*/, ''))}</p>`).join('');
+  if (!faq && !scored.length && !names.size) h += '<p>Nothing matched those words. Try a card name, a keyword like "Deflect" or "showdown", or a rule number.</p>';
+  h += `<p class="status">This app answers from its built-in rules notes and card texts, offline. Card text beats these notes when they disagree. For tricky card interactions, check the official Core Rules or ask a judge.</p>`;
+  $('ans').innerHTML = '<div style="white-space:normal">' + h + '</div>'; }
+let FAQ = null; fetch('faq.json').then(r => r.ok ? r.json() : null).then(f => { FAQ = f; }).catch(() => {});
+let sampleFn = null;
+$('askbtn').addEventListener('click', async () => {
+  const q = $('ask').value.trim(); if (!q) return;
+  if (!sampleFn){ offlineAnswer(q); return; }
+  const names = new Set(); for (const w of q.split(/[?.!;]|\band\b|\bwith\b/i)) for (const n of search(w, '', '', 3)) names.add(n);
+  const ctx = [...names].slice(0, 12).map(n => `${n} (${LIB[n].t}; ${(LIB[n].d||[]).join('/')}; ${LIB[n].e ?? '-'} energy, ${LIB[n].p ?? 0} power${LIB[n].m != null ? ', ' + LIB[n].m + ' Might' : ''}): ${LIB[n].x}`).join('\n');
+  $('askbtn').disabled = true; $('ans').textContent = 'Thinking…';
+  try {
+    const r = await sampleFn(`You are a Riftbound TCG rules judge helping a player who is getting ready for competitive play. Answer in plain, short sentences a new player understands, then give the rule numbers (CR ###) you relied on.
+Use ONLY the card texts and rules notes given here and what the two lookup tools return. Never answer card text or rules from memory: if a card isn't in the texts below, call lookup_card first; if a rule isn't in the notes, call lookup_rules with a keyword. If the texts and notes still don't settle it, say so plainly and say which rule or card text would decide it, instead of guessing. Card text beats the rules notes (CR 002). Mention it if a card is banned (Nov 23 2026 ban list).
+
+CARD TEXTS:
+${ctx}
+
+CORE RULES NOTES:
+${RULES}
+
+QUESTION: ${q}`, {
+      onText: ({text}) => { $('ans').textContent = text; },
+      tools: [{name: 'lookup_card', description: 'Get the official text of a Riftbound card by name (partial names, champion names and words from the text work). Legends are listed by title, e.g. Pridestalker for Rengar.', inputSchema: {type:'object', properties:{name:{type:'string'}}, required:['name']},
+        execute: ({name}) => { const r = search(name, '', '', 4); return r.length ? r.map(n => ({name: n, type: LIB[n].t, domains: LIB[n].d, energy: LIB[n].e, power: LIB[n].p, might: LIB[n].m, tags: LIB[n].g, text: LIB[n].x, banned: LIB[n].ban})) : 'No card by that name in the library.'; }},
+        {name: 'lookup_rules', description: 'Search the Core Rules notes for a keyword or rule number (e.g. "Deflect", "showdown", "471") and get the matching lines.', inputSchema: {type:'object', properties:{query:{type:'string'}}, required:['query']},
+        execute: ({query}) => { const ws = norm(query).split(/\s+/).filter(Boolean); const lines = RULES.split('\n').filter(l => l.trim() && !l.startsWith('#'));
+          const hits = lines.filter(l => { const t = norm(l); return ws.every(w => t.includes(w)); }); return hits.length ? hits.slice(0, 15).join('\n') : 'No line in the rules notes matches that.'; }}],
+      cache: false });
+    $('ans').textContent = r.text;
+  } catch (err) { $('ans').textContent = err && err.code === 'rate_limited' ? 'Too many questions at once; wait a moment and try again.' : 'Claude could not answer right now.'; }
+  $('askbtn').disabled = false; });
+
+/* meta */
+function renderMeta(){ if (META && META.common) setTimeout(() => renderCommon(META.common), 0); const M = META; if (!M) return;
+  $('mupd').textContent = `Last updated ${M.updated} · ${M.event}`;
+  $('mban').innerHTML = `<p>${(M.bans.cards || []).map(c => `<span class="chip bad">${esc(c)}</span>`).join(' ')} ${(M.bans.battlefields || []).map(c => `<span class="chip bad">${esc(c)} (battlefield)</span>`).join(' ')}</p>`;
+  const mx = Math.max(...M.legends.map(l => l[1]));
+  $('mleg').innerHTML = M.legends.map(([n, p]) => `<div class="bar"><span>${esc(n)}</span><div class="t"><i style="width:${100*p/mx}%;background:var(--acc)"></i></div><b>${p}%</b></div>`).join('');
+  $('mtop').innerHTML = Object.entries(M.topCards).map(([col, rows]) => { const m2 = Math.max(...rows.map(r => r[1]));
+    return `<div><h3 style="color:${RUNE[col]}">${col}</h3>${rows.map(([n, c, l]) => `<div class="bar"><span>${esc(n)}</span><div class="t"><i style="width:${100*c/m2}%;background:${RUNE[col]}"></i></div><b>${c}</b></div>`).join('')}</div>`; }).join('');
+  $('mdecks').innerHTML = Object.entries(M.decks || {}).map(([k, d]) => `<p><b>${esc(k)}</b> (${esc(d.champ)}): ${esc(d.note || '')} <button type="button" data-k="${esc(k)}">Test against my deck</button></p>`).join('') + (M.notInEngine && M.notInEngine.length ? `<p class="note">Not simulated yet: ${M.notInEngine.map(esc).join(', ')}</p>` : '');
+  for (const b of $('mdecks').querySelectorAll('button')) b.addEventListener('click', () => { for (const x of document.querySelectorAll('#opps input')) x.checked = x.value === b.dataset.k; show('lab'); });
+  for (const [k, d] of Object.entries(M.decks || {})) if (!DECKS[k]) DECKS[k] = {legend: d.legend, champ: d.champ, list: d.list, group: 'Meta decks'};
+}
+
+Promise.all(['library.json','decks.json','legends.json','meta.json','rules.txt'].map(f => fetch(f).then(r => f.endsWith('.txt') ? r.text() : r.json()))).then(async ([l, d, g, m, rules]) => {
+  LIB = l; DECKS = d; LEGS = g; META = m; RULES = rules;
+  const rlines = RULES.split('\n').filter(x => x.trim() && !x.startsWith('# ') && !/^## AUDIT|^- (FIXED|OK|SIMPLIFIED|NA)\b/.test(x));
+  const audit = RULES.indexOf('## AUDIT'); const rshow = (audit > 0 ? RULES.slice(0, audit) : RULES).split('\n').filter(x => x.trim() && !x.startsWith('# '));
+  const rrender = () => { const q = norm($('rq').value || ''); const ws = q.split(/\s+/).filter(Boolean);
+    const hit = ws.length ? rshow.filter(x => { const t = norm(x); return ws.every(w => t.includes(w)) || /^#/.test(x) && false; }) : rshow;
+    $('rcount').textContent = ws.length ? `${hit.length} matching lines` : `${rshow.length} lines`;
+    $('rlist').innerHTML = hit.map(x => /^#+ /.test(x) ? `<b style="display:block;margin-top:10px">${esc(x.replace(/^#+ /, ''))}</b>` : `<div style="margin:3px 0">${esc(x)}</div>`).join(''); };
+  $('rq').addEventListener('input', rrender); rrender();
+  fetch('calib.json').then(r => r.ok ? r.json() : null).then(c => { CAL = c; }).catch(() => {}); for (const k of Object.keys(LIB)) byNorm[norm(k)] = k;
+  /* daily updates live in the page's database; the bundled file is the fallback */
+  cu('db').then(async db => { if (!db) return; const t = setTimeout(() => {}, 10000);
+    try { const snap = await db.doc('meta/current').get(); clearTimeout(t); const v = snap && (snap.data ? snap.data() : snap); if (v && v.updated && v.updated >= META.updated){ META = Object.assign({}, META, v); renderMeta(); fillOpps(); } } catch(e) { clearTimeout(t); } }).catch(() => {});
+  cu('sample').then(s => { sampleFn = s; }).catch(() => {});
+  renderMeta(); fillDecks(); fillOpps();
+  let saved = ''; try{ saved = localStorage.getItem('rg-list') || ''; }catch(e){}
+  if (saved) $('list').value = saved; else { $('load').value = 'Rengar'; loadDeck(); }
+  drawMine(); drawMu();
+  check(); doSearch();
+  const h = location.hash.slice(1); if (['mine','mu','ev','lab','cards','meta'].includes(h)) show(h);
+  startEngine();
+}).catch(e => { $('check').innerHTML = '<span class="bad">Could not load the card data. Reload the page.</span>'; });
+function fillDecks(){ const groups = {}; for (const [k,v] of Object.entries(DECKS)) (groups[v.group] = groups[v.group] || []).push(k);
+  $('load').innerHTML = '<option value="">Paste your own…</option>' + Object.entries(groups).map(([g,ks]) => `<optgroup label="${esc(g)}">${ks.map(k => `<option>${esc(k)}</option>`).join('')}</optgroup>`).join(''); }
+function fillOpps(){ const keep = new Set([...document.querySelectorAll('#opps input:not(:checked)')].map(x => x.value));
+  $('opps').innerHTML = Object.keys(DECKS).filter(k => !k.endsWith('(future)')).map(k => `<label><input type="checkbox" value="${esc(k)}" ${keep.has(k) ? '' : 'checked'}>${esc(k.replace(' (now)',''))}</label>`).join(''); }
+
+function renderCommon(C){ if (!C || !C.ref) return;
+  const K = [['unit','Units'],['cheap','Cost 2 or less'],['instant','Instant-speed'],['draw','Draw'],['inter','Interaction'],['avgcost','Avg cost']];
+  $('csrc').textContent = 'From ' + C.source + '. Red = outside the middle half of top lists. Updated ' + C.updated + '.';
+  const rows = MYD.map(d => [d.name, deckStats(deckInfo(d).p.list)]);
+  $('ctab').innerHTML = `<table><tr><th>Deck</th>${K.map(([, l]) => `<th>${l}</th>`).join('')}</tr><tr><th>Top lists</th>${K.map(([k]) => `<td>${C.ref[k][0]}–${C.ref[k][2]} (${C.ref[k][1]})</td>`).join('')}</tr>${rows.map(([n, v]) => `<tr><th>${esc(n)}</th>${K.map(([k]) => { const lo = k === 'unit' || k === 'avgcost' ? v[k] > C.ref[k][2] : v[k] < C.ref[k][0]; return `<td class="${lo ? 'low' : ''}">${v[k]}</td>`; }).join('')}</tr>`).join('')}</table>`;
+  $('cstap').innerHTML = '<p class="status">Top lists run about 19 units, plenty of 1–2 cost cards, instant-speed tricks and answers, and some card draw.' + (rows.length ? '' : ' Add your decks in My decks to compare them here.') + '</p>'; }
+fetch('common.json').then(r => r.ok ? r.json() : null).then(C => { const go = () => (LIB && Object.keys(LIB).length) ? renderCommon(C) : setTimeout(go, 300); go(); }).catch(() => {});
+
+/* my decks + matchups (public: decks saved on this device) */
+const SK = 'rg-mydecks';
+let MYD = []; try { MYD = JSON.parse(localStorage.getItem(SK) || '[]') || []; } catch(e) { MYD = []; }
+const saveMy = () => { try { localStorage.setItem(SK, JSON.stringify(MYD)); } catch(e) {} };
+let dSel = 0, mSel = 0, editIdx = -1, mRunning = false;
+const inl = t => esc(t).replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
+const press = (box, on) => { for (const b of box.querySelectorAll('button')) b.setAttribute('aria-pressed', b === on); };
+function deckInfo(d){ const p = parse(d.text); const leg = legendOf(d.champ); const tot = Object.values(p.list).reduce((a, b) => a + b, 0) + p.nosim.length;
+  const doms = new Set(); for (const c of Object.keys(p.list).concat(p.nosim)) for (const x of (LIB[c] && LIB[c].d) || []) if (RUNE[x]) doms.add(x);
+  return {p, leg, tot, doms: [...doms], ok: !!leg && !p.bad.length && !p.nosim.length && Object.values(p.list).reduce((a, b) => a + b, 0) >= 40}; }
+const INSTANT = /\[(Action|Reaction|Hidden|Ambush|Quick-Draw)\]/, DRAWRE = /\b[Dd]raws? \d|\b[Dd]raw\b|[Pp]redict|[Ll]ook at the top/,
+  INTER = /[Kk]ill (an?|the|any|all|up to|each)[^.]*(enemy|unit|gear)|[Dd]eals? \d+ damage|[Ss]tun|[Cc]ounter (a|an|any) |[Rr]eturn (an?|any|up to)[^.]*(enemy )?unit[^.]* to (its|their) owner|[Bb]anish an? (enemy )?unit|-\d+ \[?Might/;
+function deckStats(list){ const s = {unit: 0, cheap: 0, instant: 0, draw: 0, inter: 0}; let cost = 0, n = 0;
+  for (const [c, q] of Object.entries(list)){ const x = LIB[c]; if (!x) continue; const t = x.x || '';
+    if (x.t === 'Unit') s.unit += q; if ((x.e || 0) <= 2) s.cheap += q; if (INSTANT.test(t)) s.instant += q; if (DRAWRE.test(t)) s.draw += q; if (INTER.test(t)) s.inter += q;
+    cost += q * ((x.e || 0) + (x.p || 0)); n += q; }
+  s.avgcost = n ? Math.round(100 * cost / n) / 100 : 0; return s; }
+function listHTML(list){ const groups = {Unit: [], Spell: [], Gear: [], Other: []};
+  for (const [c, q] of Object.entries(list)) (groups[(LIB[c] || {}).t] || groups.Other).push([c, q]);
+  return Object.entries(groups).filter(([, v]) => v.length).map(([g, v]) => `<h4>${g === 'Other' ? 'Other' : g + 's'} (${v.reduce((a, [, q]) => a + q, 0)})</h4><ul>${v.sort((a, b) => (LIB[a[0]].e || 0) - (LIB[b[0]].e || 0)).map(([c, q]) => `<li>${q} ${esc(c)}${LIB[c] && LIB[c].ban ? ' <span class="chip bad">banned</span>' : ''}</li>`).join('')}</ul>`).join(''); }
+function chips(id, sel, f){ $(id).innerHTML = MYD.map((d, i) => `<button data-i="${i}" aria-pressed="${i === sel}">${esc(d.name)}</button>`).join('');
+  for (const b of $(id).querySelectorAll('button')) b.addEventListener('click', () => { press($(id), b); f(+b.dataset.i); }); }
+function drawMine(){ chips('dpick', dSel, i => { dSel = i; drawMine(); });
+  if (!MYD.length){ $('dbody').innerHTML = '<p>No decks yet. Tap <b>Add a deck</b> and paste your list. You can also start from a meta deck in <b>Test a deck</b>.</p>'; return; }
+  dSel = Math.min(dSel, MYD.length - 1); const d = MYD[dSel], I = deckInfo(d);
+  const all = Object.assign({}, I.p.list); for (const c of I.p.nosim) all[c] = (all[c] || 0) + 1;
+  let h = `<h2>${esc(d.name)}</h2><p>Legend: <b>${esc(I.leg || 'unknown')}</b> · Champion: ${esc(d.champ || '-')} · ${I.doms.map(x => `<span style="color:${RUNE[x]}">${x}</span>`).join(' / ')} · ${I.tot} cards</p>`;
+  if (I.p.bad.length) h += `<p class="bad">Not recognised: ${I.p.bad.map(esc).join(', ')}</p>`;
+  if (I.p.nosim.length) h += `<p class="status">Not in the test engine yet (matchups can't run): ${I.p.nosim.map(esc).join(', ')}</p>`;
+  h += listHTML(all);
+  if (d.side) h += '<h3>Sideboard</h3><ul>' + d.side.split('\n').filter(x => x.trim()).map(x => `<li>${esc(x)}</li>`).join('') + '</ul>';
+  if (d.notes) h += '<h3>Notes</h3>' + d.notes.split('\n').filter(x => x.trim()).map(x => `<p>${inl(x)}</p>`).join('');
+  if (COMMON){ const st = deckStats(I.p.list), K = [['unit','Units'],['cheap','Cost 2 or less'],['instant','Instant-speed'],['draw','Draw'],['inter','Interaction'],['avgcost','Avg cost']];
+    const short = K.filter(([k]) => k === 'unit' || k === 'avgcost' ? st[k] > COMMON.ref[k][2] : st[k] < COMMON.ref[k][0]).map(([, l]) => l.toLowerCase());
+    h += `<h3>Compared with top tournament lists</h3><div class="tw"><table><tr><th></th>${K.map(([, l]) => `<th>${l}</th>`).join('')}</tr><tr><th>Top lists</th>${K.map(([k]) => `<td>${COMMON.ref[k][0]}–${COMMON.ref[k][2]}</td>`).join('')}</tr><tr><th>This deck</th>${K.map(([k]) => { const lo = k === 'unit' || k === 'avgcost' ? st[k] > COMMON.ref[k][2] : st[k] < COMMON.ref[k][0]; return `<td class="${lo ? 'low' : ''}">${st[k]}</td>`; }).join('')}</tr></table></div>`;
+    h += `<p class="status">${short.length ? 'Outside the usual range on: ' + short.join(', ') + '.' : 'Inside the usual range everywhere.'} Top lists from ${esc(COMMON.source)}.</p>`;
+    const st2 = staples(I); if (st2.length) h += `<p class="status">Played in many top lists in your colors, not in this deck: ${st2.map(([c, k]) => `${esc(c)} (${k} lists)`).join(', ')}.</p>`; }
+  h += '<div class="row" style="margin-top:12px"><button id="dedit">Edit</button><button id="dtest">Run matchups</button><button id="dlab">Open in tester</button><button id="ddel">Delete</button></div>';
+  $('dbody').innerHTML = h;
+  $('dedit').onclick = () => openForm(dSel);
+  $('dtest').onclick = () => { mSel = dSel; show('mu'); drawMu(); };
+  $('dlab').onclick = () => { $('list').value = d.text; check(); if (d.champ) { $('champ').value = d.champ; check(); } save(); show('lab'); };
+  $('ddel').onclick = () => { if (confirm('Delete "' + d.name + '" from this phone?')){ MYD.splice(dSel, 1); saveMy(); dSel = 0; drawMine(); drawMu(); } }; }
+function staples(I){ if (!COMMON || !COMMON.lists) return []; const doms = new Set(I.doms); const have = new Set(Object.keys(I.p.list));
+  return Object.entries(COMMON.lists).filter(([c]) => LIB[c] && !LIB[c].ban && !have.has(c) && (LIB[c].d || []).length && LIB[c].d.every(x => doms.has(x)) && LIB[c].t !== 'Legend')
+    .sort((a, b) => b[1] - a[1]).slice(0, 5); }
+function fillChamp(){ const p = parse($('flist').value), cs = champsIn(p.list), cur = $('fchamp').value;
+  $('fchamp').innerHTML = cs.length ? cs.map(c => `<option${c === cur ? ' selected' : ''}>${esc(c)}</option>`).join('') : '<option value="">No champion found in the list</option>';
+  const d = {text: $('flist').value, champ: $('fchamp').value}, I = deckInfo(d), msg = [];
+  msg.push(I.tot >= 40 ? `<span class="ok">${I.tot} cards</span>` : `<span class="bad">${I.tot} cards</span> (a main deck is 40 with the champion)`);
+  if (I.leg) msg.push('Legend: <b>' + esc(I.leg) + '</b>'); else msg.push('<span class="bad">No champion for a legend the app knows yet.</span>');
+  if (I.p.bad.length) msg.push(`<span class="bad">Not a card: ${I.p.bad.map(b => { const c = closest(b); return `"${esc(b)}"${c ? ` (did you mean ${esc(c)}?)` : ''}`; }).join(', ')}</span>`);
+  if (I.p.nosim.length) msg.push(`Not in the test engine yet: ${I.p.nosim.map(esc).join(', ')}`);
+  const over = Object.entries(I.p.list).filter(([, q]) => q > 3).map(([c]) => c); if (over.length) msg.push(`<span class="bad">More than 3 copies: ${over.map(esc).join(', ')}</span>`);
+  const banned = Object.keys(I.p.list).filter(c => LIB[c] && LIB[c].ban); if (banned.length) msg.push(`<span class="bad">Banned: ${banned.map(esc).join(', ')}</span>`);
+  $('fcheck').innerHTML = msg.join('<br>'); }
+function openForm(idx){ editIdx = idx; const d = idx >= 0 ? MYD[idx] : {name: '', text: '', champ: '', side: '', notes: ''};
+  $('fname').value = d.name; $('flist').value = d.text; $('fside').value = d.side || ''; $('fnotes').value = d.notes || ''; fillChamp(); if (d.champ) $('fchamp').value = d.champ; fillChamp();
+  $('myform').hidden = false; $('dbody').hidden = true; $('fname').focus(); }
+function closeForm(){ $('myform').hidden = true; $('dbody').hidden = false; }
+$('addbtn').addEventListener('click', () => openForm(-1));
+$('flist').addEventListener('input', fillChamp); $('fchamp').addEventListener('change', fillChamp);
+$('fcancel').addEventListener('click', closeForm);
+$('fsave').addEventListener('click', () => { const d = {name: $('fname').value.trim() || 'My deck', text: $('flist').value, champ: $('fchamp').value, side: $('fside').value, notes: $('fnotes').value};
+  if (!d.text.trim()) { $('fcheck').innerHTML = '<span class="bad">Paste a decklist first.</span>'; return; }
+  if (editIdx >= 0){ d.res = MYD[editIdx].text === d.text && MYD[editIdx].champ === d.champ ? MYD[editIdx].res : null; MYD[editIdx] = d; dSel = editIdx; } else { MYD.push(d); dSel = MYD.length - 1; }
+  saveMy(); closeForm(); drawMine(); drawMu(); });
+const lg = p => Math.log(Math.min(.98, Math.max(.02, p)) / (1 - Math.min(.98, Math.max(.02, p)))), sg = x => 1 / (1 + Math.exp(-x));
+function drawMu(){ chips('mpick', mSel, i => { mSel = i; drawMu(); });
+  if (!MYD.length){ $('mreal').innerHTML = ''; $('mbars').innerHTML = '<p class="status">Add a deck in My decks first.</p>'; $('mrun').disabled = true; return; }
+  mSel = Math.min(mSel, MYD.length - 1); const d = MYD[mSel], I = deckInfo(d); $('mrun').disabled = !I.ok || !ready || mRunning;
+  if (!I.ok){ $('mreal').innerHTML = ''; $('mbars').innerHTML = `<p class="bad">This deck can't be tested yet: ${!I.leg ? 'no champion for a legend the app knows' : I.p.nosim.length ? 'some cards aren\'t in the test engine' : I.p.bad.length ? 'some cards aren\'t recognised' : 'it has fewer than 40 cards'}.</p>`; return; }
+  const R = d.res; if (!R || !R.m){ $('mreal').innerHTML = ''; $('mbars').innerHTML = '<p class="status">Not tested yet. Tap Run matchups.</p>'; $('mnote').textContent = ''; return; }
+  const off = (CAL && CAL.offsets) || {}, sh = (CAL && CAL.shares) || {}; const ks = Object.keys(R.m);
+  const adj = k => off[I.leg] != null && off[DECKS[k].legend] != null ? sg(lg(R.m[k].w / R.m[k].n) + off[I.leg] - off[DECKS[k].legend]) : null;
+  let num = 0, den = 0; for (const k of ks){ const a = adj(k); const w = sh[DECKS[k].legend] || 1; if (a != null){ num += w * a; den += w; } }
+  const eng = Math.round(100 * ks.reduce((s, k) => s + R.m[k].w / R.m[k].n, 0) / ks.length);
+  $('mreal').innerHTML = `<div class="realrow"><div><div class="big">${den ? Math.round(100 * num / den) + '%' : '–'}</div><span class="status">realistic win rate vs the meta</span></div><div><div class="big" style="font-size:28px">${eng}%</div><span class="status">engine average</span></div></div>`;
+  $('mbars').innerHTML = '<h3>Vs each meta deck (real-world adjusted)</h3>' + ks.sort((a, b) => (adj(b) || 0) - (adj(a) || 0)).map(k => { const a = adj(k), p = Math.round(100 * (a != null ? a : R.m[k].w / R.m[k].n));
+    return `<div class="bar"><span>${esc(k)}</span><div class="t half" title="engine ${Math.round(100 * R.m[k].w / R.m[k].n)}% over ${R.m[k].n} games"><i style="width:${p}%;background:${p >= 55 ? 'var(--calm)' : p <= 45 ? 'var(--fury)' : 'var(--mute)'}"></i></div><b>${p}%</b></div>`; }).join('');
+  $('mnote').textContent = `Tested ${R.date}, ${R.m[ks[0]].n} games per matchup. The engine overrates unit decks and underrates control decks, so each matchup is shifted to match real tournament win rates (riftbound.gg). The realistic number weights each meta deck by how often it's played.${off[I.leg] == null ? ' This legend has no tournament data yet, so its numbers are unadjusted.' : ''}`; }
+$('mrun').addEventListener('click', async () => { if (mRunning || !ready) return; const d = MYD[mSel], I = deckInfo(d); if (!I.ok) return;
+  mRunning = true; $('mrun').disabled = true; $('mrun').textContent = 'Playing…'; const n = +$('mn').value;
+  const opps = Object.keys(DECKS), me = JSON.stringify({legend: I.leg, champ: d.champ, list: I.p.list}); const m = {}; let done = 0;
+  try { for (const [j, k] of opps.entries()){ let left = n, seed = 900 + 1000 * j; const od = JSON.stringify(DECKS[k]); m[k] = {w: 0, n: 0};
+      while (left > 0){ const c = Math.min(5, left); const out = JSON.parse(runBatch(me, od, c, seed++, 0)); left -= c; m[k].w += out.w; m[k].n += out.n; done += out.n;
+        $('mprog').style.width = (100 * done / (n * opps.length)) + '%'; await tick(); }
+      d.res = {m: Object.assign({}, m), date: new Date().toISOString().slice(0, 10)}; drawMu(); }
+    saveMy(); } catch (err) { $('mnote').innerHTML = `<span class="bad">Engine error: ${esc(String(err.message || err).slice(-200))}</span>`; }
+  mRunning = false; $('mrun').textContent = 'Run matchups'; drawMu(); });
+let COMMON = null;
+/* events: open Riot's official event finder around the player */
+const EVURL = (lat, lng) => `https://playriftbound.com/en-US/events?lat=${lat.toFixed(4)}&lng=${lng.toFixed(4)}&distance=${$('evdist').value}`;
+function evShow(lat, lng, where){ const u = EVURL(lat, lng); try { localStorage.setItem('rg-ev', JSON.stringify({lat, lng, where})); } catch(e) {}
+  $('evstat').textContent = 'Events around ' + where + ':';
+  $('evout').innerHTML = `<p><a class="go" style="display:inline-block;padding:10px 16px;border-radius:999px;text-decoration:none" href="${u}" target="_blank" rel="noopener">Open the event finder ↗</a></p><p class="status">Opens playriftbound.com with your area filled in. Scroll down there to load every event.</p>`; }
+$('evgo').addEventListener('click', () => { if (!navigator.geolocation){ $('evstat').textContent = 'This browser can\'t share your location. Type your ZIP or town instead.'; return; }
+  $('evstat').textContent = 'Finding you…';
+  navigator.geolocation.getCurrentPosition(p => evShow(p.coords.latitude, p.coords.longitude, 'your location'), () => { $('evstat').textContent = 'Location was blocked or unavailable. Type your ZIP or town instead.'; }, {timeout: 15000, maximumAge: 600000}); });
+$('evzipgo').addEventListener('click', async () => { const q = $('evzip').value.trim(); if (!q) return; $('evstat').textContent = 'Looking up ' + q + '…';
+  try { const r = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(q)); const j = await r.json();
+    if (j && j[0]) evShow(+j[0].lat, +j[0].lon, j[0].display_name.split(',').slice(0, 3).join(',')); else $('evstat').textContent = 'Couldn\'t find "' + q + '". Try a ZIP code or "town, state".'; }
+  catch(e) { $('evstat').textContent = 'Couldn\'t look that up (are you offline?). Try Use my location.'; } });
+$('evzip').addEventListener('keydown', e => { if (e.key === 'Enter') $('evzipgo').click(); });
+$('evdist').addEventListener('change', () => { try { const v = JSON.parse(localStorage.getItem('rg-ev') || 'null'); if (v) evShow(v.lat, v.lng, v.where); } catch(e) {} });
+try { const v = JSON.parse(localStorage.getItem('rg-ev') || 'null'); if (v) evShow(v.lat, v.lng, v.where); } catch(e) {}
+fetch('common.json').then(r => r.ok ? r.json() : null).then(c => { COMMON = c; if (LIB && Object.keys(LIB).length) drawMine(); }).catch(() => {});
+}
+
+</script>
+<script>if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));</script>
+</body></html>

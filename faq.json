@@ -1,0 +1,359 @@
+[
+ {
+  "t": "What happens when I attack?",
+  "k": [
+   "attack",
+   "attacking",
+   "attacker",
+   "fight",
+   "combat",
+   "battle"
+  ],
+  "a": "To attack, move your units to a battlefield where your opponent has units. A standard move exhausts the unit and can only be done on your own turn in your Main Phase (not during a showdown or combat): base to a battlefield or back, or battlefield to battlefield only with Ganking. That battlefield becomes contested and combat starts at the next cleanup.\n1) Combat showdown: you are the Attacker, their units there are Defenders. \"When I attack / defend\" abilities trigger (yours first). You get focus first, then you take turns playing [Action] and [Reaction] cards until both pass.\n2) Damage: each side adds up its units' Might (Assault adds Might to attackers, Shield to defenders; stunned units deal no combat damage). You assign your damage first, then they do: each unit must get lethal damage in full before the next one gets any, Tank units first, Backline units last. All damage lands at once.\n3) Result: units with lethal damage (at least 1 and at least their Might) die, then every unit heals. If any defender is still alive, your attackers are sent back to base. If only your units are left you take control of the battlefield, which is a conquer worth 1 point if you haven't scored it this turn.\nMoving into an empty enemy battlefield is a showdown instead of a combat: if your units are still there when it ends, you take it.",
+  "r": "CR 144, 459-466"
+ },
+ {
+  "t": "How do I score points?",
+  "k": [
+   "score",
+   "scoring",
+   "point",
+   "points",
+   "conquer",
+   "hold"
+  ],
+  "a": "Two ways, each 1 point: Conquer, which is taking control of a battlefield you haven't scored this turn, and Hold, which is still controlling a battlefield in your Beginning Phase. Each battlefield can score you only once per turn, by either method.\nThe final point is special: if you're 1 point from winning, a conquer only gives that last point if you've scored every battlefield this turn; otherwise you draw a card instead. Points from holding or from card effects don't have that limit.",
+  "r": "CR 467-472"
+ },
+ {
+  "t": "How do I win?",
+  "k": [
+   "win",
+   "winning",
+   "victory",
+   "won"
+  ],
+  "a": "In a 1v1 duel you win when you have at least 8 points and more points than your opponent. It's checked at every cleanup, so it happens the moment it's true. Remember the final-point rule: the conquer that would take you to 8 only counts if you've scored every battlefield this turn (otherwise you draw a card), but a hold or a card effect can give the 8th point normally. If your deck runs out you Burn Out, which gives your opponent a point.",
+  "r": "CR 194.2, 471-472, 485"
+ },
+ {
+  "t": "How does a game start?",
+  "k": [
+   "start",
+   "starting",
+   "setup",
+   "set up",
+   "opening",
+   "begin",
+   "first turn",
+   "how many cards",
+   "go first",
+   "second"
+  ],
+  "a": "Each player puts their legend in the legend zone and their Chosen Champion in the champion zone, sets aside their battlefields (in a duel one of each player's battlefields is used), and shuffles both decks. The first player is decided at random. Each player draws 4 cards, then mulligans in turn order. The player who goes second channels 1 extra rune in their first Channel Phase.",
+  "r": "CR 110-118, 485"
+ },
+ {
+  "t": "How does the mulligan work?",
+  "k": [
+   "mulligan",
+   "redraw",
+   "opening hand",
+   "starting hand"
+  ],
+  "a": "After drawing your opening 4, in turn order each player may set aside up to 2 cards, draw that many, then put the set-aside cards on the bottom of the Main Deck. Then the first player takes the first turn.",
+  "r": "CR 117-118"
+ },
+ {
+  "t": "What happens in a turn?",
+  "k": [
+   "turn",
+   "phase",
+   "phases",
+   "awaken",
+   "channel",
+   "beginning phase",
+   "end of turn"
+  ],
+  "a": "Awaken: ready everything you control. Beginning: start-of-turn effects (Temporary units die), then you score a Hold for every battlefield you control. Channel: put 2 runes from your rune deck onto the board. Draw: draw 1 (from an empty deck you Burn Out first). Main: your rune pool empties, then you play cards, use abilities and move units. Ending: end-of-turn effects, then all units heal, \"this turn\" effects end and rune pools empty.",
+  "r": "CR 315-317"
+ },
+ {
+  "t": "How do runes, energy and power work?",
+  "k": [
+   "rune",
+   "runes",
+   "energy",
+   "power",
+   "mana",
+   "pay for"
+  ],
+  "a": "Each rune can either be exhausted for 1 energy or recycled (put on the bottom of your rune deck) for 1 power of its color. Both can be done at Reaction speed when you need to pay. You channel 2 runes a turn. Recycling a rune for power takes it off the board, so power can also come from Seals or Gold, which keeps your runes. Your rune pool empties at the start of your Main Phase and at the end of each turn, so unspent energy and power are lost.",
+  "r": "CR 164, 167"
+ },
+ {
+  "t": "Can I play cards on my opponent's turn?",
+  "k": [
+   "opponent's turn",
+   "opponents turn",
+   "their turn",
+   "respond",
+   "response",
+   "instant",
+   "reaction",
+   "action",
+   "when can i play",
+   "timing"
+  ],
+  "a": "Normally you can only play cards in your own Main Phase, when nothing else is happening. [Action] cards can also be played during showdowns and combats, on anyone's turn. [Reaction] cards can do all that plus be played while something is on the chain, which means in response to another card. Hidden cards gain [Reaction] from the turn after you hide them.",
+  "r": "CR 301-317, 805-829"
+ },
+ {
+  "t": "If we both play cards, which happens first?",
+  "k": [
+   "chain",
+   "first",
+   "resolve",
+   "resolves",
+   "in response",
+   "stack",
+   "order"
+  ],
+  "a": "Cards and abilities go on the chain. While a chain exists only [Reaction] cards can be added. When everyone passes in a row, the newest item resolves first, then players can respond again before the next one. So the last thing played resolves first. Units, gear and resource-adding abilities resolve as soon as they finish being played and can't be responded to. If a spell's target is gone or no longer legal when it resolves, that part is skipped.",
+  "r": "CR 325-348, 358-359"
+ },
+ {
+  "t": "What happens when my unit dies?",
+  "k": [
+   "die",
+   "dies",
+   "dead",
+   "death",
+   "killed",
+   "kill",
+   "lethal"
+  ],
+  "a": "A unit has lethal damage when it has at least 1 damage and at least as much damage as its Might. At the next cleanup its Deathknell / \"when I die\" abilities trigger, then it dies and goes to its owner's trash. A token stops existing when it leaves the board. Damage that isn't lethal heals at the end of each turn and after each combat. If the death is replaced (for example the unit is recalled instead), its Deathknell doesn't trigger.",
+  "r": "CR 142, 323, 805-829"
+ },
+ {
+  "t": "When do units heal?",
+  "k": [
+   "heal",
+   "heals",
+   "healing",
+   "damage stay",
+   "damage go away"
+  ],
+  "a": "All units heal at the end of every turn and after each combat, so damage only matters if it's lethal right away (at least 1 and at least the unit's Might).",
+  "r": "CR 143.3.b"
+ },
+ {
+  "t": "What if both sides have the same Might?",
+  "k": [
+   "same might",
+   "equal",
+   "tie",
+   "tied",
+   "trade",
+   "both die"
+  ],
+  "a": "Combat damage is dealt at the same time, so units can trade. Each side deals damage equal to its total Might. With equal Might, each side can usually give the other lethal damage, so both die. If both sides are wiped out, nobody gets a result and nobody gains control there. If any defender survives, the attackers are sent back to base and there's no result. If only one side has units left, that side wins the combat and controls the battlefield.",
+  "r": "CR 465-466"
+ },
+ {
+  "t": "What is Hidden?",
+  "k": [
+   "hidden",
+   "hide",
+   "facedown",
+   "face down"
+  ],
+  "a": "On your turn, when nothing is happening, you can pay 1 power of any color to put a Hidden card facedown at a battlefield you control that has no facedown card. From your next turn it has [Reaction] and can be played for free while you still control that battlefield. A hidden unit or gear is played to that battlefield, and a hidden spell's targets must be there. If you lose control of the battlefield, the hidden card is removed. You can always just play it from your hand for its normal cost instead.",
+  "r": "CR 811"
+ },
+ {
+  "t": "What is a showdown?",
+  "k": [
+   "showdown",
+   "focus",
+   "contested",
+   "empty battlefield"
+  ],
+  "a": "A showdown starts when a battlefield becomes contested, for example when you move onto it. The player who contested it gets focus first. With focus you can play an [Action] or [Reaction] card, or pass; focus then goes to the other player. When everyone passes in a row it ends. In a combat it moves on to damage. In a showdown with no enemy units, the player still there takes control, which is a conquer if they haven't scored it this turn.",
+  "r": "CR 325-348"
+ },
+ {
+  "t": "What do Tank and Backline do?",
+  "k": [
+   "tank",
+   "backline",
+   "damage first",
+   "assign"
+  ],
+  "a": "When the enemy assigns combat damage, your Tank units must be given lethal damage before any of your non-Tank units. Backline units are given damage only after all your non-Backline units have lethal damage. Shield and Assault don't change this order; they only add Might.",
+  "r": "CR 815, 826, 465"
+ },
+ {
+  "t": "What do Shield and Assault do?",
+  "k": [
+   "shield",
+   "assault"
+  ],
+  "a": "Shield X gives the unit +X Might while it's defending. Assault X gives +X Might while it's attacking. A blank value means 1, and several values add up.",
+  "r": "CR 807, 814"
+ },
+ {
+  "t": "What does Stun do?",
+  "k": [
+   "stun",
+   "stunned"
+  ],
+  "a": "A stunned unit deals no combat damage (its Might counts as 0 for combat damage). It can still be damaged and killed.",
+  "r": "CR 423, 465"
+ },
+ {
+  "t": "What does Deflect do?",
+  "k": [
+   "deflect"
+  ],
+  "a": "Deflect X: your opponent's spells and abilities that choose this unit cost X more power, of any color, for each time they choose it. A blank value means 1, and values add up. It's a mandatory extra cost for them.",
+  "r": "CR 809"
+ },
+ {
+  "t": "What does Accelerate do?",
+  "k": [
+   "accelerate",
+   "enter ready",
+   "haste"
+  ],
+  "a": "When you play a unit with Accelerate you may pay 1 extra energy plus 1 power of one of its colors. If you do, it enters the board READY instead of exhausted, so it can act that turn. It doesn't \"become ready\", so ready-triggers don't fire. It can't be paid after the unit is on the board.",
+  "r": "CR 805"
+ },
+ {
+  "t": "Why can't my new unit move?",
+  "k": [
+   "exhausted",
+   "enter exhausted",
+   "can't move",
+   "summoning",
+   "ready",
+   "turn i play",
+   "play them",
+   "same turn",
+   "new unit",
+   "just played",
+   "right away"
+  ],
+  "a": "Units enter the board exhausted, unless they have Accelerate (paid) or an effect readies them. A standard move exhausts the unit, so an exhausted unit can't move until your next Awaken, when everything you control readies. Gear enters ready.",
+  "r": "CR 143.4, 144, 149.1, 805"
+ },
+ {
+  "t": "What happens if my deck runs out?",
+  "k": [
+   "empty deck",
+   "run out",
+   "burn out",
+   "burnout",
+   "no cards",
+   "deck out"
+  ],
+  "a": "If you have to draw (or take) more cards than your Main Deck has, you Burn Out: you draw what you can, shuffle your trash in as your new deck, your opponent gains 1 point, then you finish drawing. Look, reveal and predict never cause a burn out.",
+  "r": "CR 413.4, 431"
+ },
+ {
+  "t": "How does Equipment work?",
+  "k": [
+   "equip",
+   "equipment",
+   "weaponmaster",
+   "quick-draw",
+   "quick draw",
+   "attach"
+  ],
+  "a": "Equipment is gear that attaches to a unit you control. Equip [cost] is an ability: pay it to attach the gear (the unit is a target), and the unit is then \"equipped\". Quick-Draw Equipment has [Reaction] and attaches itself to one of your units when you play it. Weaponmaster: when you play that unit, you may attach one of your Equipment to it, paying its Equip cost minus 1 power, even outside normal timing. Equipment moves with its unit, and that doesn't count as a move. Gear left at a battlefield (for example after the unit it was attached to dies there) goes back to your base at the next cleanup.",
+  "r": "CR 818-821, 323"
+ },
+ {
+  "t": "How do moving and recalling work?",
+  "k": [
+   "move",
+   "moving",
+   "ganking",
+   "recall",
+   "back to base",
+   "retreat"
+  ],
+  "a": "A standard move (exhaust, your Main Phase, not during a showdown or combat) takes a unit from base to a battlefield or back. Ganking also allows battlefield to battlefield. You can move a group together if they go to the same place. Moves are instant and can't be responded to. A recall sends a unit to base without moving, so \"when I move\" doesn't trigger and it keeps its damage.",
+  "r": "CR 144, 445-458"
+ },
+ {
+  "t": "When do I lose control of a battlefield?",
+  "k": [
+   "control",
+   "lose control",
+   "uncontrolled",
+   "keep"
+  ],
+  "a": "You keep a battlefield while you have units there. If you have no units at a battlefield you control, you lose control of it at the next cleanup (when no showdown or combat is happening there). A unit with 0 Might can still take an empty battlefield and hold it, because Might doesn't decide control.",
+  "r": "CR 323, 469-470"
+ },
+ {
+  "t": "What does counter mean?",
+  "k": [
+   "counter",
+   "countered",
+   "cancel",
+   "negate"
+  ],
+  "a": "Countering cancels a card or ability on the chain. A countered card goes to the trash, its costs aren't refunded, and it never counts as played.",
+  "r": "CR 425"
+ },
+ {
+  "t": "What are the deck-building rules?",
+  "k": [
+   "deck building",
+   "deckbuilding",
+   "build a deck",
+   "deck size",
+   "how many copies",
+   "copies",
+   "legal deck"
+  ],
+  "a": "1 Champion Legend (its two colors are your Domain Identity), a Main Deck of at least 40 cards including your Chosen Champion, a Rune Deck of exactly 12 runes, and 3 battlefields for a duel (no two with the same name). Up to 3 copies of any card name, and at most 3 Signature cards in total. Every card must fit your legend's colors, and banned cards aren't allowed.",
+  "r": "CR 101-103"
+ },
+ {
+  "t": "Which cards are banned?",
+  "k": [
+   "banned",
+   "ban",
+   "ban list",
+   "bans"
+  ],
+  "a": "From Nov 23, 2026: Riven, Broken Blade; Zhonya's Hourglass; Stellacorn Herder; Nocturne, Horrifying; Rhasa the Sunderer; Brynhir Thundersong; Dazzling Aurora; Baited Hook. Battlefields: Emperor's Dais and Star Spring.",
+  "r": "Riot ban list, Nov 2026"
+ },
+ {
+  "t": "What are Flow and Repeat?",
+  "k": [
+   "flow",
+   "repeat",
+   "from my trash",
+   "from trash"
+  ],
+  "a": "Flow [cost]: you may play the spell from your trash for its Flow cost, with the same timing as normal; then it's banished instead of going back to the trash. Repeat [cost]: an optional extra cost; if you pay it, the spell's effect happens one more time, and you can make new choices for the repeat. It still counts as played once.",
+  "r": "CR 820, 829"
+ },
+ {
+  "t": "What do Legion, Temporary, Deathknell and Ambush mean?",
+  "k": [
+   "legion",
+   "temporary",
+   "deathknell",
+   "ambush"
+  ],
+  "a": "Legion: the text after it works only if you've already played another card this turn. Temporary: the unit dies at the start of your Beginning Phase, before scoring, so it can't score a hold. Deathknell: \"when I die\", which only triggers if it actually goes to the trash. Ambush: the unit can be played to a battlefield where you have units, and has [Reaction] there, so it can come down mid-combat.",
+  "r": "CR 805-829"
+ }
+]

@@ -1,0 +1,351 @@
+Legion Marauder|2|0|Unit|
+Trifarian Captain|2|0|Unit|
+Nidalee, Cat Form|3|1|Unit|
+Brutal Hunter|3|1|Unit|
+Kayle, Justified|3|0|Unit|
+Profiteer|4|0|Unit|
+Ambessa, The Wolf|4|0|Unit|
+Ambessa, Respected and Feared|5|0|Unit|
+Aurok General|5|0|Unit|
+Mordekaiser, Dominating|9|2|Unit|
+Punch First|1|2|Spell|
+Public Execution|2|1|Spell|F
+Guttural Roar|2|0|Spell|
+Lacerate|2|1|Spell|F
+Primordial Roar|4|2|Spell|
+Tactical Retreat|2|0|Spell|
+Portable Portal|2|0|Gear|D
+Disciple of Shen|2|0|Unit|H
+Mournful Witness|2|0|Unit|
+Affectionate Poro|3|0|Unit|
+Shen, Kinkou|3|1|Unit|
+Keeper of Law|5|1|Unit|
+Sacred Protector|4|1|Unit|
+Shen, Scourge of Shadows|5|1|Unit|
+Shen, Leader of the Kinkou Order|6|2|Unit|
+Alpha Wildclaw|6|2|Unit|
+Twilight Shroud|1|0|Spell|F
+Discipline|2|0|Spell|
+Shadow Dash|2|1|Spell|F
+One-Two Punch|3|0|Spell|
+Hunting Blind|4|2|Gear|D
+Hand Hammer|2|0|Gear|
+Invigorating Bloom|3|0|Gear|
+Dockside Lock-Up|6|2|Gear|D
+Unsung Hero|2|0|Unit|
+Staunch Survivor|2|1|Unit|
+Fiora, Peerless|3|1|Unit|
+Fiora, Worthy|3|0|Unit|
+Lucian, Merciless|3|0|Unit|
+Renekton, Brute|5|0|Unit|
+Yone, Blademaster|5|1|Unit|
+Corrupted Dragon|10|2|Unit|
+Seraphic Wyvern|7|0|Unit|
+Riposte|2|2|Spell|
+Strike Down|3|1|Spell|
+Sacred Shears|2|1|Gear|
+Doran's Blade|2|0|Gear|
+B.F. Sword|4|0|Gear|
+Boneshiver|3|0|Gear|
+Serene Ascetic|3|0|Unit|
+K'Sante, Dauntless|4|1|Unit|
+K'Sante, Courageous|5|0|Unit|
+Graves, Blasting Through|5|1|Unit|
+Armored Tusker|6|1|Unit|
+Ntofo Strikes|2|1|Spell|
+Life from Stone|1|0|Spell|
+Nazuman Ntofo|1|0|Gear|
+Blossoming Dreamroot|2|0|Gear|D
+Resplendent Rostrum|8|1|Gear|
+Bedeviling Stranger|2|0|Unit|H
+Tideturner|2|0|Unit|H
+Evelynn, Entrancing|2|0|Unit|H
+Black Market Broker|3|0|Unit|
+Gutter Guardian|3|0|Unit|H
+Evelynn, In Control|4|1|Unit|
+Momentary Companion|4|0|Unit|H
+Evelynn, Consuming|5|1|Unit|
+Elnuk Herd|6|0|Unit|H
+Ocean Drake|8|2|Unit|
+The Waters' Wage|1|0|Spell|H
+Switcheroo|2|2|Spell|H
+Last Caress|2|0|Spell|
+Wind and Ghosts|3|1|Spell|
+Demon Shade|3|0|Spell|H
+Bushwhack Trap|1|0|Gear|D
+Edge of Night|3|0|Gear|H
+Gust Monk|2|0|Unit|
+Shadow Fiend|2|0|Unit|
+Punching Poro|2|0|Unit|
+Fizz, Trickster|3|1|Unit|
+Kennen, Storm of Shuriken|3|1|Unit|F
+Zed, From the Shadows|4|1|Unit|
+Zed, Without a Sound|5|0|Unit|
+Ekko, Revolutionary|5|1|Unit|
+Death Mark|2|1|Spell|F
+Twilight Step|2|1|Spell|F
+Ruthless Strike|3|0|Spell|
+Consuming Curse|2|0|Spell|
+Perfect Execution|3|1|Spell|F
+Runeblade Anvil|1|0|Gear|
+Amateur Demolitionist|2|0|Unit|DB
+Lingering Animus|2|0|Unit|
+Shimmering Swimmer|3|0|Unit|
+Reckless Innovator|3|0|Unit|
+Akali, Deadly Weapon|3|0|Unit|
+Ziggs, Explosive|4|0|Unit|DB
+Riven, Deserter|5|1|Unit|
+Ziggs, Short-Fused|5|1|Unit|DB
+Explosimian|6|0|Unit|DB
+Hexplosive Minefield|2|1|Spell|B
+Satchel Charge|3|1|Spell|DB
+Scorched Earth|4|1|Spell|
+Siren's Song|2|0|Spell|
+Detonation Amplifier|4|1|Gear|D
+The Good Stuff|3|1|Gear|D
+Patched Porobot|2|0|Unit|
+Strigian Oracle|2|0|Unit|
+Orianna, Exquisite|3|0|Unit|
+Watchful Curator|3|1|Unit|
+Riptide Mage|4|1|Unit|
+Orianna, Mechanical Marvel|5|0|Unit|
+Spirit of the Forge|6|1|Unit|
+Command: Attack|1|1|Spell|D
+Battle Preparations|2|0|Spell|
+Improvised Projectile|3|1|Spell|
+Shock Blast|3|1|Spell|
+Resource Extractor|1|0|Gear|D
+The Ball|5|1|Gear|D
+Forsaken Baccai|2|0|Unit|
+Pit Rookie|2|0|Unit|
+Baccai Reaper|3|1|Unit|
+Coalesced Energy|4|2|Unit|
+Vi, Hotheaded|4|0|Unit|
+Renekton, Rage Fueled|6|0|Unit|
+Show of Strength|2|1|Spell|
+Rampage|3|0|Spell|
+Hold 'Em|3|0|Spell|
+Dominus|4|0|Spell|
+Lost to the Sands|3|1|Spell|
+Hunting Dog|3|0|Unit|
+Seraphine, Inspiring|4|1|Unit|
+Renata Glasc, Industrialist|4|1|Unit|
+Seraphine, Not Alone|5|1|Unit|R
+Mel, Newly Awakened|4|1|Unit|
+Darius, Executioner|6|1|Unit|
+Corina Veraza|7|1|Unit|R
+Encore|3|1|Spell|R
+High Note|3|0|Spell|
+Dredge Up|2|0|Spell|F
+Burn Away|3|1|Spell|
+Mesmerize|1|1|Spell|
+Rousing Display|5|0|Spell|R
+Raucous Anthem|7|1|Spell|
+Concert Poster|1|0|Gear|DR
+Plaza Guardian|10|0|Unit|
+Scrutinizing Scope|2|0|Gear|
+Gravity Field|5|1|Gear|D
+Honeyfruit|2|0|Gear|
+Tornado Warrior|3|0|Unit|H
+Rift Herald|8|1|Unit|
+Hidden Blade|2|1|Spell|H
+Seal of Strength|0|1|Gear|
+Seal of Unity|0|1|Gear|
+Seal of Focus|0|1|Gear|
+Seal of Rage|0|1|Gear|
+Seal of Discord|0|1|Gear|
+Rengar, Trophy Hunter|5|1|Unit|
+Taric, Protector|4|1|Unit|
+Fiora, Victorious|4|0|Unit|
+Trinity Force|4|0|Gear|
+Hexdrinker|2|0|Gear|
+Falling Star|2|2|Spell|
+Vex, Apathetic|4|0|Unit|
+Jinx, Rebel|5|1|Unit|
+Ezreal, Prodigy|3|1|Unit|
+Block|2|0|Spell|H
+Teemo, Scout|2|0|Unit|H
+Jayce, Man of Progress|4|0|Unit|
+Ornn, Forge God|6|0|Unit|
+Rabadon's Deathcrown|4|2|Gear|
+Forgefire Cape|4|2|Gear|
+Detonate|1|1|Spell|
+Brittle Steel|2|1|Spell|
+An Offer You Can't Refuse|2|0|Spell|
+Rengar, Unseen|4|1|Unit|
+Onslaught|4|0|Spell|
+Vanguard Captain|3|1|Unit|R
+Zilean, Time Mage|5|1|Unit|
+Soul Shepherd|5|0|Unit|
+Machine Evangel|5|1|Unit|R
+Irresistible Faefolk|2|0|Unit|
+Dockside Lock-Up|6|2|Gear|D
+Jayce, Hammer in Hand|4|1|Unit|
+Horns of the Dragon|6|0|Unit|
+Fallen Feline|2|1|Unit|
+Jarvan IV, Royal Heir|7|1|Unit|
+Ki Barrier|2|1|Spell|
+For Demacia!|3|0|Spell|
+Morgana, Vindictive|5|1|Unit|
+Bilgewater Tracker|3|0|Unit|
+Stoic Ferryman|4|0|Unit|
+Steadfast Outrider|4|0|Unit|
+Solari Sunhawk|3|0|Unit|
+Watchful Sentry|2|0|Unit|
+Plundering Poro|2|0|Unit|
+Lecturing Yordle|3|0|Unit|
+Noxus Hopeful|4|0|Unit|
+Ferrous Forerunner|6|1|Unit|
+Thousand-Tailed Watcher|7|1|Unit|
+The Empyrean|8|0|Unit|
+Hextech Ray|1|1|Spell|
+Stupefy|1|0|Spell|
+Bellows Breath|1|1|Spell|
+Smoke Screen|2|1|Spell|
+Temporal Breach|2|1|Spell|H
+Time Warp|10|4|Spell|
+Icathian Rain|7|3|Spell|
+Kai'Sa, Survivor|4|0|Unit|
+Traveling Merchant|2|0|Unit|
+Shadow Order Disciple|2|0|Unit|
+Tail-Cloaked Matriarch|4|0|Unit|
+Lightning Rush|1|0|Spell|F
+Ride the Wind|2|1|Spell|
+Star-Crossed|3|1|Spell|
+Rebuke|2|2|Spell|
+Hard Bargain|2|0|Spell|
+Gust|1|0|Spell|
+Carrion Dredger|2|0|Unit|
+Unyielding Spirit|1|1|Spell|
+Repulse|1|1|Spell|
+Hush|1|2|Spell|
+Wind Wall|3|2|Spell|
+Petricite Monument|2|0|Gear|
+Hexdrinker|2|0|Gear|
+Ruin Runner|6|0|Unit|
+Sandshifter|5|2|Unit|
+Cannon Barrage|2|1|Spell|
+Flurry of Blades|1|0|Spell|
+Esteemed Hierophant|5|0|Unit|
+Stalwart Goatherd|4|0|Unit|
+Thwonk!|2|0|Spell|
+Crumbling Sands|1|1|Spell|
+Wrath of the Freljord|9|0|Unit|
+Decree of Unity|2|1|Spell|
+Decree of Focus|1|0|Spell|
+Abandon|2|0|Spell|
+Firestorm|6|1|Spell|
+Existential Dread|1|1|Spell|
+Brittle Steel|2|1|Spell|
+Decree of Insight|1|0|Spell|
+Master Yi, Tempered|4|0|Unit|
+Akali, Silent|4|1|Unit|
+Charm|1|1|Spell|
+Defy|1|1|Spell|
+En Garde|1|0|Spell|
+First Mate|3|0|Unit|
+Lonely Poro|2|0|Unit|
+Sabotage|1|1|Spell|
+Scuttle Crab|2|0|Unit|
+Astral Heron|7|0|Unit|
+Back Off|3|0|Spell|H
+Boots of Swiftness|3|0|Gear|
+Clockwork Keeper|2|0|Unit|
+Janna, Savior|3|1|Unit|
+Meditation|2|0|Spell|
+Mutated Mouser|2|0|Unit|
+Not So Fast|2|1|Spell|
+Pyke, Returned|3|0|Unit|H
+Vilemaw|8|2|Unit|
+Jarvan IV, Martial Paragon|4|1|Unit|
+Demacian Standard|2|1|Gear|D
+Pillaged Armory|1|0|Gear|D
+Overloaded Traveler|2|0|Unit|
+Skystrike Squadron|5|0|Unit|
+Dauntless Vanguard|4|1|Unit|
+Laurent Bladekeeper|3|0|Unit|
+Sea Monkey|2|0|Unit|
+Buhru Captain|3|1|Unit|
+Veteran Poro|2|0|Unit|
+Combat Chef|5|0|Unit|
+Warmog's Armor|1|0|Gear|
+Hunter's Machete|3|0|Gear|
+Fae Dragon|7|1|Unit|
+Direwing|7|0|Unit|
+Dragonsoul Sage|2|0|Unit|
+Sett, Kingpin|4|1|Unit|
+Sett, Brawler|5|1|Unit|
+Masa, Crashing Thunder|4|0|Unit|
+Leona, Determined|4|1|Unit|
+Repair Specialist|3|0|Unit|
+Sneaky Zeebles|2|0|Unit|
+Bonds of Strength|2|0|Spell|
+Challenge|2|1|Spell|
+Primal Strength|4|1|Spell|
+Sacrifice|1|0|Spell|
+Shepherd's Heirloom|2|0|Gear|
+Kinkou Initiate|3|0|Unit|
+Noxian Emissary|2|0|Unit|
+Kennen, Keeper of Balance|3|0|Unit|H
+Vi, Peacekeeper|5|1|Unit|
+Harnessed Dragon|8|2|Unit|
+Elder Dragon|12|4|Unit|
+Akshan, Mischievous|4|0|Unit|
+Poppy, Paragon|5|0|Unit|
+Baited Hook|3|0|Gear|
+Black Rose Dignitary|3|0|Unit|
+Catalyst of Aeons|4|0|Spell|
+Clairvoyance|7|0|Spell|
+Darius, Trifarian|5|1|Unit|
+Dazzling Aurora|9|2|Gear|
+Deathgrip|2|0|Spell|
+Defiant Dance|1|1|Spell|
+Flash|2|0|Spell|
+Garbage Grabber|2|0|Gear|
+Glasc Mixologist|5|1|Unit|
+Grim Apothecary|3|0|Unit|
+Guardian Angel|2|0|Gear|
+Gutter Palace|4|0|Gear|
+Honest Broker|2|0|Unit|
+Inferna|2|0|Unit|
+Irelia, Fervent|5|0|Unit|
+Jayce, Brilliant Inventor|6|1|Unit|
+Karthus, Eternal|3|1|Unit|
+Last Rites|3|0|Gear|
+LeBlanc, Fragmented|3|1|Unit|
+Mirror Image|3|2|Spell|
+Mobilize|2|0|Spell|
+Pakaa Cub|3|0|Unit|H
+Platewyrm Egg|3|0|Gear|
+Promising Future|5|1|Spell|
+Pyke, Dockside Butcher|3|0|Unit|H
+Rhasa the Sunderer|10|1|Unit|
+Rocket Barrage|4|1|Spell|
+Ruined Rex|6|1|Unit|
+Salvage|2|1|Spell|
+Soaring Scout|2|0|Unit|
+Sprite Burst|5|0|Spell|
+Sprite Fountain|2|1|Gear|
+Stellacorn Herder|4|0|Unit|
+Thrill of the Hunt|2|1|Spell|
+Up from the Deep|3|0|Spell|
+Zhonya's Hourglass|2|0|Gear|H
+Aspiring Engineer|3|1|Unit|
+Brutalizer|2|0|Gear|
+Cloth Armor|1|0|Gear|
+Mask of Foresight|2|0|Gear|
+Pit Crew|3|0|Unit|
+Poro Snax|1|1|Gear|
+Sterak's Gage|3|2|Gear|
+Ornn, Blacksmith|5|1|Unit|
+Blitzcrank, Impassive|5|1|Unit|
+Long Sword|2|1|Gear|
+Mischievous Marai|2|0|Unit|
+Shuriken Flip|1|1|Spell|
+Arise!|6|1|Spell|
+Doran's Shield|1|0|Gear|
+Eye of the Herald|1|0|Gear|
+Guards!|3|0|Spell|
+Soul Sword|1|0|Gear|
+Azir, Sovereign|4|0|Unit|
+Desert's Call|2|0|Spell|

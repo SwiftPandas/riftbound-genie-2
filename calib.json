@@ -1,0 +1,39 @@
+{
+ "offsets": {
+  "Ambessa": -1.0093749999999988,
+  "Fiora": -1.321874999999998,
+  "Ziggs": -1.462499999999998,
+  "K'Sante": -1.606249999999998,
+  "Jarvan": -0.45624999999999954,
+  "Orianna": -0.2000000000000005,
+  "Kennen": 0.8000000000000015,
+  "Irelia": 0.46874999999999956,
+  "LeBlanc": 0.5687500000000008,
+  "Jayce": 1.8718750000000017,
+  "Rengar": -0.5812499999999986,
+  "Vex": 0.14999999999999997,
+  "Master Yi": -0.4468749999999998,
+  "Azir": 0.5500000000000004,
+  "Akali": -0.10312500000000029,
+  "Ornn": -0.13750000000000048
+ },
+ "shares": {
+  "Kennen": 10.81,
+  "Jayce": 2.68,
+  "Master Yi": 4.12,
+  "Rengar": 3.7,
+  "Vex": 3.03,
+  "LeBlanc": 2.1,
+  "Irelia": 2.61,
+  "Fiora": 0.64,
+  "Jarvan": 0.65,
+  "Orianna": 1.31,
+  "Ziggs": 0.44,
+  "K'Sante": 0.42,
+  "Azir": 1.84,
+  "Akali": 2.52,
+  "Ornn": 1.24,
+  "Ambessa": 0.15
+ },
+ "note": "Logit offsets fitted Nov 21 2026 (16 decks incl. Azir, Akali, Ornn; 200 games per matchup) so each legend's engine win rate against the real-weighted field matches riftbound.gg tournament win rates (since Radiance). Ambessa has no real data: offset = average of Fiora, Ziggs, K'Sante, Jarvan, Orianna."
+}

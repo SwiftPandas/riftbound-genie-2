@@ -31,7 +31,11 @@
    "win",
    "winning",
    "victory",
-   "won"
+   "won",
+   "points to win",
+   "need to win",
+   "how many points",
+   "win the game"
   ],
   "a": "In a 1v1 duel you win when you have at least 8 points and more points than your opponent. It's checked at every cleanup, so it happens the moment it's true. Remember the final-point rule: the conquer that would take you to 8 only counts if you've scored every battlefield this turn (otherwise you draw a card), but a hold or a card effect can give the 8th point normally. If your deck runs out you Burn Out, which gives your opponent a point.",
   "r": "CR 194.2, 471-472, 485"
@@ -48,7 +52,10 @@
    "first turn",
    "how many cards",
    "go first",
-   "second"
+   "second",
+   "who goes first",
+   "goes first",
+   "first player"
   ],
   "a": "Each player puts their legend in the legend zone and their Chosen Champion in the champion zone, sets aside their battlefields (in a duel one of each player's battlefields is used), and shuffles both decks. The first player is decided at random. Each player draws 4 cards, then mulligans in turn order. The player who goes second channels 1 extra rune in their first Channel Phase.",
   "r": "CR 110-118, 485"
@@ -73,7 +80,12 @@
    "awaken",
    "channel",
    "beginning phase",
-   "end of turn"
+   "end of turn",
+   "start of my turn",
+   "start of turn",
+   "start of your turn",
+   "beginning of my turn",
+   "my turn"
   ],
   "a": "Awaken: ready everything you control. Beginning: start-of-turn effects (Temporary units die), then you score a Hold for every battlefield you control. Channel: put 2 runes from your rune deck onto the board. Draw: draw 1 (from an empty deck you Burn Out first). Main: your rune pool empties, then you play cards, use abilities and move units. Ending: end-of-turn effects, then all units heal, \"this turn\" effects end and rune pools empty.",
   "r": "CR 315-317"
@@ -103,7 +115,10 @@
    "reaction",
    "action",
    "when can i play",
-   "timing"
+   "timing",
+   "other players turn",
+   "other player s turn",
+   "on their turn"
   ],
   "a": "Normally you can only play cards in your own Main Phase, when nothing else is happening. [Action] cards can also be played during showdowns and combats, on anyone's turn. [Reaction] cards can do all that plus be played while something is on the chain, which means in response to another card. Hidden cards gain [Reaction] from the turn after you hide them.",
   "r": "CR 301-317, 805-829"
@@ -198,7 +213,10 @@
   "t": "What do Shield and Assault do?",
   "k": [
    "shield",
-   "assault"
+   "assault",
+   "shield work",
+   "does shield",
+   "does assault"
   ],
   "a": "Shield X gives the unit +X Might while it's defending. Assault X gives +X Might while it's attacking. A blank value means 1, and several values add up.",
   "r": "CR 807, 814"
@@ -243,7 +261,11 @@
    "same turn",
    "new unit",
    "just played",
-   "right away"
+   "right away",
+   "can't move",
+   "cant move",
+   "unit move",
+   "just played"
   ],
   "a": "Units enter the board exhausted, unless they have Accelerate (paid) or an effect readies them. A standard move exhausts the unit, so an exhausted unit can't move until your next Awaken, when everything you control readies. Gear enters ready.",
   "r": "CR 143.4, 144, 149.1, 805"
@@ -256,6 +278,13 @@
    "burn out",
    "burnout",
    "no cards",
+   "deck out",
+   "deck runs out",
+   "run out",
+   "runs out",
+   "out of cards",
+   "no cards left",
+   "empty deck",
    "deck out"
   ],
   "a": "If you have to draw (or take) more cards than your Main Deck has, you Burn Out: you draw what you can, shuffle your trash in as your new deck, your opponent gains 1 point, then you finish drawing. Look, reveal and predict never cause a burn out.",
@@ -282,7 +311,11 @@
    "ganking",
    "recall",
    "back to base",
-   "retreat"
+   "retreat",
+   "battlefield to battlefield",
+   "one battlefield to another",
+   "move from",
+   "move units"
   ],
   "a": "A standard move (exhaust, your Main Phase, not during a showdown or combat) takes a unit from base to a battlefield or back. Ganking also allows battlefield to battlefield. You can move a group together if they go to the same place. Moves are instant and can't be responded to. A recall sends a unit to base without moving, so \"when I move\" doesn't trigger and it keeps its damage.",
   "r": "CR 144, 445-458"
@@ -351,7 +384,8 @@
    "legion",
    "temporary",
    "deathknell",
-   "ambush"
+   "ambush",
+   "temporary unit"
   ],
   "a": "Legion: the text after it works only if you've already played another card this turn. Temporary: the unit dies at the start of your Beginning Phase, before scoring, so it can't score a hold. Deathknell: \"when I die\", which only triggers if it actually goes to the trash. Ambush: the unit can be played to a battlefield where you have units, and has [Reaction] there, so it can come down mid-combat.",
   "r": "CR 805-829"
@@ -375,5 +409,182 @@
    "464",
    "466"
   ]
+ },
+ {
+  "t": "What happens when a Bomb blows up?",
+  "k": [
+   "bomb",
+   "bombs",
+   "blow up",
+   "blows up",
+   "blew up",
+   "explode",
+   "explodes",
+   "exploding",
+   "detonate",
+   "satchel charge",
+   "explosimian",
+   "hexplosive minefield",
+   "short fused",
+   "detonation amplifier",
+   "bomb token"
+  ],
+  "a": "A Bomb is a gear token. Like every token it costs nothing, has no color, and simply stops existing when it leaves the board (it never goes to your trash). It has Deploy, so it is always put at a battlefield, never in your base.\nA Bomb \"blows up\" when it dies. That happens when your opponent holds that battlefield (Deploy: when an opponent holds here, kill this; that's at the start of their turn when they score it), or when a card kills it: one of yours (Ziggs, Explosive when he defends, Hexplosive Minefield, Brittle Steel, Detonation Amplifier, Mordekaiser) or one of theirs (any \"kill a gear\" effect).\nWhen it dies, its Deathknell happens: you deal 2 damage to ONE enemy unit at that battlefield (you choose which; to choose a unit with Deflect you must pay one power of any color), and ALL your other Bombs at that same battlefield die too. Each of those has its own Deathknell, so each deals another 2 to an enemy unit there (the same one or a different one). Three Bombs at one battlefield = three hits of 2.\nBonuses: with Ziggs, Short-Fused on the board each Bomb hit deals 3. Detonation Amplifier at that battlefield, or Karthus, Eternal on your board, makes each Bomb's Deathknell happen an extra time (two hits per Bomb).\nIf there are no enemy units at that battlefield, the hits do nothing, but the Bombs are still gone. Damage that reaches a unit's Might kills it; other damage heals at the end of the turn.",
+  "r": "Bomb token text, Deploy, Deathknell, 182-187 tokens, 428"
+ },
+ {
+  "t": "What is a Gold token?",
+  "k": [
+   "gold",
+   "gold token",
+   "gold gear",
+   "treasure",
+   "use gold",
+   "gold on",
+   "spend gold",
+   "my gold",
+   "gold give",
+   "does gold",
+   "gold energy",
+   "gold power"
+  ],
+  "a": "Gold is a gear token in your base. Its ability: kill this, exhaust it: add 1 power of any color. It works at Reaction speed, so you can use it on any turn, even while paying for a card, and adding resources can't be responded to.\nGold gives power, not energy. Many cards make Gold \"exhausted\": exhausted Gold can't be used until it readies at the start of your next turn. Gold made ready can be used right away.\nUsing Gold for power instead of recycling a rune keeps your runes on the board, so spend Gold first. It's a token, so once used it's gone.",
+  "r": "Gold token text, 182-187, 357.1.a"
+ },
+ {
+  "t": "What are tokens (Recruit, Sprite, Mech, Sand Soldier, Bird)?",
+  "k": [
+   "token",
+   "tokens",
+   "recruit",
+   "sprite",
+   "mech",
+   "sand soldier",
+   "bird",
+   "tentacle",
+   "reflection",
+   "shadow clone"
+  ],
+  "a": "Tokens are units or gear made by card effects. The player who made it controls it. Tokens cost 0, have no color, and stop existing the moment they leave the board: a token returned to hand, killed or banished is just gone.\nThe common ones: Recruit (1 Might), Bird (1 Might with Deflect), Tentacle (1 Might), Sand Soldier (2 Might), Mech (3 Might), Sprite (3 Might with Temporary: it dies at the start of your next turn before you score), Reflection (copies another unit), Shadow Clone (0 Might; when it attacks you may banish a unit from your trash to give it Assault 4), plus the Gold and Bomb gear tokens.\nApart from that a token unit is a normal unit: it enters exhausted unless the card says ready, it can attack, defend, hold and conquer, and it can be buffed or equipped.",
+  "r": "182-187"
+ },
+ {
+  "t": "What does Buff do?",
+  "k": [
+   "buff",
+   "buffed",
+   "buffs",
+   "buff counter",
+   "spend a buff"
+  ],
+  "a": "To buff a unit, put a buff counter on it: it has +1 Might for as long as it stays on the board. A unit can have only one buff at a time; buffing a unit that already has one does nothing (it is still a legal choice).\nSome cards let you spend a buff as a cost: remove a buff counter from one of your own units. Buffs are lost when the unit leaves the board.",
+  "r": "426, 702-705"
+ },
+ {
+  "t": "What are Empower and Empowered?",
+  "k": [
+   "empower",
+   "empowered",
+   "disempower",
+   "empowering"
+  ],
+  "a": "Empower [cost] is an ability: pay the cost to give the card the Empowered status. You can only use it if it isn't already Empowered (Kayle, Justified is the exception: she can be Empowered up to three times).\nText after [Empowered] only works while the card is Empowered, and \"when I become Empowered\" triggers at that moment. Some cards Empower or disempower other things (Profiteer, Ambessa's legend). A unit that leaves the board loses its Empowered status.",
+  "r": "441, 827-828, 727"
+ },
+ {
+  "t": "How do XP, Hunt and Level work?",
+  "k": [
+   "xp",
+   "experience",
+   "hunt",
+   "level",
+   "levels"
+  ],
+  "a": "XP is a resource you, the player, collect (it isn't on a card and has no limit). Hunt X: when that unit conquers or holds, you gain X XP. Several Hunt numbers add up.\nLevel N: the text after it works while you have N or more XP, and switches off as soon as you drop below N (some cards spend XP). Level counts the XP of the card's current controller.",
+  "r": "728-733, 823-824"
+ },
+ {
+  "t": "What do Deploy and Ganking mean?",
+  "k": [
+   "deploy",
+   "ganking",
+   "gank",
+   "battlefield to battlefield"
+  ],
+  "a": "Deploy (on gear): you can only play it to a battlefield, never your base. When an opponent holds that battlefield (scores it at the start of their turn), the gear is killed. Demacian Standard, The Ball, The Good Stuff, Pillaged Armory and Bombs all have Deploy.\nGanking (on units): the unit's normal move can also go straight from one battlefield to another. Without Ganking a unit must go battlefield → base → battlefield.",
+  "r": "Deploy reminder text, 810, 144"
+ },
+ {
+  "t": "What do Vision, Predict and Burn mean?",
+  "k": [
+   "vision",
+   "predict",
+   "burn",
+   "mill",
+   "look at the top"
+  ],
+  "a": "Predict: look at the top card of your Main Deck and choose whether to recycle it (put it on the bottom). Predict X: do that X times. Predicting never makes you burn out.\nVision: when you play this card, Predict once.\nBurn X: that player puts the top X cards of their Main Deck into their trash. If the deck runs out while doing it, they burn out (see \"What happens if my deck runs out?\").",
+  "r": "436, 817, Burn"
+ },
+ {
+  "t": "What do Show Off, Mighty, Unique, Disarm and Legion mean?",
+  "k": [
+   "show off",
+   "mighty",
+   "unique",
+   "disarm",
+   "legion"
+  ],
+  "a": "Show Off [something]: as you play the card, you may reveal a matching card from your hand or pick a matching friendly card on the board, to get the card's bonus.\nMighty: a unit is Mighty while it has 5 or more Might. \"Becomes Mighty\" means it just went from under 5 to 5 or more.\nUnique: your deck can have only 1 card with that name.\nDisarm X: when this unit attacks, give an enemy unit at that battlefield -X Might this turn.\nLegion: the text after it works only if you've already played another card this turn.",
+  "r": "708-711, 812, 825, Show Off, Disarm"
+ },
+ {
+  "t": "What is the difference between kill, discard, banish and recycle?",
+  "k": [
+   "kill",
+   "discard",
+   "banish",
+   "banished",
+   "recycle",
+   "recycled",
+   "trash",
+   "graveyard",
+   "exile",
+   "banish trigger",
+   "does banish",
+   "banishing",
+   "is banish",
+   "banish deathknell"
+  ],
+  "a": "Kill: a unit or gear goes from the board to its owner's trash, and its Deathknell triggers. Lethal damage kills too.\nDiscard: a card goes from your hand to your trash.\nBanish: the card goes to the banishment zone. That is not a kill, so Deathknell does not trigger, and cards in banishment are out of the game unless a card brings them back.\nRecycle: put cards on the BOTTOM of their deck (several at once in random order). Tokens that would go to any of these places just stop existing.",
+  "r": "416, 427-428"
+ },
+ {
+  "t": "How do my legend and chosen champion work?",
+  "k": [
+   "legend",
+   "legend ability",
+   "champion zone",
+   "chosen champion",
+   "champion"
+  ],
+  "a": "Your legend stays in its own zone the whole game. It isn't a unit, can't be attacked, killed or moved, and gives you abilities (usually by exhausting it; it readies at the start of your turn).\nYour chosen champion starts in the champion zone, and you can play it from there whenever you could play it from your hand, paying its cost. Once it leaves the champion zone it can't normally go back. Other copies with the same name count as your chosen champion too.",
+  "r": "108.3.c, 150-159"
+ },
+ {
+  "t": "Can I use runes, Gold or Seals at any time?",
+  "k": [
+   "add",
+   "seal",
+   "seals",
+   "rune pool",
+   "pay power",
+   "mana",
+   "pay with runes",
+   "use runes",
+   "runes on"
+  ],
+  "a": "Abilities that add energy or power (exhausting or recycling a rune, Gold, Seals) work at Reaction speed and can't be responded to. You can use them in the middle of paying for a card.\nUnspent energy and power empty from your pool at the end of each turn, so only add what you need.",
+  "r": "164, 357.1.a, 317"
  }
 ]

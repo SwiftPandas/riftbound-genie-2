@@ -1215,6 +1215,9 @@ class Game {
         this.draw(p);
       }
     }
+    if ($T($ga(u, "stole", null))) {
+      this.return_stolen(u);
+    }
     n = u.name;
     dbl = (((loc !== "base") && $in("Detonation Amplifier", $gi($gi($gi(this.bf, loc), "gear"), u.owner))) ? 2 : 1);
     if ((() => { for (const x of $it(p.units)) { if ((x.name === "Karthus, Eternal")) return true; } return false; })()) {
@@ -1327,6 +1330,37 @@ class Game {
     this.place_unit(i, c, "base");
     this.say(`  ${$str(p.name)}'s Last Rites plays ${$str(c)} from the trash`);
   }
+  return_stolen(u) {
+    let p, o, g_, done, x, st;
+    p = $gi(this.P, u.owner);
+    o = $gi(this.P, (1 - u.owner));
+    for (g_ of $it($ga(u, "stole", []))) {
+      done = false;
+      for (x of $it(p.units)) {
+        if ($in(g_, x.eq)) {
+          $cm(x.eq, "remove", g_);
+          done = true;
+          break;
+        }
+      }
+      if ((!$T(done) && $in(g_, p.loose_eq))) {
+        $cm(p.loose_eq, "remove", g_);
+        done = true;
+      }
+      if ((!$T(done) && $in(g_, p.base_gear))) {
+        $cm(p.base_gear, "remove", g_);
+        done = true;
+      }
+      if ($T(done)) {
+        $cm(($in("eq", $cm(CARDS, "get", g_, new PyDict([]))) ? o.loose_eq : o.base_gear), "append", g_);
+        st = $ga(this, "stolen", []);
+        if ($in([u.owner, (1 - u.owner), g_], st)) {
+          $cm(st, "remove", [u.owner, (1 - u.owner), g_]);
+        }
+      }
+    }
+    u.stole = [];
+  }
   bounce(u) {
     let p, e;
     p = $gi(this.P, u.owner);
@@ -1336,6 +1370,9 @@ class Game {
     $cm(p.units, "remove", u);
     for (e of $it(u.eq)) {
       $cm(p.loose_eq, "append", e);
+    }
+    if ($T($ga(u, "stole", null))) {
+      this.return_stolen(u);
     }
     if (!$T(u.token)) {
       $cm(p.hand, "append", u.name);
@@ -1580,6 +1617,9 @@ class Game {
       dmg = (dmg + 1);
     }
     mult = ($in("Detonation Amplifier", $gi($gi(b, "gear"), i)) ? 2 : 1);
+    if ((() => { for (const x of $it(p.units)) { if ((x.name === "Karthus, Eternal")) return true; } return false; })()) {
+      mult = (mult + 1);
+    }
     for (_ of $it($range($mul(k, mult)))) {
       if ($T($gi(FEAT16, "cards"))) {
         live = (() => { const $r = []; for (const e of $it(this.units_at((1 - i), bfi))) { if (!$T(e.protect)) { $r.push(e); } } return $r; })();
@@ -3644,13 +3684,17 @@ class Game {
           e_ = $max(x.eq, $kw({"key": ((e) => $gi($gi($gi(CARDS, e), "eq"), "bonus"))}));
           this.pay(p, 0, 2, c);
           $cm(x.eq, "remove", e_);
-          $cm(u.eq, "append", e_);
+          $cm(p.loose_eq, "append", e_);
           this.say(`  ${$str(p.name)}'s Akshan takes ${$str(e_)}`);
+          u.stole = $add($ga(u, "stole", []), [e_]);
+          this.stolen = $add($ga(this, "stolen", []), [[i, (1 - i), e_]]);
         } else if ($T(o_.base_gear)) {
           this.pay(p, 0, 2, c);
           g_ = $cm(o_.base_gear, "pop");
-          $cm(o_.trash, "append", g_);
+          $cm(p.base_gear, "append", g_);
           this.gear_left(o_, g_);
+          u.stole = $add($ga(u, "stole", []), [g_]);
+          this.stolen = $add($ga(this, "stolen", []), [[i, (1 - i), g_]]);
         }
       }
       if (($T($gi(AZ, 0)) && (c === "Aspiring Engineer"))) {

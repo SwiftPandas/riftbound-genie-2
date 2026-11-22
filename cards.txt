@@ -927,7 +927,7 @@ Wielder of Water|3|0|Unit|
 Wild Claw|7|1|Spell|
 Wildclaw Shaman|4|0|Unit|
 Wily Newtfish|4|0|Unit|
-Windsinger|2|0|Unit|
+Windsinger|2|0|Unit|H
 Wizened Elder|4|0|Unit|
 World Atlas|3|0|Gear|
 Wraith of Echoes|6|1|Unit|

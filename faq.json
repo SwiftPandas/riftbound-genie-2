@@ -885,5 +885,25 @@
    "can't move from here to base"
   ],
   "a": "Vilemaw's Lair: units can't move from there to base (they can still move to the other battlefield, and being recalled or returned to hand isn't a move). Forbidding Waste: while a unit there is defending alone (no other friendly units there), it has -2 Might."
+ },
+ {
+  "t": "What does Ezreal, Prodigy do when played?",
+  "k": [
+   "ezreal, prodigy",
+   "ezreal prodigy",
+   "discard 1, then draw 2"
+  ],
+  "a": "Ezreal, Prodigy: when you play him, discard 1 card first, then draw 2 (so you choose the discard before seeing the new cards). The discarded card goes to your trash. Also, optional additional costs you pay (like Accelerate or Repeat) cost [1] or [A] less while he's in play."
+ },
+ {
+  "t": "Does Abandon put the countered spell in the trash?",
+  "k": [
+   "does abandon",
+   "abandon put",
+   "abandon return",
+   "countered spell goes back",
+   "return it to its owner's hand"
+  ],
+  "a": "No. Abandon ([Reaction], 2 Energy) counters a spell and returns it to its owner's hand instead of their trash, so they can play it again later (paying again). Then you Predict: look at the top card of your Main Deck and you may recycle it."
  }
 ]

@@ -832,5 +832,58 @@
    "plays it to any battlefield"
   ],
   "a": "No. Thrill of the Hunt ([Reaction]) banishes your unit, then you play it to any battlefield without paying its cost. It comes back as a new object: damage, buffs, 'this turn' bonuses and attached equipment are gone, and 'when you play me' effects happen again. It is played, not moved, so 'when I move' effects don't trigger. During a showdown it joins that fight."
+ },
+ {
+  "t": "How does Sett, The Boss's legend work?",
+  "k": [
+   "sett",
+   "the boss",
+   "sett legend",
+   "spend its buff",
+   "recall it exhausted"
+  ],
+  "a": "Sett, The Boss: when a buffed unit you control would die, you may pay [A] (1 Power) and exhaust Sett to spend that unit's buff and recall it exhausted instead: it goes to your base, damage gone, and the buff is used up. Recalling isn't a move, so 'when I move' effects don't trigger. Sett readies whenever you conquer, so you can do it again that turn. An unbuffed unit can't be saved this way."
+ },
+ {
+  "t": "How does Rek'Sai, Void Burrower's legend work?",
+  "k": [
+   "rek'sai",
+   "reksai",
+   "void burrower",
+   "reveal the top 2",
+   "undertitan"
+  ],
+  "a": "Rek'Sai, Void Burrower: when you conquer, you may exhaust her to reveal the top 2 cards of your Main Deck. You may play one of them (you still pay its cost); recycle the rest to the bottom. Undertitan adds [2] Energy as it's revealed, which helps pay for it (or for the other card)."
+ },
+ {
+  "t": "When does Ezreal, Prodigal Explorer draw?",
+  "k": [
+   "ezreal",
+   "prodigal explorer",
+   "ezreal legend",
+   "chosen enemy units",
+   "chosen enemies twice"
+  ],
+  "a": "Ezreal, Prodigal Explorer: [Exhaust]: [Reaction] Draw 1, usable only once you've chosen enemy units and/or gear twice this turn with spells or unit abilities. Two removal spells on enemy units, or a spell plus a unit's ability that chooses an enemy, both count. It's an exhaust ability, so once until he readies."
+ },
+ {
+  "t": "What does Imperial Decree do?",
+  "k": [
+   "imperial decree",
+   "when any unit takes damage",
+   "takes damage this turn, kill it"
+  ],
+  "a": "Imperial Decree ([Action]): for the rest of this turn, any unit that takes damage dies, however small the damage and whoever controls it. 1 damage from a spell or 1 point of combat damage is lethal. It cuts both ways in a fight: every unit that's assigned any combat damage dies."
+ },
+ {
+  "t": "What do Vilemaw's Lair and Forbidding Waste do?",
+  "k": [
+   "vilemaw's lair",
+   "vilemaws lair",
+   "forbidding waste",
+   "defending alone",
+   "can't move from here to base"
+  ],
+  "a": "Vilemaw's Lair: units can't move from there to base (they can still move to the other battlefield, and being recalled or returned to hand isn't a move). Forbidding Waste: while a unit there is defending alone (no other friendly units there), it has -2 Might."
  }
 ]

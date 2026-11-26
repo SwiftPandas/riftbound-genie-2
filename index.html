@@ -86,6 +86,31 @@ button:disabled{opacity:.5;cursor:default}
 .sc .half{position:relative;min-height:330px;padding:18px 0 74px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;
  background:linear-gradient(180deg,color-mix(in srgb,var(--pc) 48%,var(--panel)),color-mix(in srgb,var(--pc) 22%,var(--panel)));outline-offset:-4px}
 .sc .half.top{transform:rotate(180deg)}
+/* Nov 26: rift arena look. Each half is a player's side of the rift: their colour glows up from the seam in the middle,
+   a nexus sigil sits behind the score and its arc fills toward victory; the middle bar is the rift itself. */
+.sc .half{background:
+  radial-gradient(120% 70% at 50% 0%,color-mix(in srgb,var(--pc) 62%,transparent) 0%,color-mix(in srgb,var(--pc) 18%,transparent) 55%,transparent 80%),
+  repeating-linear-gradient(135deg,color-mix(in srgb,var(--ink) 4%,transparent) 0 2px,transparent 2px 14px),
+  linear-gradient(180deg,color-mix(in srgb,var(--pc) 26%,var(--panel)),color-mix(in srgb,var(--pc) 8%,var(--bg)));overflow:hidden}
+.sc .sigil{position:absolute;left:50%;top:47%;width:min(82vw,300px);aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none;z-index:0;color:var(--pc)}
+#v-score.fs .sc .sigil{width:min(70vmin,340px)}
+.sc .sigil svg{width:100%;height:100%;overflow:visible}
+.sc .sigil .spin{transform-origin:100px 100px;animation:sc-spin 90s linear infinite}
+.sc .sigil .arc{transition:stroke-dashoffset .45s cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 0 6px currentColor)}
+.sc .sigil .notch{fill:color-mix(in srgb,var(--ink) 18%,transparent);transition:fill .3s}
+.sc .sigil .notch.on{fill:currentColor;filter:drop-shadow(0 0 4px currentColor)}
+.sc .half.act .sigil .spin{animation-duration:30s}
+.sc .half.win .sigil{opacity:0}
+@keyframes sc-spin{to{transform:rotate(360deg)}}
+.sc .half>.pname,.sc .half>.num,.sc .half>.of,.sc .half>.pips,.sc .half>.games,.sc .half>.bfs,.sc .half>.fp{position:relative;z-index:1}
+.sc .num{text-shadow:0 2px 18px color-mix(in srgb,var(--pc) 55%,transparent)}
+.sc .minus,.sc .sw{z-index:2}.sc .won{z-index:3}.sc .ask{z-index:6}
+.sc .mid{position:relative;background:linear-gradient(180deg,color-mix(in srgb,var(--bg) 92%,#000),color-mix(in srgb,var(--bg) 80%,#000));border-block:0}
+.sc .mid::before,.sc .mid::after{content:"";position:absolute;left:0;right:0;height:10px;pointer-events:none;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 10' preserveAspectRatio='none'%3E%3Cpath d='M0 5 L9 3 L17 7 L26 2 L34 6 L45 4 L52 8 L63 3 L71 6 L80 2 L88 7 L97 4 L106 6 L113 3 L120 5' fill='none' stroke='%23e8b44c' stroke-width='1.4'/%3E%3C/svg%3E") center/100% 100% no-repeat;
+  filter:drop-shadow(0 0 4px #e8b44c)}
+.sc .mid::before{top:-5px}.sc .mid::after{bottom:-5px;transform:scaleX(-1)}
+.sc .mid>*{position:relative;z-index:1}
 #v-score.fs .sc{grid-template-rows:1fr auto 1fr}#v-score.fs .sc .half{min-height:0;padding:8px 0 70px}
 .sc .half:active .num{transform:scale(1.06)}
 .sc .num{font:700 clamp(84px,24vw,150px)/1 Unbounded,sans-serif;font-variant-numeric:tabular-nums;color:var(--ink);transition:transform .08s}
@@ -158,7 +183,7 @@ button:disabled{opacity:.5;cursor:default}
   <h1>Riftbound Genie 2.0</h1>
   <div class="runes" aria-hidden="true"><i style="background:var(--fury)"></i><i style="background:var(--calm)"></i><i style="background:var(--mind)"></i><i style="background:var(--body)"></i><i style="background:var(--chaos)"></i><i style="background:var(--order)"></i></div>
   <p class="sub">Your Riftbound decks, matchups, rules answers and the meta, in your pocket. Works offline. Rules: Core Rules 1.5 (Radiance update, October 2026).</p>
-  <p class="sub" id="appver" style="font-size:12px;opacity:.7">App version: Nov 25, 8:57 PM (it updates itself when you open it online)</p>
+  <p class="sub" id="appver" style="font-size:12px;opacity:.7">App version: Nov 26, 12:47 AM (it updates itself when you open it online)</p>
   
   <div class="tabs" role="tablist">
     <button role="tab" aria-selected="true" data-v="mine">My decks</button>
@@ -303,6 +328,7 @@ button:disabled{opacity:.5;cursor:default}
   <div class="stop" style="max-width:560px;margin:0 auto 10px"><h2>Score counter</h2><p class="status">Put the phone between you. Tap your half to add a point, or tap a battlefield to score it there. The top half faces your opponent.</p></div>
   <div class="sc" id="sc">
     <div class="half top" data-p="1" role="button" tabindex="0" aria-label="Add a point for player 2">
+      <div class="sigil" aria-hidden="true"><svg viewBox="0 0 200 200"><g class="spin"><circle cx="100" cy="100" r="97" fill="none" stroke="currentColor" stroke-opacity=".35" stroke-width=".8" stroke-dasharray="1.6 4.2"/><circle cx="100" cy="100" r="91" fill="none" stroke="currentColor" stroke-opacity=".22" stroke-width=".6"/><path d="M100 22 L107 38 L100 33 L93 38 Z M100 178 L107 162 L100 167 L93 162 Z M22 100 L38 93 L33 100 L38 107 Z M178 100 L162 93 L167 100 L162 107 Z" fill="currentColor" fill-opacity=".3"/></g><circle cx="100" cy="100" r="82" fill="none" stroke="currentColor" stroke-opacity=".14" stroke-width="5"/><circle class="arc" id="sarc1" cx="100" cy="100" r="82" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" transform="rotate(-90 100 100)" stroke-dasharray="515.2" stroke-dashoffset="515.2"/><g id="snotch1"></g><path d="M100 48 L145 100 L100 152 L55 100 Z" fill="none" stroke="currentColor" stroke-opacity=".12" stroke-width=".8"/></svg></div>
       <input class="pname" id="pn1" value="Opponent" aria-label="Player 2 name" maxlength="20">
       <div class="num" id="ps1">0</div><div class="of" id="pof1">of 8</div>
       <div class="pips" id="pp1"></div><div class="games" id="pg1"></div>
@@ -316,6 +342,7 @@ button:disabled{opacity:.5;cursor:default}
       <div class="midrow"><button id="scundo" aria-label="Undo last change">↶ Undo</button><button id="scfirst">Who goes first?</button><span class="turn" id="scgame">Game 1</span><button id="screset">New match</button><button id="scfs">Full screen</button></div>
     </div>
     <div class="half" data-p="0" role="button" tabindex="0" aria-label="Add a point for player 1">
+      <div class="sigil" aria-hidden="true"><svg viewBox="0 0 200 200"><g class="spin"><circle cx="100" cy="100" r="97" fill="none" stroke="currentColor" stroke-opacity=".35" stroke-width=".8" stroke-dasharray="1.6 4.2"/><circle cx="100" cy="100" r="91" fill="none" stroke="currentColor" stroke-opacity=".22" stroke-width=".6"/><path d="M100 22 L107 38 L100 33 L93 38 Z M100 178 L107 162 L100 167 L93 162 Z M22 100 L38 93 L33 100 L38 107 Z M178 100 L162 93 L167 100 L162 107 Z" fill="currentColor" fill-opacity=".3"/></g><circle cx="100" cy="100" r="82" fill="none" stroke="currentColor" stroke-opacity=".14" stroke-width="5"/><circle class="arc" id="sarc0" cx="100" cy="100" r="82" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" transform="rotate(-90 100 100)" stroke-dasharray="515.2" stroke-dashoffset="515.2"/><g id="snotch0"></g><path d="M100 48 L145 100 L100 152 L55 100 Z" fill="none" stroke="currentColor" stroke-opacity=".12" stroke-width=".8"/></svg></div>
       <input class="pname" id="pn0" value="Me" aria-label="Player 1 name" maxlength="20">
       <div class="num" id="ps0">0</div><div class="of" id="pof0">of 8</div>
       <div class="pips" id="pp0"></div><div class="games" id="pg0"></div>
@@ -391,6 +418,9 @@ function draw(){
   for (const i of [0, 1]){
     const h = document.querySelector(`.sc .half[data-p="${i}"]`); h.style.setProperty('--pc', COLS[S.col[i]]);
     $('ps' + i).textContent = S.p[i]; $('pof' + i).textContent = `of ${S.target}`;
+    { const L = 515.2, f = Math.min(1, S.p[i] / S.target); $('sarc' + i).setAttribute('stroke-dashoffset', (L * (1 - f)).toFixed(1));
+      $('snotch' + i).innerHTML = Array.from({length: S.target}, (_, k) => { const a = (k + 1) / S.target * 2 * Math.PI - Math.PI / 2, x = 100 + 82 * Math.cos(a), y = 100 + 82 * Math.sin(a);
+        return `<rect class="notch${k < S.p[i] ? ' on' : ''}" x="${(x - 3.2).toFixed(1)}" y="${(y - 3.2).toFixed(1)}" width="6.4" height="6.4" transform="rotate(45 ${x.toFixed(1)} ${y.toFixed(1)})"/>`; }).join(''); }
     if (document.activeElement !== $('pn' + i)) $('pn' + i).value = S.names[i];
     $('pp' + i).innerHTML = Array.from({length: S.target}, (_, k) => `<i class="${k < S.p[i] ? 'on' : ''}"></i>`).join('');
     $('pg' + i).innerHTML = S.bo > 1 ? 'Games ' + Array.from({length: need()}, (_, k) => `<b class="${k < S.g[i] ? 'on' : ''}"></b>`).join('') : '';

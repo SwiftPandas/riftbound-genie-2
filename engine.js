@@ -295,7 +295,7 @@ function $delattr(o, n){ delete o[n]; }
 
 Object.assign($VFS, VFSDATA);
 
-var CARDS, line, n, e, p, t, f, MIGHT, KW, GEN, EQKW, GSP, STYLES, LEARN, v, c, k, tok, _OFF, DRAGONS, LEG, BFS, REMOVAL, PUMP, REACT_PUMP, SHOWDOWN_PUMP, FLOW, AMBUSH, SMART, FUZZFIX, SIMUL, DIEWATCH, META25, SAVE_PUMP, CHAIN, W2, PB2, PB, MECHS, ORI, PLAYER_AI, REACT_VAL, DMG_KINDS, UNTARGETABLE, UNTARGETABLE_COMBAT, CHAOS, FURY, PROTECT, SAVE_FOR_REACT, LOOK_PLANS, LOOK_MARGIN, LOOK_CARDS, LOOK_DEPTH, LOOK_SH, LOOK_KEYS, AI36, RESP, FEAT, BLUFF, READ, COLOR, PRO_ERR, BLUFF_COST, RES2, RES_K, DISC_FIX, EOT, EOT_DISC, V1B, VFLOW, SATCHEL, MOVES, AI29, AI29B, AUDIT, ANVIL_AI, ANVIL_OLD, RIP2, TIDE2, HAB, RULES33, RULES34, GAPS31, MEZB, AI20, AI30, TRICK_W, CONQ_V, TRICK_MARGIN, DEBUFF, DRAW_SPELL, BOMB_KILLERS, COMBAT_OK, PRE_PUMP, AZ, QUICKDRAW, BANISH, FEAT16, SETUP, _k, _v, DOMAINS, RUNE_SPLIT;
+var CARDS, line, n, e, p, t, f, MIGHT, KW, GEN, EQKW, GSP, STYLES, LEARN, v, c, k, tok, _OFF, DRAGONS, LEG, BFS, REMOVAL, PUMP, REACT_PUMP, SHOWDOWN_PUMP, FLOW, AMBUSH, SMART, FUZZFIX, SIMUL, DIEWATCH, META25, SAVE_PUMP, CHAIN, BFO, BF_ONLY_MORE, VGATE, KAI, W2, PB2, PB, MECHS, ORI, PLAYER_AI, REACT_VAL, DMG_KINDS, UNTARGETABLE, UNTARGETABLE_COMBAT, CHAOS, FURY, PROTECT, SAVE_FOR_REACT, LOOK_PLANS, LOOK_MARGIN, LOOK_CARDS, LOOK_DEPTH, LOOK_SH, LOOK_KEYS, AI36, RESP, FEAT, BLUFF, READ, COLOR, PRO_ERR, BLUFF_COST, RES2, RES_K, DISC_FIX, EOT, EOT_DISC, V1B, VFLOW, SATCHEL, MOVES, AI29, AI29B, AUDIT, ANVIL_AI, ANVIL_OLD, RIP2, TIDE2, HAB, RULES33, RULES34, GAPS31, MEZB, AI20, AI30, TRICK_W, CONQ_V, TRICK_MARGIN, DEBUFF, DRAW_SPELL, BOMB_KILLERS, COMBAT_OK, PRE_PUMP, AZ, QUICKDRAW, BANISH, FEAT16, SETUP, _k, _v, DOMAINS, RUNE_SPLIT;
 CARDS = new PyDict([]);
 for (line of $it($open("/home/claude/sim/cards.txt"))) {
   line = $cm(line, "strip");
@@ -373,6 +373,10 @@ DIEWATCH = [true];
 META25 = [true];
 SAVE_PUMP = new PyDict([["Discipline", 2], ["Battle Preparations", 2], ["Defiant Dance", 2]]);
 CHAIN = [true];
+BFO = [true];
+BF_ONLY_MORE = new PySet(["Shuriken Flip", "Dockside Lock-Up", "Arcane Shift", "Blast of Power", "Blood Money", "Death from Below", "Disintegrate", "Drag Under", "Falling Comet", "Incinerate", "Monster Harpoon", "Parallel Convergence", "Siphoning Strike", "Sky Splitter", "Smite", "Soul Harvest", "Sudden Storm", "Void Seeker", "Wages of Pain", "Piercing Light"]);
+VGATE = [true];
+KAI = [true];
 W2 = [true];
 PB2 = [true];
 PB = [true];
@@ -1209,10 +1213,13 @@ class Game {
     let wild;
     this.sync(p);
     wild = $max(0, (p.P - $sum($cm(p.rc, "values"))));
+    if (($T($gi(KAI, 0)) && (p.leg === "kaisa") && ($cm($cm(CARDS, "get", c, new PyDict([])), "get", "t") !== "Spell"))) {
+      wild = $max(0, $sub(wild, p.spellP));
+    }
     return $min(p.P, ((() => { let $s = 0; for (const d of $it(this.cdoms(p, c))) { $s += $num($cm(p.rc, "get", d, 0)); } return $s; })() + wild));
   }
   pay(p, e, pw, c = null) {
-    let wild, doms, _, cand, d, col;
+    let wild, k_, pw_left, doms, _, cand, d, col;
     if (((c != null) && ($cm($cm(CARDS, "get", c, new PyDict([])), "get", "t") === "Spell"))) {
       if (!$eq($ga(p, "spl_tn", null), this.turn_no)) {
         p.spl_tn = this.turn_no;
@@ -1224,45 +1231,57 @@ class Game {
     if ((pw > 0)) {
       this.sync(p);
       wild = $max(0, (p.P - $sum($cm(p.rc, "values"))));
+      if (($T($gi(KAI, 0)) && (p.leg === "kaisa") && (p.spellP > 0))) {
+        if (($cm($cm(CARDS, "get", c, new PyDict([])), "get", "t") === "Spell")) {
+          k_ = $min(pw, p.spellP, wild);
+          { const $t13 = p; $t13.spellP = $sub($t13.spellP, k_); }
+          wild = $sub(wild, k_);
+          pw_left = $sub(pw, k_);
+          { const $t14 = p; $t14.P = $sub($t14.P, k_); }
+          pw = pw_left;
+        } else {
+          wild = $max(0, $sub(wild, p.spellP));
+        }
+      }
       doms = this.cdoms(p, c);
       for (_ of $it($range(pw))) {
         cand = (() => { const $r = []; for (const d of $it(doms)) { if (($cm(p.rc, "get", d, 0) > 0)) { $r.push(d); } } return $r; })();
         if (((wild > 0) && (!$T(cand) || $T($gi(AI36, 0))))) {
           wild = (wild - 1);
           if (($T($gi(RULES34, 0)) && (p.gold > 0))) {
-            { const $t13 = p; $t13.gold = ($t13.gold - 1); }
+            { const $t15 = p; $t15.gold = ($t15.gold - 1); }
           }
           continue;
         }
         if ($T(cand)) {
           d = $max(cand, $kw({"key": ((k) => $gi(p.rc, k))}));
-          { const $t14 = p.rc, $t15 = d; $si($t14, $t15, ($gi($t14, $t15) - 1)); }
+          { const $t16 = p.rc, $t17 = d; $si($t16, $t17, ($gi($t16, $t17) - 1)); }
           $cm(p.rdeck, "append", d);
-          { const $t16 = p; $t16.runes = ($t16.runes - 1); }
+          { const $t18 = p; $t18.runes = ($t18.runes - 1); }
         } else if ((wild > 0)) {
           wild = (wild - 1);
           if (($T($gi(RULES34, 0)) && (p.gold > 0))) {
-            { const $t17 = p; $t17.gold = ($t17.gold - 1); }
+            { const $t19 = p; $t19.gold = ($t19.gold - 1); }
           }
         } else {
           col = (($T(p.rc) && $T($sum($cm(p.rc, "values")))) ? $max(p.rc, $kw({"key": ((k) => $gi(p.rc, k))})) : null);
           if ($T(col)) {
-            { const $t18 = p.rc, $t19 = col; $si($t18, $t19, ($gi($t18, $t19) - 1)); }
+            { const $t20 = p.rc, $t21 = col; $si($t20, $t21, ($gi($t20, $t21) - 1)); }
             $cm(p.rdeck, "append", col);
-            { const $t20 = p; $t20.runes = ($t20.runes - 1); }
+            { const $t22 = p; $t22.runes = ($t22.runes - 1); }
           }
         }
       }
-      { const $t21 = p; $t21.P = $sub($t21.P, pw); }
+      { const $t23 = p; $t23.P = $sub($t23.P, pw); }
     }
     if ((p.runes < 0)) {
       p.runes = 0;
     }
   }
   gain_gold(p) {
-    { const $t22 = p; $t22.gold = ($t22.gold + 1); }
+    { const $t24 = p; $t24.gold = ($t24.gold + 1); }
     if ($T($gi(RULES34, 0))) {
-      { const $t23 = p; $t23.P = ($t23.P + 1); }
+      { const $t25 = p; $t25.P = ($t25.P + 1); }
     }
   }
   ecost(p, c) {
@@ -1358,7 +1377,7 @@ class Game {
       this.pay(p, 0, 1);
       p.settex = true;
       u.buffed = false;
-      { const $t24 = u; $t24.base = ($t24.base - 1); }
+      { const $t26 = u; $t26.base = ($t26.base - 1); }
       u._loc = "base";
       u.exhausted = true;
       u.dmg = 0;
@@ -1369,7 +1388,7 @@ class Game {
     if (($in("Sacrifice", p.hand) && !$T(u.token) && !$in(g_reason, ["combat", "(Temporary)"]) && (u.might(this) >= 5) && this.can_pay(p, 1, 0, "Sacrifice"))) {
       if ($T(this.cast(p, "Sacrifice", 1, 0))) {
         this.draw(p, 2);
-        { const $t25 = p; $t25.pending = ($t25.pending + 1); }
+        { const $t27 = p; $t27.pending = ($t27.pending + 1); }
         if (this.v) this.say(`  ${$str(p.name)} Sacrifices ${$str(u.name)} in response`);
       }
     }
@@ -1405,7 +1424,7 @@ class Game {
         if (($gi(ef, 0) === "dk_draw")) {
           this.draw(p, $gi(ef, 1));
         } else if (($gi(ef, 0) === "dk_chan")) {
-          { const $t26 = p; $t26.pending = $iadd($t26.pending, $gi(ef, 1)); }
+          { const $t28 = p; $t28.pending = $iadd($t28.pending, $gi(ef, 1)); }
         } else if (($gi(ef, 0) === "dk_gold")) {
           this.gain_gold(p);
         } else if (($gi(ef, 0) === "dk_tok")) {
@@ -1441,7 +1460,7 @@ class Game {
         this.draw(p);
       }
       if ($in(n, ["Black Rose Dignitary", "Soaring Scout"])) {
-        { const $t27 = p; $t27.pending = ($t27.pending + 1); }
+        { const $t29 = p; $t29.pending = ($t29.pending + 1); }
       }
       if ((n === "Honest Broker")) {
         this.gain_gold(p);
@@ -1504,7 +1523,7 @@ class Game {
     if ($T($gi(META25, 0))) {
       for (x of $it(p.units)) {
         if ((x.name === "Ember Monk")) {
-          { const $t28 = x; $t28.temp = ($t28.temp + 2); }
+          { const $t30 = x; $t30.temp = ($t30.temp + 2); }
         }
       }
     }
@@ -1615,7 +1634,7 @@ class Game {
         $ssl(me.deck, 0, 0, top3);
       } else if ((kind === "khazix")) {
         if (($in(u, me.units) && ($len(here) === 1))) {
-          { const $t29 = u; $t29.temp = ($t29.temp + 2); }
+          { const $t31 = u; $t31.temp = ($t31.temp + 2); }
           me.xp = ($ga(me, "xp", 0) + 2);
         }
       }
@@ -1633,7 +1652,7 @@ class Game {
     watch = (() => { const $r = []; for (const x of $it(p.units)) { if (!$in(x, this.doomed)) { $r.push(x); } } return $r; })();
     for (x of $it(watch)) {
       if ((x.name === "Spectral Centaur")) {
-        { const $t30 = x; $t30.temp = ($t30.temp + 2); }
+        { const $t32 = x; $t32.temp = ($t32.temp + 2); }
       } else if ((x.name === "Vicious Snapjaws")) {
         p.xp = ($ga(p, "xp", 0) + 1);
       } else if (((x.name === "Demacian Illuminators") && !$eq($ga(x, "ill_batch", (-1)), this.death_batch))) {
@@ -1783,15 +1802,15 @@ class Game {
     u = new Unit(name_, i, this.turn_no);
     u._loc = loc;
     if ((($gi(this.P, i).leg === "rengar") && $T($gi(this.P, i).units))) {
-      { const $t31 = $max($gi(this.P, i).units, $kw({"key": ((x) => x.might(this))})); $t31.temp = ($t31.temp + 1); }
+      { const $t33 = $max($gi(this.P, i).units, $kw({"key": ((x) => x.might(this))})); $t33.temp = ($t33.temp + 1); }
     }
     if ((loc !== "base")) {
       $gi(this.P, i).bfplay_tn = this.turn_no;
     }
     if (($T($gi(PB2, 0)) && (loc !== "base") && ($gi($gi(this.bf, loc), "name") === "Valley of Idols") && ($gi(this.P, i).E >= 1) && ($cm($gi(CARDS, name_), "get", "m", 0) >= 2))) {
-      { const $t32 = $gi(this.P, i); $t32.E = ($t32.E - 1); }
+      { const $t34 = $gi(this.P, i); $t34.E = ($t34.E - 1); }
       u.buffed = true;
-      { const $t33 = u; $t33.base = ($t33.base + 1); }
+      { const $t35 = u; $t35.base = ($t35.base + 1); }
     }
     u.exhausted = !$T($gi($gi(CARDS, name_), "ready"));
     if ((name_ === "Lingering Animus")) {
@@ -1819,7 +1838,7 @@ class Game {
     if ($T($gi(RULES34, 0))) {
       for (r of $it(p.units)) {
         if (((r.name === "Riven, Deserter") && (r !== u))) {
-          { const $t34 = r; $t34.temp = ($t34.temp + 1); }
+          { const $t36 = r; $t36.temp = ($t36.temp + 1); }
         }
       }
     }
@@ -1882,10 +1901,10 @@ class Game {
       } else if ((n === "Stellacorn Herder")) {
         this.draw(p);
       } else if (((n === "Akali, Silent") && (to !== "base"))) {
-        { const $t35 = u; $t35.temp = ($t35.temp + 2); }
+        { const $t37 = u; $t37.temp = ($t37.temp + 2); }
       } else if (((n === "Shadow Order Disciple") && (to !== "base") && ($len(p.deck) > 8))) {
         this.burn(p, 1);
-        { const $t36 = u; $t36.temp = ($t36.temp + 1); }
+        { const $t38 = u; $t38.temp = ($t38.temp + 1); }
       } else if (((n === "The Ball") && (to !== "base"))) {
         foes = this.units_at((1 - i), to);
         if ($T(foes)) {
@@ -1911,15 +1930,18 @@ class Game {
     if (((u.name === "Ambessa, The Wolf") && $T(u.pw))) {
       return;
     }
+    if (($T($gi(VGATE, 0)) && (n > 0) && (src !== "Bomb") && $in(u.loc, [0, 1]) && ($gi($gi(this.bf, u.loc), "name") === "Void Gate"))) {
+      n = (n + 1);
+    }
     if ($T(u.ward)) {
       w = $min(u.ward, n);
-      { const $t37 = u; $t37.ward = $sub($t37.ward, w); }
+      { const $t39 = u; $t39.ward = $sub($t39.ward, w); }
       n = $sub(n, w);
     }
     if (($T($gi(RULES34, 0)) && (n <= 0))) {
       return;
     }
-    { const $t38 = u; $t38.dmg = $iadd($t38.dmg, n); }
+    { const $t40 = u; $t40.dmg = $iadd($t40.dmg, n); }
     lethal_ = ((((() => { for (const x of $it($gi(this.P, (1 - u.owner)).units)) { if ((x.name === "Elder Dragon")) return true; } return false; })() || $eq($ga(this, "decree_tn", (-1)), this.turn_no)) && (n > 0)) || ((u.dmg >= u.might(this)) && ((u.dmg > 0) || !$T($gi(RULES34, 0)))));
     if ($T(lethal_)) {
       if ((batch != null)) {
@@ -1965,7 +1987,7 @@ class Game {
       $si($gi(b, "bombs"), i, 0);
     } else {
       k = $min(n, $gi($gi(b, "bombs"), i));
-      { const $t39 = $gi(b, "bombs"), $t40 = i; $si($t39, $t40, $sub($gi($t39, $t40), k)); }
+      { const $t41 = $gi(b, "bombs"), $t42 = i; $si($t41, $t42, $sub($gi($t41, $t42), k)); }
     }
     p = $gi(this.P, i);
     p.died_tn = this.turn_no;
@@ -2005,6 +2027,7 @@ class Game {
     if ((card === "Rocket Barrage")) {
       foes = (() => { const $r = []; for (const u of $it($gi(this.P, (1 - i)).units)) { if (((u.loc === "base") && !$T(u.protect))) { $r.push(u); } } return $r; })();
     } else if ($in(card, ["Ruthless Strike", "Consuming Curse", "Shock Blast", "Lost to the Sands", "Wind and Ghosts", "Hidden Blade", "Improvised Projectile", "Scorched Earth", "Hextech Ray", "Bellows Breath", "Rebuke", "Gust"])) {
+    } else if (($T($gi(BFO, 0)) && $in(card, BF_ONLY_MORE))) {
     } else {
       foes = (() => { const $r = []; for (const u of $it($gi(this.P, (1 - i)).units)) { if (!$T(u.protect)) { $r.push(u); } } return $r; })();
     }
@@ -2022,6 +2045,9 @@ class Game {
     killable = (u) => {
       let m, mm, mine, v, g, best, bonus, b, bi, here;
       m = (u.might(this) - u.dmg);
+      if (($T($gi(VGATE, 0)) && $in(kind, DMG_KINDS) && $in(u.loc, [0, 1]) && ($gi($gi(this.bf, u.loc), "name") === "Void Gate"))) {
+        m = (m - 1);
+      }
       if ((kind === "kill_le")) {
         mm = (u.might(this) - (((card === "Lacerate") && $T($gi(FEAT16, "cards"))) ? u.emp : 0));
         return ((mm <= val) || ((card === "Wind and Ghosts") && (u.loc !== "base") && !$T(u.token)));
@@ -2181,7 +2207,7 @@ class Game {
     }
     if (((card !== "Dockside Lock-Up") && $in("Riposte", foe.hand) && this.can_pay(foe, 2, 2, "Riposte") && (target.might(this) >= 3))) {
       if ($T(this.cast(foe, "Riposte", 2, 2))) {
-        { const $t41 = target; $t41.temp = $iadd($t41.temp, $gi($gi(CARDS, card), "e")); }
+        { const $t43 = target; $t43.temp = $iadd($t43.temp, $gi($gi(CARDS, card), "e")); }
         if (this.v) this.say(`  ${$str(foe.name)} Ripostes ${$str(card)}`);
         return;
       }
@@ -2209,7 +2235,7 @@ class Game {
       }
       if (($in(kind, ["dmg", "dmg2", "split", "gear_dmg", "mine_dmg", "equip_dmg", "shield_dmg"]) && $in("Ki Barrier", foe.hand) && this.can_pay(foe, 2, 1, "Ki Barrier"))) {
         if ($T(this.cast(foe, "Ki Barrier", 2, 1))) {
-          { const $t42 = target; $t42.ward = ($t42.ward + 7); }
+          { const $t44 = target; $t44.ward = ($t44.ward + 7); }
           if (this.v) this.say(`  ${$str(foe.name)} shields ${$str(target.name)} with Ki Barrier`);
         }
       }
@@ -2262,10 +2288,10 @@ class Game {
         mine = ($T(ok) ? $min(ok, $kw({"key": ((x) => x.might(this))})) : $min($OR((() => { const $r = []; for (const x of $it(p.units)) { if (((x.might(this) + bonus) >= m_)) { $r.push(x); } } return $r; })(), () => p.units), $kw({"key": ((x) => $cm($cm(CARDS, "get", x.name, new PyDict([])), "get", "e", 0))})));
         if (($T(bonus) && ((mine.might(this) - mine.dmg) <= m_))) {
           this.pay(p, 0, 1, card);
-          { const $t43 = mine; $t43.temp = ($t43.temp + 2); }
+          { const $t45 = mine; $t45.temp = ($t45.temp + 2); }
         } else if (($T(bonus) && (mine.might(this) < m_))) {
           this.pay(p, 0, 1, card);
-          { const $t44 = mine; $t44.temp = ($t44.temp + 2); }
+          { const $t46 = mine; $t46.temp = ($t46.temp + 2); }
         }
         [a, b] = $it([mine.might(this), target.might(this)]);
         this.deal(target, a, card);
@@ -2275,7 +2301,7 @@ class Game {
       if ((mine != null)) {
         if (this.can_pay(p, 0, 1, card)) {
           this.pay(p, 0, 1, card);
-          { const $t45 = mine; $t45.temp = ($t45.temp + 2); }
+          { const $t47 = mine; $t47.temp = ($t47.temp + 2); }
         }
         [a, b] = $it([mine.might(this), target.might(this)]);
         this.deal(target, a, card);
@@ -2288,7 +2314,7 @@ class Game {
           target.loc = bi;
           if (($len(here) === 2)) {
             for (x of $it(here)) {
-              { const $t46 = x; $t46.temp = ($t46.temp + 1); }
+              { const $t48 = x; $t48.temp = ($t48.temp + 1); }
             }
           }
           if ($T($gi(RULES34, 0))) {
@@ -2348,7 +2374,7 @@ class Game {
       best = $max(mine, $kw({"key": ((x) => ((kind === "shield_dmg") ? x.shield(this) : x.might(this)))}));
       v = ((kind !== "shield_dmg") ? best.might(this) : (best.shield(this) + 2));
       if ((kind === "shield_dmg")) {
-        { const $t47 = best; $t47.shield_b = ($t47.shield_b + 2); }
+        { const $t49 = best; $t49.shield_b = ($t49.shield_b + 2); }
       }
       this.deal(target, v, card);
       if (((kind === "equip_dmg") && $T(best.eq))) {
@@ -2365,9 +2391,14 @@ class Game {
         this.deal(e, 3, card);
       }
     } else if ((kind === "aoe")) {
-      v = (this.can_pay(p, 1, 0) ? 2 : 1);
+      v = ($T(($T($gi(BFO, 0)) ? this.can_pay(p, 1, 1, card) : this.can_pay(p, 1, 0))) ? 2 : 1);
       if ($eq(v, 2)) {
-        this.pay(p, 1, 0);
+        if ($T($gi(BFO, 0))) {
+          this.pay(p, 1, 1, card);
+          $cm(p.spl, "pop");
+        } else {
+          this.pay(p, 1, 0);
+        }
       }
       loc = target.loc;
       for (e of $it($sl($sorted((() => { const $r = []; for (const x of $it(foe.units)) { if ($eq(x.loc, loc)) { $r.push(x); } } return $r; })(), $kw({"key": ((x) => x.might(this))})), null, 3))) {
@@ -2404,7 +2435,7 @@ class Game {
   }
   take_turn(i) {
     let p, foe, u, _, t_, bi, b, mine, u_, o_, g, cand, ef, tb, nm, own, first, eggs, small, v, top_, hit, vm, h_, n_, rest, keep_, d_, ctrl_names, empty_names, gears, gval, cur, x, gl, drew, h, c, th, others, mine_m, foes, t, openb, rdy, stash_, dead, ex_, idle, mighty, ready, rev, b_i;
-    { const $t48 = this; $t48.turn_no = ($t48.turn_no + 1); }
+    { const $t50 = this; $t50.turn_no = ($t50.turn_no + 1); }
     this.tp = i;
     p = $gi(this.P, i);
     foe = $gi(this.P, (1 - i));
@@ -2430,7 +2461,7 @@ class Game {
     p.mighty_leg_used = false;
     p.vexdrew = false;
     p.jleg = false;
-    { const $t49 = p; $t49.tn = ($t49.tn + 1); }
+    { const $t51 = p; $t51.tn = ($t51.tn + 1); }
     p.scored_bf = $set();
     p.ksleg = null;
     p.shenleg = false;
@@ -2544,7 +2575,7 @@ class Game {
         for (u of $it(mine)) {
           if ((u.name === "Explosimian")) {
             tb = (() => { for (const b2 of $it($range(2))) { if ($T(this.units_at((1 - i), b2))) { return b2; } } return bi; })();
-            { const $t50 = $gi($gi(this.bf, tb), "bombs"), $t51 = i; $si($t50, $t51, ($gi($t50, $t51) + 3)); }
+            { const $t52 = $gi($gi(this.bf, tb), "bombs"), $t53 = i; $si($t52, $t53, ($gi($t52, $t53) + 3)); }
           }
         }
         if ((($len(mine) === 2) && (() => { for (const u of $it(mine)) { if ((u.name === "Shen, Leader of the Kinkou Order")) return true; } return false; })())) {
@@ -2558,7 +2589,7 @@ class Game {
             this.score(i, 1, "Trinity");
           }
           if ((u.name === "K'Sante, Courageous")) {
-            { const $t52 = p; $t52.pending = ($t52.pending + 1); }
+            { const $t54 = p; $t54.pending = ($t54.pending + 1); }
           }
         }
         if (((() => { for (const h of $it(p.hidden)) { if ($eq($gi(h, 1), bi)) return true; } return false; })() && (() => { for (const u of $it(mine)) { if ((u.name === "Evelynn, In Control")) return true; } return false; })())) {
@@ -2591,18 +2622,18 @@ class Game {
       p.runes = $min(12, (p.runes + 1));
     }
     if ((p.leg === "kaisa")) {
-      { const $t53 = p; $t53.P = ($t53.P + 1); }
+      { const $t55 = p; $t55.P = ($t55.P + 1); }
       p.spellP = 1;
     }
     eggs = $cm(p.base_gear, "count", "Platewyrm Egg");
     if ($T(eggs)) {
-      { const $t54 = p; $t54.E = $iadd($t54.E, $mul(eggs, ((p.leg === "jayce") ? 2 : 1))); }
+      { const $t56 = p; $t56.E = $iadd($t56.E, $mul(eggs, ((p.leg === "jayce") ? 2 : 1))); }
     }
     if (($in("Garbage Grabber", p.base_gear) && ($len(p.trash) >= 3) && (p.E >= 2))) {
       for (_ of $it($range(3))) {
         $cm(p.deck, "insert", 0, $cm(p.trash, "pop", 0));
       }
-      { const $t55 = p; $t55.E = ($t55.E - 1); }
+      { const $t57 = p; $t57.E = ($t57.E - 1); }
       this.draw(p);
     }
     if (($in("Baited Hook", p.base_gear) && this.can_pay(p, 1, 1, "Baited Hook"))) {
@@ -2645,28 +2676,28 @@ class Game {
     }
     for (u of $it(p.units)) {
       if (((u.name === "Dragonsoul Sage") && (u.loc === "base"))) {
-        { const $t56 = p; $t56.E = ($t56.E + 1); }
+        { const $t58 = p; $t58.E = ($t58.E + 1); }
         u.exhausted = true;
       }
     }
     if (((() => { for (const u of $it(p.units)) { if (((u.name === "Astral Heron") && (u.loc !== "base"))) return true; } return false; })() && ($len(p.hand) >= 2))) {
-      { const $t57 = p; $t57.E = ($t57.E + 2); }
+      { const $t59 = p; $t59.E = ($t59.E + 2); }
       if ($T($gi(PB2, 0))) {
-        { const $t58 = p; $t58.P = ($t58.P + 2); }
+        { const $t60 = p; $t60.P = ($t60.P + 2); }
       }
     }
     ctrl_names = (() => { const $r = []; for (const b of $it($range(2))) { if (($eq($gi($gi(this.bf, b), "ctrl"), i) && $T(this.units_at(i, b)))) { $r.push($gi($gi(this.bf, b), "name")); } } return $r; })();
     empty_names = (() => { const $r = []; for (const b of $it($range(2))) { if ((!$T(this.units_at(0, b)) && !$T(this.units_at(1, b)))) { $r.push($gi($gi(this.bf, b), "name")); } } return $r; })();
     if (($in("Hunters' Circle", ctrl_names) && (() => { for (const c of $it(p.hand)) { if ((($gi($gi(CARDS, c), "t") === "Unit") || $in("D", $gi($gi(CARDS, c), "f")))) return true; } return false; })())) {
-      { const $t59 = p; $t59.E = ($t59.E + 1); }
+      { const $t61 = p; $t61.E = ($t61.E + 1); }
     } else if (($in("Hunters' Circle", empty_names) && (() => { for (const c of $it(p.hand)) { if ($in("D", $gi($gi(CARDS, c), "f"))) return true; } return false; })())) {
-      { const $t60 = p; $t60.E = ($t60.E + 1); }
+      { const $t62 = p; $t62.E = ($t62.E + 1); }
     }
     if (($in("Ornn's Forge", ctrl_names) && (() => { for (const c of $it(p.hand)) { if (($gi($gi(CARDS, c), "t") === "Gear")) return true; } return false; })())) {
-      { const $t61 = p; $t61.E = ($t61.E + 1); }
+      { const $t63 = p; $t63.E = ($t63.E + 1); }
     }
     if (($in("Piltovan Forge", ctrl_names) && ($T(p.loose_eq) || (() => { for (const c of $it(p.hand)) { if ($T($cm($gi(CARDS, c), "get", "eq"))) return true; } return false; })()))) {
-      { const $t62 = p; $t62.E = ($t62.E + 1); }
+      { const $t64 = p; $t64.E = ($t64.E + 1); }
     }
     if (($in("Rakelstake", ctrl_names) && $T(p.deck) && ($gi($gi(CARDS, $gi(p.deck, 0)), "e") > (p.runes + 2)))) {
       $cm(p.deck, "append", $cm(p.deck, "pop", 0));
@@ -2702,7 +2733,7 @@ class Game {
         } else {
           $cm($gi($gi($gi(this.bf, gl), "gear"), i), "remove", g);
         }
-        { const $t63 = p; $t63.E = ($t63.E - 1); }
+        { const $t65 = p; $t65.E = ($t65.E - 1); }
         u = new Unit(g, i, this.turn_no, undefined, $gi($gi(CARDS, g), "e"));
         u.exhausted = false;
         u.token = !$T($gi(ORI, 0));
@@ -2743,20 +2774,20 @@ class Game {
         this.gain_gold(p);
       }
       if ((c === "The Waters' Wage")) {
-        { const $t64 = p; $t64.P = ($t64.P + 3); }
+        { const $t66 = p; $t66.P = ($t66.P + 3); }
       } else if ((c === "Elnuk Herd")) {
         others = (() => { const $r = []; for (const x of $it(p.units)) { $r.push(x); } return $r; })();
         if ($T(others)) {
-          { const $t65 = $max(others, $kw({"key": ((x) => x.might(this))})); $t65.temp = ($t65.temp + 3); }
+          { const $t67 = $max(others, $kw({"key": ((x) => x.might(this))})); $t67.temp = ($t67.temp + 3); }
         }
         $cm(p.deck, "insert", 0, c);
       } else if (($gi($gi(CARDS, c), "t") === "Unit")) {
         u = this.place_unit(i, c, ($eq($gi($gi(this.bf, bi), "ctrl"), i) ? bi : "base"));
         if ((c === "Gutter Guardian")) {
-          { const $t66 = p; $t66.P = ($t66.P + 1); }
+          { const $t68 = p; $t68.P = ($t68.P + 1); }
         }
         if ((c === "Teemo, Scout")) {
-          { const $t67 = u; $t67.temp = ($t67.temp + 3); }
+          { const $t69 = u; $t69.temp = ($t69.temp + 3); }
         }
         if (((c === "Evelynn, Entrancing") && (u.loc !== "base") && !$T(this.units_at((1 - i), u.loc)))) {
           mine_m = (() => { let $s = 0; for (const x of $it(this.units_at(i, u.loc))) { $s += $num(x.might(this)); } return $s; })();
@@ -2792,7 +2823,7 @@ class Game {
       for (u of $it(p.units)) {
         if ((u.name === "Evelynn, Consuming")) {
           u.exhausted = false;
-          { const $t68 = u; $t68.temp = ($t68.temp + 1); }
+          { const $t70 = u; $t70.temp = ($t70.temp + 1); }
         }
       }
     }
@@ -2815,15 +2846,15 @@ class Game {
       if (($T($gi(SMART, 0)) && $in("Resplendent Rostrum", p.base_gear))) {
         p.rost_tn = this.turn_no;
         this.draw(p);
-        { const $t69 = p; $t69.pending = ($t69.pending + 1); }
+        { const $t71 = p; $t71.pending = ($t71.pending + 1); }
         rdy = (() => { const $r = []; for (const x of $it(p.units)) { if ((!$T(x.exhausted) && (x.might(this) > 0))) { $r.push(x); } } return $r; })();
         if ($T(rdy)) {
-          { const $t70 = $max(rdy, $kw({"key": ((x) => x.might(this))})); $t70.temp = ($t70.temp + 3); }
+          { const $t72 = $max(rdy, $kw({"key": ((x) => x.might(this))})); $t72.temp = ($t72.temp + 3); }
         }
       }
       if (($T($ga(p, "ai20_scope", false)) && $in("Scrutinizing Scope", p.base_gear) && (p.E >= 1))) {
         p.scope_tn = this.turn_no;
-        { const $t71 = p; $t71.E = ($t71.E - 1); }
+        { const $t73 = p; $t73.E = ($t73.E - 1); }
         if ((this.rng.random() < 0.55)) {
           this.draw(p);
         }
@@ -2863,10 +2894,10 @@ class Game {
       ex_ = (() => { const $r = []; for (const u of $it(p.units)) { if (($T(u.exhausted) && (u.loc === "base") && (u.might(this) >= 2))) { $r.push(u); } } return $r; })();
       if ($T(ex_)) {
         u_ = $max(ex_, $kw({"key": ((x) => x.might(this))}));
-        { const $t72 = p; $t72.P = ($t72.P - 1); }
+        { const $t74 = p; $t74.P = ($t74.P - 1); }
         p.runes = $max(0, (p.runes - 1));
         u_.exhausted = false;
-        { const $t73 = u_; $t73.temp = ($t73.temp + 1); }
+        { const $t75 = u_; $t75.temp = ($t75.temp + 1); }
         this.ctrl_cleanup();
         this.attack_phase(i);
       }
@@ -2883,10 +2914,10 @@ class Game {
         }
         $min(idle, $kw({"key": ((x) => x.might(this))})).exhausted = true;
         $cm(p.hand, "remove", "Life from Stone");
-        { const $t74 = p; $t74.E = ($t74.E - 1); }
+        { const $t76 = p; $t76.E = ($t76.E - 1); }
         $cm(p.trash, "append", "Life from Stone");
         this.draw(p);
-        { const $t75 = p; $t75.pending = ($t75.pending + 1); }
+        { const $t77 = p; $t77.pending = ($t77.pending + 1); }
       }
     }
     if ($T($gi(AUDIT, 0))) {
@@ -2909,7 +2940,7 @@ class Game {
           }
         }
         if (((g === "Scrutinizing Scope") && (p.E >= 1) && !$eq($ga(p, "scope_tn", (-1)), this.turn_no))) {
-          { const $t76 = p; $t76.E = ($t76.E - 1); }
+          { const $t78 = p; $t78.E = ($t78.E - 1); }
           if ((this.rng.random() < 0.55)) {
             this.draw(p);
           }
@@ -2988,7 +3019,7 @@ class Game {
       }
     }
     if (($T($gi(AZ, 0)) && (p.leg === "azir") && !$T(p.azleg) && $eq($ga(p, "eq_tn", (-1)), this.turn_no) && ($sub(p.E, $gi(this.reserve(p), 0)) >= 1))) {
-      { const $t77 = p; $t77.E = ($t77.E - 1); }
+      { const $t79 = p; $t79.E = ($t79.E - 1); }
       p.azleg = true;
       this.sand(i);
       if (this.v) this.say(`  ${$str(p.name)}'s legend makes a Sand Soldier`);
@@ -3007,7 +3038,7 @@ class Game {
           }
           this.pay(p, 1, 0);
           z.exhausted = true;
-          { const $t78 = $gi($gi(this.bf, $gi(tgt, 0)), "bombs"), $t79 = i; $si($t78, $t79, ($gi($t78, $t79) + 1)); }
+          { const $t80 = $gi($gi(this.bf, $gi(tgt, 0)), "bombs"), $t81 = i; $si($t80, $t81, ($gi($t80, $t81) + 1)); }
           if (this.v) this.say(`  ${$str(p.name)}'s Ziggs, Explosive plays a Bomb`);
           rv = (() => { const $r = []; for (const x of $it(p.units)) { if ((x.name === "Riven, Deserter")) { $r.push(x); } } return $r; })();
           if (($T(rv) && !$eq($ga(p, "riven_tn", (-1)), this.turn_no))) {
@@ -3060,7 +3091,7 @@ class Game {
   }
   slip(p) {
     if (((p.err > 0) && (this.rng.random() < p.err))) {
-      { const $t80 = p; $t80.mistakes = ($t80.mistakes + 1); }
+      { const $t82 = p; $t82.mistakes = ($t82.mistakes + 1); }
       return true;
     }
     return false;
@@ -3068,7 +3099,7 @@ class Game {
   buff(u) {
     if (((u != null) && !$T(u.buffed))) {
       u.buffed = true;
-      { const $t81 = u; $t81.base = ($t81.base + 1); }
+      { const $t83 = u; $t83.base = ($t83.base + 1); }
     }
   }
   jarvan_move(i, bi, defending = false) {
@@ -3152,7 +3183,7 @@ class Game {
   score(i, n, why) {
     let p;
     p = $gi(this.P, i);
-    { const $t82 = p; $t82.points = $iadd($t82.points, n); }
+    { const $t84 = p; $t84.points = $iadd($t84.points, n); }
     if (this.v) this.say(`  ${$str(p.name)} scores ${$str(n)} (${$str(why)}) -> ${$str(p.points)}`);
   }
   main_plays(i) {
@@ -3281,7 +3312,7 @@ class Game {
           if ($T(this.counter_any((1 - i), c))) {
             break;
           }
-          { const $t83 = mine; $t83.temp = $iadd($t83.temp, v); }
+          { const $t85 = mine; $t85.temp = $iadd($t85.temp, v); }
           if (this.v) this.say(`  ${$str(p.name)} pumps ${$str(mine.name)} with ${$str(c)} to set up Public Execution`);
           if ((pe === "hand")) {
             $cm(p.hand, "remove", "Public Execution");
@@ -3395,7 +3426,7 @@ class Game {
         exposed = ((() => { for (const b of $it($range(2))) { if (($eq($gi($gi(this.bf, b), "ctrl"), i) && $T(this.units_at(i, b)))) return true; } return false; })() && (() => { for (const u of $it(foe.units)) { if ((u.loc === "base")) return true; } return false; })());
         if (($T(believable) && $T(exposed) && ($sub(full, bv) <= $gi(BLUFF_COST, 0)) && (this.rng.random() < 0.7))) {
           choice = bc;
-          { const $t84 = p; $t84.bluffs = ($t84.bluffs + 1); }
+          { const $t86 = p; $t86.bluffs = ($t86.bluffs + 1); }
         }
       }
       if (!$T(choice)) {
@@ -3427,8 +3458,8 @@ class Game {
           } else {
             dest_ = ((($len((() => { const $r = []; for (const h of $it(p.hidden)) { if ($eq($gi(h, 1), $gi(ctrl, 0))) { $r.push(h); } } return $r; })()) === 0) || ($len(ctrl) === 1)) ? $gi(ctrl, 0) : $gi(ctrl, (-1)));
           }
-          { const $t85 = p; $t85.P = ($t85.P - 1); }
-          { const $t86 = p; $t86.runes = ($t86.runes - 1); }
+          { const $t87 = p; $t87.P = ($t87.P - 1); }
+          { const $t88 = p; $t88.runes = ($t88.runes - 1); }
           $cm(p.hand, "remove", c);
           $cm(p.plays, "append", [p.tn, $add("hide ", c)]);
           if ($T($gi(W2, 0))) {
@@ -3468,9 +3499,9 @@ class Game {
           }
         }
         if (((e > p.E) && (p.leg === "renekton") && ($gi(cd, "t") === "Unit") && ($sub(p.P, pw) >= 2) && (p.runes >= 6) && (e <= (p.E + 2)))) {
-          { const $t87 = p; $t87.P = ($t87.P - 2); }
-          { const $t88 = p; $t88.runes = ($t88.runes - 2); }
-          { const $t89 = p; $t89.E = ($t89.E + 2); }
+          { const $t89 = p; $t89.P = ($t89.P - 2); }
+          { const $t90 = p; $t90.runes = ($t90.runes - 2); }
+          { const $t91 = p; $t91.E = ($t91.E + 2); }
         }
         if (!(this.can_pay(p, e, pw, c))) {
           continue;
@@ -3522,7 +3553,7 @@ class Game {
         $cm(p.trash, "append", "Treasure Trove");
         this.pay(p, 0, 1, "Treasure Trove");
         this.draw(p);
-        { const $t90 = p; $t90.pending = ($t90.pending + 1); }
+        { const $t92 = p; $t92.pending = ($t92.pending + 1); }
       }
       if (($in("Pack of Wonders", p.base_gear) && !$eq($ga(p, "pack_tn", (-1)), this.turn_no))) {
         rb = (() => { const $r = []; for (const u of $it(p.units)) { if (($in(u.name, ["Bewitching Spirit", "Fizz, Trickster"]) && (u.loc === "base") && $T(u.exhausted))) { $r.push(u); } } return $r; })();
@@ -3540,8 +3571,8 @@ class Game {
         alt = (() => { for (const b of $it($range(2))) { if (($gi($gi(this.bf, b), "name") === "Risen Altar")) return true; } return false; })();
         while (((u.emp < 6) && ($sub(p.E, $gi(this.reserve(p), 0)) >= (3 - da)))) {
           before = u.might(this);
-          { const $t91 = p; $t91.E = ($t91.E - (3 - da)); }
-          { const $t92 = u; $t92.emp = ($t92.emp + 2); }
+          { const $t93 = p; $t93.E = ($t93.E - (3 - da)); }
+          { const $t94 = u; $t94.emp = ($t94.emp + 2); }
           this.mighty_check(i, u, before);
           if ((p.leg === "ambessa")) {
             p.ambE = true;
@@ -3563,7 +3594,7 @@ class Game {
         this.mighty_check(i, u, before);
       } else if (($in(u.name, ["Brutal Hunter", "Serene Ascetic", "Shadow Fiend", "Mournful Witness"]) && !$T(u.pw) && (freeE >= (3 - da)) && !($T($gi(AUDIT, 0)) && (u.name === "Shadow Fiend")))) {
         before = u.might(this);
-        { const $t93 = p; $t93.E = ($t93.E - (3 - da)); }
+        { const $t95 = p; $t95.E = ($t95.E - (3 - da)); }
         u.pw = true;
         if ((p.leg === "ambessa")) {
           p.ambE = true;
@@ -3586,7 +3617,7 @@ class Game {
       }
       if (($T($gi(META25, 0)) && (u.name === "Steel Paws") && !$T(u.pw) && ($sub(p.E, $gi(this.reserve(p), 0)) >= (7 - da)))) {
         before = u.might(this);
-        { const $t94 = p; $t94.E = ($t94.E - (7 - da)); }
+        { const $t96 = p; $t96.E = ($t96.E - (7 - da)); }
         u.pw = true;
         if ((p.leg === "ambessa")) {
           p.ambE = true;
@@ -3594,7 +3625,7 @@ class Game {
         this.mighty_check(i, u, before);
       }
       if (((u.name === "Legion Marauder") && $eq(u.emp, 0) && (p.E >= (1 - da)))) {
-        { const $t95 = p; $t95.E = ($t95.E - (1 - da)); }
+        { const $t97 = p; $t97.E = ($t97.E - (1 - da)); }
         u.emp = 1;
         if ((p.leg === "ambessa")) {
           p.ambE = true;
@@ -3603,7 +3634,7 @@ class Game {
       if (($T($gi(FEAT16, "rules2")) && (u.name === "Akali, Deadly Weapon") && !$T(u.pw) && ($sub(p.E, $gi(this.reserve(p), 0)) >= (2 - da)) && this.can_pay(p, (2 - da), 1, u.name))) {
         this.pay(p, (2 - da), 1, u.name);
         u.pw = true;
-        { const $t96 = u; $t96.emp = ($t96.emp + 1); }
+        { const $t98 = u; $t98.emp = ($t98.emp + 1); }
       }
       if (($T($gi(FEAT16, "cards")) && (u.name === "Ambessa, Respected and Feared") && !$T(u.pw) && ($sub(p.E, $gi(this.reserve(p), 0)) >= (1 - da)) && this.can_pay(p, (1 - da), 2, u.name))) {
         this.pay(p, (1 - da), 2, u.name);
@@ -3661,11 +3692,11 @@ class Game {
     }
     if (($T($gi(SMART, 0)) && $in("Resplendent Rostrum", p.base_gear) && !$eq($ga(p, "rost_tn", (-1)), this.turn_no))) {
       this.draw(p);
-      { const $t97 = p; $t97.pending = ($t97.pending + 1); }
+      { const $t99 = p; $t99.pending = ($t99.pending + 1); }
       if ($T($gi(FEAT16, "rules2"))) {
         rdy = (() => { const $r = []; for (const x of $it(p.units)) { if ((!$T(x.exhausted) && (x.might(this) > 0))) { $r.push(x); } } return $r; })();
         if ($T(rdy)) {
-          { const $t98 = $max(rdy, $kw({"key": ((x) => x.might(this))})); $t98.temp = ($t98.temp + 3); }
+          { const $t100 = $max(rdy, $kw({"key": ((x) => x.might(this))})); $t100.temp = ($t100.temp + 3); }
         }
       }
     }
@@ -3673,7 +3704,7 @@ class Game {
       tgt = (() => { const $r = []; for (const bi of $it($range(2))) { if ($T(this.units_at((1 - i), bi))) { $r.push(bi); } } return $r; })();
       if ($T(tgt)) {
         this.pay(p, 1, 1);
-        { const $t99 = $gi($gi(this.bf, $gi(tgt, 0)), "bombs"), $t100 = i; $si($t99, $t100, ($gi($t99, $t100) + 1)); }
+        { const $t101 = $gi($gi(this.bf, $gi(tgt, 0)), "bombs"), $t102 = i; $si($t101, $t102, ($gi($t101, $t102) + 1)); }
         if (this.v) this.say(`  ${$str(p.name)} places a Bomb`);
       }
     }
@@ -3688,7 +3719,7 @@ class Game {
             x.loc = $gi(openb, 0);
             if (this.v) this.say(`  ${$str(p.name)}'s Satchel Charge moves ${$str(x.name)} to ${$str($gi($gi(this.bf, $gi(openb, 0)), "name"))}`);
             tb = $gi($sorted($range(2), $kw({"key": ((b_) => [(-$len(this.units_at((1 - i), b_))), (-$gi($gi($gi(this.bf, b_), "bombs"), i))])})), 0);
-            { const $t101 = $gi($gi(this.bf, tb), "bombs"), $t102 = i; $si($t101, $t102, ($gi($t101, $t102) + 1)); }
+            { const $t103 = $gi($gi(this.bf, tb), "bombs"), $t104 = i; $si($t103, $t104, ($gi($t103, $t104) + 1)); }
           }
         }
       }
@@ -3709,7 +3740,7 @@ class Game {
           this.gain_gold(p);
         }
         if ((c === "Hexplosive Minefield")) {
-          { const $t103 = $gi($gi(this.bf, b), "bombs"), $t104 = i; $si($t103, $t104, $iadd($gi($t103, $t104), ($T($gi(FEAT16, "cards")) ? nb_ : 1))); }
+          { const $t105 = $gi($gi(this.bf, b), "bombs"), $t106 = i; $si($t105, $t106, $iadd($gi($t105, $t106), ($T($gi(FEAT16, "cards")) ? nb_ : 1))); }
         }
       }
     }
@@ -3768,7 +3799,7 @@ class Game {
     if (((before < 5) && (5 <= u.might(this)))) {
       if (((p.leg === "fiora") && !$T(p.mighty_leg_used))) {
         p.mighty_leg_used = true;
-        { const $t105 = p; $t105.pending = ($t105.pending + 1); }
+        { const $t107 = p; $t107.pending = ($t107.pending + 1); }
       }
       if (((() => { for (const x of $it(p.units)) { if ((x.name === "Fiora, Worthy")) return true; } return false; })() && this.can_pay(p, 0, 1, "Fiora, Worthy"))) {
         this.pay(p, 0, 1, "Fiora, Worthy");
@@ -3814,7 +3845,7 @@ class Game {
             if ($T($gi(FEAT16, "cards"))) {
               this.buff(u);
             } else {
-              { const $t106 = u; $t106.emp = ($t106.emp + 1); }
+              { const $t108 = u; $t108.emp = ($t108.emp + 1); }
             }
             if (this.v) this.say(`  ${$str(p.name)} Last Caress puts ${$str(c)} at ${$str($gi($gi(this.bf, $gi(tgt, 0)), "name"))}`);
           }
@@ -3850,7 +3881,7 @@ class Game {
       if (($T($gi(PB2, 0)) && (c === "Undertitan"))) {
         for (x of $it(p.units)) {
           if ((x !== u)) {
-            { const $t107 = x; $t107.temp = ($t107.temp + 2); }
+            { const $t109 = x; $t109.temp = ($t109.temp + 2); }
           }
         }
       }
@@ -3884,7 +3915,7 @@ class Game {
         } else if (($gi(ef, 0) === "gold")) {
           this.gain_gold(p);
         } else if (($gi(ef, 0) === "chan")) {
-          { const $t108 = p; $t108.pending = $iadd($t108.pending, $gi(ef, 1)); }
+          { const $t110 = p; $t110.pending = $iadd($t110.pending, $gi(ef, 1)); }
         }
       }
       if ((c === "Scuttle Crab")) {
@@ -3897,7 +3928,7 @@ class Game {
       if ((c === "Elnuk Herd")) {
         others = (() => { const $r = []; for (const x of $it(p.units)) { if ((x !== u)) { $r.push(x); } } return $r; })();
         if ($T(others)) {
-          { const $t109 = $max(others, $kw({"key": ((x) => x.might(this))})); $t109.temp = ($t109.temp + 3); }
+          { const $t111 = $max(others, $kw({"key": ((x) => x.might(this))})); $t111.temp = ($t111.temp + 3); }
         }
       }
       if ((c === "Profiteer")) {
@@ -3906,7 +3937,7 @@ class Game {
           x = $gi(tg, 0);
           b0 = x.might(this);
           if ((x.name === "Kayle, Justified")) {
-            { const $t110 = x; $t110.emp = ($t110.emp + 2); }
+            { const $t112 = x; $t112.emp = ($t112.emp + 2); }
           } else {
             x.pw = true;
             x.emp = $cm(new PyDict([["Ambessa, The Wolf", 3], ["Brutal Hunter", 2]]), "get", x.name, 0);
@@ -3949,7 +3980,7 @@ class Game {
           $cm(x.eq, "remove", e);
           $cm(o.trash, "append", e);
         } else if ((o.seal > 0)) {
-          { const $t111 = o; $t111.seal = ($t111.seal - 1); }
+          { const $t113 = o; $t113.seal = ($t113.seal - 1); }
         } else if ($T(o.base_gear)) {
           g_ = $cm(o.base_gear, "pop");
           $cm(o.trash, "append", g_);
@@ -3969,7 +4000,7 @@ class Game {
       }
       if ((c === "Thousand-Tailed Watcher")) {
         for (x of $it($gi(this.P, (1 - i)).units)) {
-          { const $t112 = x; $t112.temp = $sub($t112.temp, $min(3, $max(0, (x.might(this) - 1)))); }
+          { const $t114 = x; $t114.temp = $sub($t114.temp, $min(3, $max(0, (x.might(this) - 1)))); }
         }
       }
       if ((c === "Ezreal, Prodigy")) {
@@ -3991,7 +4022,7 @@ class Game {
         drew = true;
       }
       if (((c === "Sea Monkey") && (p.E >= 1))) {
-        { const $t113 = p; $t113.E = ($t113.E - 1); }
+        { const $t115 = p; $t115.E = ($t115.E - 1); }
         this.buff(u);
       }
       if ((c === "Buhru Captain")) {
@@ -4044,7 +4075,7 @@ class Game {
         foes = (() => { const $r = []; for (const x of $it($gi(this.P, (1 - i)).units)) { if ((x.loc !== "base")) { $r.push(x); } } return $r; })();
         if ($T(foes)) {
           t = $max(foes, $kw({"key": ((x) => x.might(this))}));
-          { const $t114 = t; $t114.temp = ($t114.temp - 3); }
+          { const $t116 = t; $t116.temp = ($t116.temp - 3); }
           if (((t.might(this) <= 0) && !$T($gi(FEAT16, "rules2")))) {
             this.kill(t, "Riptide");
           }
@@ -4061,7 +4092,7 @@ class Game {
       }
       if ($in(c, ["Amateur Demolitionist", "Ziggs, Short-Fused"])) {
         tgt = $OR((() => { const $r = []; for (const bi of $it($range(2))) { if ($T(this.units_at((1 - i), bi))) { $r.push(bi); } } return $r; })(), () => [0]);
-        { const $t115 = $gi($gi(this.bf, $gi(tgt, 0)), "bombs"), $t116 = i; $si($t115, $t116, ($gi($t115, $t116) + 1)); }
+        { const $t117 = $gi($gi(this.bf, $gi(tgt, 0)), "bombs"), $t118 = i; $si($t117, $t118, ($gi($t117, $t118) + 1)); }
       }
       if ((c === "Shimmering Swimmer")) {
         foes = (() => { const $r = []; for (const x of $it($gi(this.P, (1 - i)).units)) { if ((x.loc !== "base")) { $r.push(x); } } return $r; })();
@@ -4122,7 +4153,7 @@ class Game {
           }
           $cm(p.hand, "append", g_);
           u.exhausted = false;
-          { const $t117 = u; $t117.temp = $iadd($t117.temp, $gi($gi(CARDS, g_), "e")); }
+          { const $t119 = u; $t119.temp = $iadd($t119.temp, $gi($gi(CARDS, g_), "e")); }
           if (this.v) this.say(`  ${$str(p.name)}'s Spirit of the Forge returns ${$str(g_)} and readies (+${$str($gi($gi(CARDS, g_), "e"))})`);
         }
       }
@@ -4138,7 +4169,7 @@ class Game {
       }
       if (($T($gi(FEAT16, "rules2")) && (c === "Gust Monk") && ($sub(p.E, $gi(this.reserve(p), 0)) >= 1) && $T(p.trash))) {
         bn = $OR((() => { const $r = []; for (const x of $it(p.trash)) { if ((!$in(x, FLOW) && ($cm($cm(CARDS, "get", x, new PyDict([])), "get", "t") !== "Unit"))) { $r.push(x); } } return $r; })(), () => $OR((() => { const $r = []; for (const x of $it(p.trash)) { if (!$in(x, FLOW)) { $r.push(x); } } return $r; })(), () => $list(p.trash)));
-        { const $t118 = p; $t118.E = ($t118.E - 1); }
+        { const $t120 = p; $t120.E = ($t120.E - 1); }
         $cm(p.trash, "remove", $gi(bn, 0));
         this.zed_banish(p);
         rdy = $OR((() => { const $r = []; for (const x of $it(p.units)) { if ((!$T(x.exhausted) && (x.might(this) > 0))) { $r.push(x); } } return $r; })(), () => (() => { const $r = []; for (const x of $it(p.units)) { if ((x !== u)) { $r.push(x); } } return $r; })());
@@ -4159,7 +4190,7 @@ class Game {
       }
       if (((c === "Darius, Trifarian") && (() => { for (const [t_, _] of $it(p.plays)) { if ($eq(t_, p.tn)) return true; } return false; })())) {
         u.exhausted = false;
-        { const $t119 = u; $t119.temp = ($t119.temp + 2); }
+        { const $t121 = u; $t121.temp = ($t121.temp + 2); }
       }
       if ((c === "Jayce, Brilliant Inventor")) {
         ex_ = (() => { const $r = []; for (const x of $it(p.units)) { if (($T(x.exhausted) && (x !== u))) { $r.push(x); } } return $r; })();
@@ -4170,7 +4201,7 @@ class Game {
       if (((c === "Pyke, Dockside Butcher") && this.can_pay(p, 0, 1, c))) {
         this.pay(p, 0, 1, c);
         u.exhausted = false;
-        { const $t120 = u; $t120.temp = ($t120.temp + 2); }
+        { const $t122 = u; $t122.temp = ($t122.temp + 2); }
       }
       if (((c === "Kinkou Initiate") && ((() => { let $s = 0; for (const x of $it(p.units)) { if ((x !== u)) { $s += $num(x.might(this)); } } return $s; })() >= 5))) {
         this.draw(p);
@@ -4193,7 +4224,7 @@ class Game {
       if (($in(c, ["Kennen, Keeper of Balance"]) && ($sub(p.E, $gi(this.reserve(p), 0)) >= 2))) {
         t_ = (() => { const $r = []; for (const x of $it($gi(this.P, (1 - i)).units)) { if (((x.loc !== "base") && !$T(x.stun) && !$in(x.name, UNTARGETABLE) && !$T(x.protect))) { $r.push(x); } } return $r; })();
         if ($T(t_)) {
-          { const $t121 = p; $t121.E = ($t121.E - 2); }
+          { const $t123 = p; $t123.E = ($t123.E - 2); }
           $max(t_, $kw({"key": ((x) => x.might(this))})).stun = true;
         }
       }
@@ -4253,7 +4284,7 @@ class Game {
           if ($T($gi(FEAT16, "cards"))) {
             this.buff(t_);
           } else {
-            { const $t122 = t_; $t122.emp = ($t122.emp + 1); }
+            { const $t124 = t_; $t124.emp = ($t124.emp + 1); }
           }
         }
       }
@@ -4300,7 +4331,7 @@ class Game {
           this.mighty_check(i, tgt, b0);
         }
       } else if (($cm(c, "startswith", "Seal of") || (c === "Honeyfruit"))) {
-        { const $t123 = p; $t123.seal = ($t123.seal + 1); }
+        { const $t125 = p; $t125.seal = ($t125.seal + 1); }
         if ($T($gi(W2, 0))) {
           $cm(p.base_gear, "append", c);
         }
@@ -4316,7 +4347,7 @@ class Game {
           this.buff($max($OR((() => { const $r = []; for (const u of $it($OR(here, () => p.units))) { if (!$T(u.buffed)) { $r.push(u); } } return $r; })(), () => [null]), $kw({"key": ((x) => ($T(x) ? x.might(this) : 0))})));
         }
         if (((c === "Concert Poster") && (p.E >= 1))) {
-          { const $t124 = p; $t124.E = ($t124.E - 1); }
+          { const $t126 = p; $t126.E = ($t126.E - 1); }
           this.token(i, "base");
         }
         if ((c === "The Ball")) {
@@ -4363,7 +4394,7 @@ class Game {
         if (((c === "Invigorating Bloom") && $T(p.units))) {
           u = $max(p.units, $kw({"key": ((x) => x.might(this))}));
           b0 = u.might(this);
-          { const $t125 = u; $t125.temp = ($t125.temp + 3); }
+          { const $t127 = u; $t127.temp = ($t127.temp + 3); }
           this.mighty_check(i, u, b0);
         }
         if (((c === "Runeblade Anvil") && $T(p.deck))) {
@@ -4387,12 +4418,12 @@ class Game {
             t_.base = $gi(ef, 2);
           }
         } else if (($gi(ef, 0) === "chan")) {
-          { const $t126 = p; $t126.pending = $iadd($t126.pending, $gi(ef, 1)); }
+          { const $t128 = p; $t128.pending = $iadd($t128.pending, $gi(ef, 1)); }
         }
       }
       if ((c === "Life from Stone")) {
         this.draw(p);
-        { const $t127 = p; $t127.pending = ($t127.pending + 1); }
+        { const $t129 = p; $t129.pending = ($t129.pending + 1); }
         drew = true;
       }
       if ((c === "Lightning Rush")) {
@@ -4412,14 +4443,14 @@ class Game {
         if (($add(p.runes, p.pending) >= 11)) {
           this.draw(p);
         } else {
-          { const $t128 = p; $t128.pending = ($t128.pending + 2); }
+          { const $t130 = p; $t130.pending = ($t130.pending + 2); }
         }
       }
       if ((c === "Mobilize")) {
         if (($add(p.runes, p.pending) >= 12)) {
           this.draw(p);
         } else {
-          { const $t129 = p; $t129.pending = ($t129.pending + 1); }
+          { const $t131 = p; $t131.pending = ($t131.pending + 1); }
         }
       }
       if ((c === "Clairvoyance")) {
@@ -4500,7 +4531,7 @@ class Game {
       if (($T($gi(AZ, 0)) && (c === "Desert's Call"))) {
         this.sand(i);
         if (($sub(p.E, $gi(this.reserve(p), 0)) >= 2)) {
-          { const $t130 = p; $t130.E = ($t130.E - 2); }
+          { const $t132 = p; $t132.E = ($t132.E - 2); }
           this.sand(i);
         }
       }
@@ -4532,7 +4563,7 @@ class Game {
           }
         }
         tgt = $OR($sorted((() => { const $r = []; for (const bi of $it($range(2))) { if ($T(this.units_at((1 - i), bi))) { $r.push(bi); } } return $r; })(), $kw({"key": ((b_) => (-$len(this.units_at((1 - i), b_))))})), () => [0]);
-        { const $t131 = $gi($gi(this.bf, $gi(tgt, 0)), "bombs"), $t132 = i; $si($t131, $t132, ($gi($t131, $t132) + 1)); }
+        { const $t133 = $gi($gi(this.bf, $gi(tgt, 0)), "bombs"), $t134 = i; $si($t133, $t134, ($gi($t133, $t134) + 1)); }
       }
       if ((c === "Death Mark")) {
         this.token(i, "base", "Shadow Clone").base = 0;
@@ -4704,13 +4735,13 @@ class Game {
           if (($in("Twilight Shroud", p.hand) && this.can_pay(p, 1, 0, "Twilight Shroud"))) {
             if ($T(this.cast(p, "Twilight Shroud", 1, 0))) {
               key.protect = true;
-              { const $t133 = key; $t133.temp = ($t133.temp + 1); }
+              { const $t135 = key; $t135.temp = ($t135.temp + 1); }
             }
           } else if (($in("Twilight Shroud", p.trash) && this.can_pay(p, 2, 0, "Twilight Shroud"))) {
             $cm(p.trash, "remove", "Twilight Shroud");
             this.pay(p, 2, 0, "Twilight Shroud");
             key.protect = true;
-            { const $t134 = key; $t134.temp = ($t134.temp + 1); }
+            { const $t136 = key; $t136.temp = ($t136.temp + 1); }
           }
         }
       }
@@ -4724,7 +4755,7 @@ class Game {
       res = this.combat(i, bi, choice);
       if (((p.ai >= 4) && (thr0 > 0))) {
         if (($len(d_.hand) >= h0)) {
-          { const $t135 = d_; $t135.shown_empty = ($t135.shown_empty + 1); }
+          { const $t137 = d_; $t137.shown_empty = ($t137.shown_empty + 1); }
         } else {
           d_.shown_empty = $max(0, (d_.shown_empty - 2));
         }
@@ -4904,10 +4935,10 @@ class Game {
     }
     if (($T($gi(AZ, 0)) && ($gi(b, "name") === "Hall of Legends") && (p.E >= 1))) {
       if (((p.leg === "azir") && $T(p.azleg))) {
-        { const $t136 = p; $t136.E = ($t136.E - 1); }
+        { const $t138 = p; $t138.E = ($t138.E - 1); }
         p.azleg = false;
       } else if (((p.leg === "akali") && $T(p.akleg))) {
-        { const $t137 = p; $t137.E = ($t137.E - 1); }
+        { const $t139 = p; $t139.E = ($t139.E - 1); }
         p.akleg = false;
       }
     }
@@ -4927,7 +4958,7 @@ class Game {
       p.xp = ($ga(p, "xp", 0) + (() => { let $s = 0; for (const u of $it(mine)) { $s += $num(((u.name === "Master Yi, Tempered") ? 2 : ($in("Hunter's Machete", u.eq) ? 1 : 0))); } return $s; })());
     }
     if ((($gi(b, "name") === "Sunken Temple") && (() => { for (const u of $it(mine)) { if ((u.might(this) >= 5)) return true; } return false; })() && (p.E >= 1))) {
-      { const $t138 = p; $t138.E = ($t138.E - 1); }
+      { const $t140 = p; $t140.E = ($t140.E - 1); }
       this.draw(p);
     }
     if ((($gi(b, "name") === "Ruined Monastery") && $T(p.hand))) {
@@ -4944,16 +4975,16 @@ class Game {
         if ($T(d)) {
           $cm(p.hand, "remove", d);
           $cm(p.trash, "append", d);
-          { const $t139 = p; $t139.pending = ($t139.pending + 1); }
+          { const $t141 = p; $t141.pending = ($t141.pending + 1); }
         }
       } else {
         d = $max(p.hand, $kw({"key": ((c) => $gi($gi(CARDS, c), "e"))}));
         $cm(p.hand, "remove", d);
-        { const $t140 = p; $t140.pending = ($t140.pending + 1); }
+        { const $t142 = p; $t142.pending = ($t142.pending + 1); }
       }
     }
     if ((($gi(b, "name") === "Protective Sands") && (p.runes <= 4) && (p.E >= 1))) {
-      { const $t141 = p; $t141.E = ($t141.E - 1); }
+      { const $t143 = p; $t143.E = ($t143.E - 1); }
       this.draw(p);
     }
     for (u of $it(mine)) {
@@ -4967,7 +4998,7 @@ class Game {
         if (($gi(ef, 0) === "conq_draw")) {
           this.draw(p, $gi(ef, 1));
         } else if (($gi(ef, 0) === "conq_chan")) {
-          { const $t142 = p; $t142.pending = $iadd($t142.pending, $gi(ef, 1)); }
+          { const $t144 = p; $t144.pending = $iadd($t144.pending, $gi(ef, 1)); }
         }
       }
       if ((u.name === "Plundering Poro")) {
@@ -4987,7 +5018,7 @@ class Game {
         }
       }
       if ($in("Boneshiver", u.eq)) {
-        { const $t143 = p; $t143.pending = ($t143.pending + 1); }
+        { const $t145 = p; $t145.pending = ($t145.pending + 1); }
       }
       if ((u.name === "Lucian, Merciless")) {
         u.exhausted = false;
@@ -4999,7 +5030,7 @@ class Game {
         this.token(i, "base", "Shadow Clone").base = 0;
       }
       if ((u.name === "Sneaky Zeebles")) {
-        { const $t144 = p; $t144.P = ($t144.P + 1); }
+        { const $t146 = p; $t146.P = ($t146.P + 1); }
       }
       if ($in("Warmog's Armor", u.eq)) {
         this.buff(u);
@@ -5011,7 +5042,7 @@ class Game {
       }
     }
     if (($in("Concert Poster", $gi($gi(b, "gear"), i)) && (p.E >= 1))) {
-      { const $t145 = p; $t145.E = ($t145.E - 1); }
+      { const $t147 = p; $t147.E = ($t147.E - 1); }
       this.token(i, "base");
     }
     if (($in("Pillaged Armory", $gi($gi(b, "gear"), i)) && $T(mine))) {
@@ -5027,7 +5058,7 @@ class Game {
       bu = (() => { const $r = []; for (const u of $it(mine)) { if ($T(u.buffed)) { $r.push(u); } } return $r; })();
       if ($T(bu)) {
         $gi(bu, 0).buffed = false;
-        { const $t146 = $gi(bu, 0); $t146.base = ($t146.base - 1); }
+        { const $t148 = $gi(bu, 0); $t148.base = ($t148.base - 1); }
         this.draw(p);
       }
     }
@@ -5137,17 +5168,17 @@ class Game {
     if ((v === "all3")) {
       for (u_ of $it(p.units)) {
         u_.exhausted = false;
-        { const $t147 = u_; $t147.temp = ($t147.temp + 3); }
+        { const $t149 = u_; $t149.temp = ($t149.temp + 3); }
       }
       if (this.v) this.say(`  ${$str(p.name)} casts Raucous Anthem before attacking`);
       return group;
     }
     if ((c === "Perfect Execution")) {
       key.exhausted = false;
-      { const $t148 = key; $t148.temp = ($t148.temp + 0); }
+      { const $t150 = key; $t150.temp = ($t150.temp + 0); }
       key.pe_assault = this.turn_no;
     } else {
-      { const $t149 = key; $t149.temp = $iadd($t149.temp, v); }
+      { const $t151 = key; $t151.temp = $iadd($t151.temp, v); }
     }
     if (this.v) this.say(`  ${$str(p.name)} casts ${$str(c)} on ${$str(key.name)} before attacking`);
     return group;
@@ -5295,7 +5326,7 @@ class Game {
     if (($T($gi(AZ, 0)) && $T(defenders))) {
       for ([side_, us_] of $it([[p, attackers], [d, defenders]])) {
         if ((($len(us_) === 1) && $in("Mask of Foresight", side_.base_gear))) {
-          { const $t150 = $gi(us_, 0); $t150.temp = ($t150.temp + $cm(side_.base_gear, "count", "Mask of Foresight")); }
+          { const $t152 = $gi(us_, 0); $t152.temp = ($t152.temp + $cm(side_.base_gear, "count", "Mask of Foresight")); }
         }
       }
     }
@@ -5304,14 +5335,14 @@ class Game {
     }
     for (u of $it(attackers)) {
       if (((u.name === "Riven, Deserter") && !$T($gi(RULES34, 0)))) {
-        { const $t151 = u; $t151.temp = ($t151.temp + (() => { let $s = 0; for (const x of $it(p.units)) { if (((x !== u) && $T(x.exhausted))) { $s += $num(1); } } return $s; })()); }
+        { const $t153 = u; $t153.temp = ($t153.temp + (() => { let $s = 0; for (const x of $it(p.units)) { if (((x !== u) && $T(x.exhausted))) { $s += $num(1); } } return $s; })()); }
       }
     }
     for (u of $it($add($list(attackers), $list(defenders)))) {
       if (((u.name === "Sett, Brawler") && $T(u.buffed))) {
         u.buffed = false;
-        { const $t152 = u; $t152.base = ($t152.base - 1); }
-        { const $t153 = u; $t153.temp = ($t153.temp + 4); }
+        { const $t154 = u; $t154.base = ($t154.base - 1); }
+        { const $t155 = u; $t155.temp = ($t155.temp + 4); }
       }
     }
     if (this.v) this.say(`  ${$str(p.name)} attacks ${$str($gi($gi(this.bf, bi), "name"))} with ${$str((() => { const $r = []; for (const u of $it(attackers)) { $r.push(u.name); } return $r; })())} vs ${$str((() => { const $r = []; for (const u of $it(defenders)) { $r.push(u.name); } return $r; })())}`);
@@ -5321,14 +5352,14 @@ class Game {
     for ([side, us] of $it([[i, attackers], [(1 - i), defenders]])) {
       if ((() => { for (const u of $it(us)) { if ((u.name === "K'Sante, Dauntless")) return true; } return false; })()) {
         tgt = $max(us, $kw({"key": ((u) => u.shield(this))}));
-        { const $t154 = tgt; $t154.shield_b = $iadd($t154.shield_b, tgt.shield(this)); }
+        { const $t156 = tgt; $t156.shield_b = $iadd($t156.shield_b, tgt.shield(this)); }
       }
     }
     if ($T($gi(FEAT16, "legends"))) {
       if (((p.leg === "ksante") && ($ga(p, "ksleg", null) == null) && (p.E >= 1) && $T(attackers))) {
         bu = $max(attackers, $kw({"key": ((u) => u.shield(this))}));
         if ((bu.shield(this) > 0)) {
-          { const $t155 = p; $t155.E = ($t155.E - 1); }
+          { const $t157 = p; $t157.E = ($t157.E - 1); }
           p.ksleg = bu;
           if (this.v) this.say(`  ${$str(p.name)}'s legend gives ${$str(bu.name)} Assault ${$str(bu.shield(this))}`);
         }
@@ -5397,11 +5428,11 @@ class Game {
           $ssl(p.deck, 0, 0, top3);
         }
         if (($T($gi(FEAT16, "rules2")) && (u.name === "Akali, Silent") && !$T($gi(MOVES, 0)))) {
-          { const $t156 = u; $t156.temp = ($t156.temp + 2); }
+          { const $t158 = u; $t158.temp = ($t158.temp + 2); }
         }
         for (ef of $it($cm(GEN, "get", u.name, []))) {
           if (($gi(ef, 0) === "atk_pump")) {
-            { const $t157 = u; $t157.temp = $iadd($t157.temp, $gi(ef, 1)); }
+            { const $t159 = u; $t159.temp = $iadd($t159.temp, $gi(ef, 1)); }
           }
         }
         if (((u.name === "Vi, Peacekeeper") && $T(defenders))) {
@@ -5413,14 +5444,14 @@ class Game {
         if (((u.name === "Kennen, Keeper of Balance") && $T(defenders) && (p.E >= 2))) {
           t_ = (() => { const $r = []; for (const e of $it(defenders)) { if (($in(e, d.units) && !$T(e.stun) && !$in(e.name, UNTARGETABLE) && !$T(e.protect))) { $r.push(e); } } return $r; })();
           if ($T(t_)) {
-            { const $t158 = p; $t158.E = ($t158.E - 2); }
+            { const $t160 = p; $t160.E = ($t160.E - 2); }
             $max(t_, $kw({"key": ((e) => e.might(this))})).stun = true;
           }
         }
         if (((u.name === "Baccai Reaper") && (p.P >= 1))) {
-          { const $t159 = p; $t159.P = ($t159.P - 1); }
-          { const $t160 = p; $t160.runes = ($t160.runes - 1); }
-          { const $t161 = u; $t161.temp = ($t161.temp + 2); }
+          { const $t161 = p; $t161.P = ($t161.P - 1); }
+          { const $t162 = p; $t162.runes = ($t162.runes - 1); }
+          { const $t163 = u; $t163.temp = ($t163.temp + 2); }
         }
         if (($T($gi(FEAT16, "cards")) && (u.name === "Mordekaiser, Dominating") && $T(p.hand) && $T(defenders))) {
           live = (() => { const $r = []; for (const e of $it(defenders)) { if (($in(e, d.units) && !$T(e.protect) && !($T($gi(AUDIT, 0)) && $in(e.name, UNTARGETABLE)))) { $r.push(e); } } return $r; })();
@@ -5434,7 +5465,7 @@ class Game {
         if (($T($gi(FEAT16, "cards")) && (u.name === "Evelynn, In Control") && $T(defenders))) {
           live = (() => { const $r = []; for (const e of $it(defenders)) { if ($in(e, d.units)) { $r.push(e); } } return $r; })();
           if ($T(live)) {
-            { const $t162 = $max(live, $kw({"key": ((e) => e.might(this))})); $t162.temp = ($t162.temp - 1); }
+            { const $t164 = $max(live, $kw({"key": ((e) => e.might(this))})); $t164.temp = ($t164.temp - 1); }
           }
         }
         if (((u.name === "Reckless Innovator") && !$T($gi(MOVES, 0)))) {
@@ -5468,7 +5499,7 @@ class Game {
         for ([side_, us_, them_] of $it([[p, attackers, defenders], [d, defenders, attackers]])) {
           for (u of $it(us_)) {
             if (((u.name === "Kha'Zix, Mutating Horror") && ($len(them_) === 1))) {
-              { const $t163 = u; $t163.temp = ($t163.temp + 2); }
+              { const $t165 = u; $t165.temp = ($t165.temp + 2); }
               side_.xp = ($ga(side_, "xp", 0) + 2);
             }
           }
@@ -5528,7 +5559,7 @@ class Game {
     }
     if (((p.leg === "kennen") && $T(p.kemp))) {
       p.kemp = false;
-      { const $t164 = $max(attackers, $kw({"key": ((u) => u.might(this))})); $t164.temp = ($t164.temp + 2); }
+      { const $t166 = $max(attackers, $kw({"key": ((u) => u.might(this))})); $t166.temp = ($t166.temp + 2); }
     }
     att_val = () => {
       return this.att_total(attackers, defenders, i);
@@ -5615,7 +5646,7 @@ class Game {
           if ($T($gi(FEAT16, "cards"))) {
             this.buff(bt_);
           } else {
-            { const $t165 = bt_; $t165.emp = ($t165.emp + 1); }
+            { const $t167 = bt_; $t167.emp = ($t167.emp + 1); }
           }
           if (this.v) this.say(`  ${$str(p.name)} One-Two Punches ${$str(t.name)}`);
         }
@@ -6013,15 +6044,15 @@ class Game {
     let k, x, u, us, bi, a, b, d, z, cl, t, them;
     k = $gi(act, 0);
     if ((k === "pump")) {
-      { const $t166 = $gi(act, 1); $t166.temp = $iadd($t166.temp, ($T(undo) ? (-$gi(act, 2)) : $gi(act, 2))); }
+      { const $t168 = $gi(act, 1); $t168.temp = $iadd($t168.temp, ($T(undo) ? (-$gi(act, 2)) : $gi(act, 2))); }
     } else if ((k === "minus")) {
-      { const $t167 = $gi(act, 1); $t167.temp = $iadd($t167.temp, ($T(undo) ? $gi(act, 2) : (-$gi(act, 2)))); }
+      { const $t169 = $gi(act, 1); $t169.temp = $iadd($t169.temp, ($T(undo) ? $gi(act, 2) : (-$gi(act, 2)))); }
     } else if ((k === "bonds")) {
       for (x of $it($gi(act, 1))) {
-        { const $t168 = x; $t168.temp = $iadd($t168.temp, ($T(undo) ? (-$gi(act, 2)) : $gi(act, 2))); }
+        { const $t170 = x; $t170.temp = $iadd($t170.temp, ($T(undo) ? (-$gi(act, 2)) : $gi(act, 2))); }
       }
     } else if ((k === "ward")) {
-      { const $t169 = $gi(act, 1); $t169.ward = $iadd($t169.ward, ($T(undo) ? (-$gi(act, 2)) : $gi(act, 2))); }
+      { const $t171 = $gi(act, 1); $t171.ward = $iadd($t171.ward, ($T(undo) ? (-$gi(act, 2)) : $gi(act, 2))); }
     } else if ((k === "retreat")) {
       $gi(act, 1).retreat = !$T(undo);
     } else if ((k === "akret")) {
@@ -6037,12 +6068,12 @@ class Game {
       $gi(act, 1).stun = !$T(undo);
     } else if ((k === "swap")) {
       [a, b, d] = $it([$gi(act, 1), $gi(act, 2), $gi(act, 3)]);
-      { const $t170 = a; $t170.temp = $iadd($t170.temp, ($T(undo) ? (-d) : d)); }
-      { const $t171 = b; $t171.temp = $iadd($t171.temp, ($T(undo) ? d : (-d))); }
+      { const $t172 = a; $t172.temp = $iadd($t172.temp, ($T(undo) ? (-d) : d)); }
+      { const $t173 = b; $t173.temp = $iadd($t173.temp, ($T(undo) ? d : (-d))); }
     } else if ((k === "stun2")) {
-      { const $t172 = !$T(undo);
-        $gi(act, 1).stun = $t172;
-        $gi(act, 2).stun = $t172;
+      { const $t174 = !$T(undo);
+        $gi(act, 1).stun = $t174;
+        $gi(act, 2).stun = $t174;
       }
     } else if ((k === "ambush")) {
       if ($T(undo)) {
@@ -6080,11 +6111,11 @@ class Game {
     } else if ((k === "block")) {
       u = $gi(act, 1);
       if ($T(undo)) {
-        { const $t173 = u; $t173.shield_b = ($t173.shield_b - 3); }
+        { const $t175 = u; $t175.shield_b = ($t175.shield_b - 3); }
         u.tank_b = $ga(u, "_tb0", false);
       } else {
         u._tb0 = u.tank_b;
-        { const $t174 = u; $t174.shield_b = ($t174.shield_b + 3); }
+        { const $t176 = u; $t176.shield_b = ($t176.shield_b + 3); }
         u.tank_b = true;
       }
     }
@@ -6159,7 +6190,7 @@ class Game {
         if ($T(bf_)) {
           sp_ = $min(bf_, $kw({"key": ((x) => [$eq(x.loc, bi), x.might(this)])}));
           sp_.buffed = false;
-          { const $t175 = sp_; $t175.base = ($t175.base - 1); }
+          { const $t177 = sp_; $t177.base = ($t177.base - 1); }
           if (this.v) this.say(`  ${$str(p.name)} spends ${$str(sp_.name)}'s buff to play Call to Glory for free`);
         }
       }
@@ -6202,7 +6233,7 @@ class Game {
         stopped = this.answer_spell((1 - s), s, c, "minus", $gi(act, 2));
       } else if (($in("Riposte", foe.hand) && this.can_pay(foe, 2, 2, "Riposte") && $T($ga(foe, "ai30", $gi(AI30, 0))) && $T(them))) {
         if ($T(this.cast(foe, "Riposte", 2, 2))) {
-          { const $t176 = $max(them, $kw({"key": ((x) => x.might(this))})); $t176.temp = $iadd($t176.temp, $gi($gi(CARDS, c), "e")); }
+          { const $t178 = $max(them, $kw({"key": ((x) => x.might(this))})); $t178.temp = $iadd($t178.temp, $gi($gi(CARDS, c), "e")); }
           stopped = true;
           if (this.v) this.say(`  ${$str(foe.name)} Ripostes ${$str(c)}`);
         }
@@ -6257,8 +6288,8 @@ class Game {
       if ($T($gi(FEAT16, "rules2"))) {
         for (u of $it(us)) {
           if (((u.name === "Renekton, Brute") && (need > 0) && (p.E >= need) && (need <= 4))) {
-            { const $t177 = p; $t177.E = $sub($t177.E, need); }
-            { const $t178 = u; $t178.temp = $iadd($t178.temp, need); }
+            { const $t179 = p; $t179.E = $sub($t179.E, need); }
+            { const $t180 = u; $t180.temp = $iadd($t180.temp, need); }
             if (this.v) this.say(`  ${$str(p.name)}'s Renekton pumps +${$str(need)}`);
             need = 0;
             if ((u.might(this) >= 10)) {
@@ -6271,7 +6302,7 @@ class Game {
         if (((u.name === "Vi, Hotheaded") && this.can_pay(p, 2, 1, u.name) && (need > 0))) {
           this.pay(p, 2, 1, u.name);
           need = (need - u.might(this));
-          { const $t179 = u; $t179.temp = ($t179.temp + u.might(this)); }
+          { const $t181 = u; $t181.temp = ($t181.temp + u.might(this)); }
           if (this.v) this.say(`  ${$str(p.name)}'s Vi doubles`);
         }
       }
@@ -6285,7 +6316,7 @@ class Game {
         if (((c === "Onslaught") && this.can_pay(p, 4, 0) && (need > 0))) {
           $cm(p.trash, "remove", "Onslaught");
           this.pay(p, 4, 0, "Onslaught");
-          { const $t180 = $max(us, $kw({"key": ((x) => x.might(this))})); $t180.temp = ($t180.temp + 6); }
+          { const $t182 = $max(us, $kw({"key": ((x) => x.might(this))})); $t182.temp = ($t182.temp + 6); }
           need = (need - 6);
         }
       }
@@ -6332,7 +6363,7 @@ class Game {
         if (($in(c, PUMP) && $in(c, FLOW) && (need > 0) && this.can_pay(p, $gi($gi(FLOW, c), 0), $gi($gi(FLOW, c), 1), c) && $isinstance($gi(PUMP, c), $int))) {
           $cm(p.trash, "remove", c);
           this.pay(p, $gi($gi(FLOW, c), 0), $gi($gi(FLOW, c), 1), c);
-          { const $t181 = $max(us, $kw({"key": ((x) => x.might(this))})); $t181.temp = $iadd($t181.temp, $gi(PUMP, c)); }
+          { const $t183 = $max(us, $kw({"key": ((x) => x.might(this))})); $t183.temp = $iadd($t183.temp, $gi(PUMP, c)); }
           need = $sub(need, $gi(PUMP, c));
         }
       }
@@ -6341,7 +6372,7 @@ class Game {
       }
       if ((!$T($ga(p, "ai30", $gi(AI30, 0))) && $in("Decree of Focus", p.hand) && this.can_pay(p, 1, 0, "Decree of Focus") && (() => { for (const u of $it(dfs)) { if ($in(u.name, FURY)) return true; } return false; })())) {
         if ($T(this.cast(p, "Decree of Focus", 1, 0))) {
-          { const $t182 = $max(us, $kw({"key": ((x) => x.might(this))})); $t182.temp = ($t182.temp + 4); }
+          { const $t184 = $max(us, $kw({"key": ((x) => x.might(this))})); $t184.temp = ($t184.temp + 4); }
           need = (need - 4);
           if ((need <= 0)) {
             return;
@@ -6368,7 +6399,7 @@ class Game {
             x.loc = bi_;
             $cm(us, "append", x);
             need = $sub(need, (x.might(this) + x.kw("assault")));
-            { const $t183 = $gi($gi(this.bf, bi_), "bombs"), $t184 = i; $si($t183, $t184, ($gi($t183, $t184) + 1)); }
+            { const $t185 = $gi($gi(this.bf, bi_), "bombs"), $t186 = i; $si($t185, $t186, ($gi($t185, $t186) + 1)); }
             if (this.v) this.say(`  ${$str(p.name)} Satchel Charges ${$str(x.name)} into the fight`);
           }
           if ((need <= 0)) {
@@ -6397,7 +6428,7 @@ class Game {
         t_ = $max(ok_, $kw({"key": ((x) => (x.might(this) + x.shield(this)))}));
         if ($T(this.cast(p, "Ntofo Strikes", 2, 1))) {
           if (!$T(this.answer_spell((1 - i), i, "Ntofo Strikes", "shield_dmg", t_))) {
-            { const $t185 = src; $t185.shield_b = ($t185.shield_b + 2); }
+            { const $t187 = src; $t187.shield_b = ($t187.shield_b + 2); }
             need = $sub(need, (t_.might(this) + t_.shield(this)));
             this.deal(t_, v_, "Ntofo Strikes");
             if (this.v) this.say(`  ${$str(p.name)} Ntofo Strikes ${$str(t_.name)} mid-fight`);
@@ -6453,7 +6484,7 @@ class Game {
         if ($T($gi(AUDIT, 0))) {
           ds_ = (() => { const $r = []; for (const x of $it(foe.units)) { if ($eq(x.loc, $gi(us, 0).loc)) { $r.push(x); } } return $r; })();
           if ($T(ds_)) {
-            { const $t186 = $max(ds_, $kw({"key": ((x) => x.might(this))})); $t186.temp = $iadd($t186.temp, $gi($gi(CARDS, c), "e")); }
+            { const $t188 = $max(ds_, $kw({"key": ((x) => x.might(this))})); $t188.temp = $iadd($t188.temp, $gi($gi(CARDS, c), "e")); }
           }
         }
         return;
@@ -6471,24 +6502,24 @@ class Game {
     u = $max(us, $kw({"key": ((x) => x.might(this))}));
     if (($gi(PUMP, c) === "all3")) {
       for (x of $it(us)) {
-        { const $t187 = x; $t187.temp = ($t187.temp + 3); }
+        { const $t189 = x; $t189.temp = ($t189.temp + 3); }
       }
     } else if (($gi(PUMP, c) === "x2")) {
-      { const $t188 = u; $t188.temp = ($t188.temp + u.might(this)); }
+      { const $t190 = u; $t190.temp = ($t190.temp + u.might(this)); }
     } else if (($T($gi(FEAT16, "rules2")) && (c === "Guttural Roar") && ($T(u.pw) || $T(u.emp)))) {
-      { const $t189 = u; $t189.temp = ($t189.temp + 4); }
+      { const $t191 = u; $t191.temp = ($t191.temp + 4); }
     } else if ((c === "Block")) {
-      { const $t190 = u; $t190.shield_b = ($t190.shield_b + 3); }
+      { const $t192 = u; $t192.shield_b = ($t192.shield_b + 3); }
       u.tank_b = true;
     } else if (($T($gi(AUDIT, 0)) && (c === "Bonds of Strength"))) {
       for (x of $it($sl($sorted(us, $kw({"key": ((y) => (-y.might(this)))})), null, 2))) {
-        { const $t191 = x; $t191.temp = $iadd($t191.temp, ($T(bonds_rep) ? 2 : 1)); }
+        { const $t193 = x; $t193.temp = $iadd($t193.temp, ($T(bonds_rep) ? 2 : 1)); }
       }
     } else {
-      { const $t192 = u; $t192.temp = $iadd($t192.temp, $gi(PUMP, c)); }
+      { const $t194 = u; $t194.temp = $iadd($t194.temp, $gi(PUMP, c)); }
     }
     if (($T($gi(PB, 0)) && (u.name === "Irelia, Fervent"))) {
-      { const $t193 = u; $t193.temp = ($t193.temp + 1); }
+      { const $t195 = u; $t195.temp = ($t195.temp + 1); }
     }
     if (($T($gi(AUDIT, 0)) && (c === "Battle Preparations"))) {
       this.show_off(p);
@@ -6576,7 +6607,7 @@ class Game {
       order = $sorted(plans, $kw({"key": ((np_) => ((-$sum($gi(sc, $gi(np_, 0)))) / r1))}));
       alive = $add($sl(order, null, keep), (() => { const $r = []; for (const x of $it(plans)) { if ((($gi(x, 0) === "normal") && !$in(x, $sl(order, null, keep)))) { $r.push(x); } } return $r; })());
       for ([name_, plan] of $it(alive)) {
-        { const $t194 = sc, $t195 = name_; $si($t194, $t195, $iadd($gi($t194, $t195), (() => { const $r = []; for (const r of $it($range(r1, r2))) { $r.push(this.playout(cur, t, max_turns, plan, $gi(seeds, r))); } return $r; })())); }
+        { const $t196 = sc, $t197 = name_; $si($t196, $t197, $iadd($gi($t196, $t197), (() => { const $r = []; for (const r of $it($range(r1, r2))) { $r.push(this.playout(cur, t, max_turns, plan, $gi(seeds, r))); } return $r; })())); }
       }
       for ([name_, plan] of $it(plans)) {
         v_ = ($sum($gi(sc, name_)) / $len($gi(sc, name_)));
@@ -6651,7 +6682,7 @@ class Game {
         $min(idle, $kw({"key": ((x) => x.might(this))})).exhausted = true;
         if ($T(this.cast(p, "Life from Stone", 1, 0))) {
           this.draw(p);
-          { const $t196 = p; $t196.pending = ($t196.pending + 1); }
+          { const $t198 = p; $t198.pending = ($t198.pending + 1); }
           if (this.v) this.say(`  ${$str(p.name)} plays Life from Stone at end of turn`);
         }
       }
@@ -6755,7 +6786,7 @@ class Game {
     if ($T(this.cast(p, "Satchel Charge", 3, 1))) {
       $cm(p.plays, "append", [p.tn, "Satchel Charge"]);
       x.loc = $gi(mine, 0);
-      { const $t197 = $gi($gi(this.bf, $gi(theirs, 0)), "bombs"), $t198 = i; $si($t197, $t198, ($gi($t197, $t198) + 1)); }
+      { const $t199 = $gi($gi(this.bf, $gi(theirs, 0)), "bombs"), $t200 = i; $si($t199, $t200, ($gi($t199, $t200) + 1)); }
       if (this.v) this.say(`  ${$str(p.name)}'s Satchel Charge moves ${$str(x.name)} to ${$str($gi($gi(this.bf, $gi(mine, 0)), "name"))} and drops a Bomb at ${$str($gi($gi(this.bf, $gi(theirs, 0)), "name"))}`);
     }
   }
@@ -6790,7 +6821,7 @@ class Game {
     top_ = (() => { const $r = []; for (const _ of $it($range($min(2, $len(p.deck))))) { $r.push($cm(p.deck, "pop")); } return $r; })();
     for (c of $it(top_)) {
       if ((c === "Undertitan")) {
-        { const $t199 = p; $t199.E = ($t199.E + 2); }
+        { const $t201 = p; $t201.E = ($t201.E + 2); }
       }
     }
     ok = (() => { const $r = []; for (const c of $it(top_)) { if (($in($cm($cm(CARDS, "get", c, new PyDict([])), "get", "t"), ["Unit", "Gear"]) && this.can_pay(p, $gi($gi(CARDS, c), "e"), $gi($gi(CARDS, c), "p"), c))) { $r.push(c); } } return $r; })();
@@ -6823,7 +6854,7 @@ class Game {
       p.ez_tn = this.turn_no;
       p.ez_n = 0;
     }
-    { const $t200 = p; $t200.ez_n = ($t200.ez_n + 1); }
+    { const $t202 = p; $t202.ez_n = ($t202.ez_n + 1); }
     if ((p.ez_n >= 2)) {
       p.ezleg = true;
       this.draw(p);
@@ -6894,7 +6925,7 @@ class Game {
       $cm(p.base_gear, "remove", g);
       $cm(p.trash, "append", g);
       this.draw(p);
-      { const $t201 = p; $t201.pending = ($t201.pending + 1); }
+      { const $t203 = p; $t203.pending = ($t203.pending + 1); }
       this.gain_gold(p);
     }
     if (this.v) this.say(`  ${$str(p.name)} plays ${$str(c)} on ${$str(g)}`);
@@ -7239,8 +7270,8 @@ class Game {
           lo = $min(dfn, $kw({"key": ((x) => x.might(this))}));
           d = (t.might(this) - lo.might(this));
           if ((d > 0)) {
-            { const $t202 = t; $t202.temp = $sub($t202.temp, d); }
-            { const $t203 = lo; $t203.temp = $iadd($t203.temp, d); }
+            { const $t204 = t; $t204.temp = $sub($t204.temp, d); }
+            { const $t205 = lo; $t205.temp = $iadd($t205.temp, d); }
             need = $sub(need, $mul(2, d));
           }
           $cm(p.trash, "append", c);
@@ -7253,7 +7284,7 @@ class Game {
       if (($T($gi(FEAT16, "cards")) && $T(dfn))) {
         zx = (() => { const $r = []; for (const u of $it(dfn)) { if (((u.name === "Ziggs, Explosive") && $in(u, p.units))) { $r.push(u); } } return $r; })();
         if (($T(zx) && ($gi($gi($gi(this.bf, bi), "bombs"), i) > 0) && (need > 0))) {
-          { const $t204 = $gi(zx, 0); $t204.temp = ($t204.temp + 2); }
+          { const $t206 = $gi(zx, 0); $t206.temp = ($t206.temp + 2); }
           need = (need - 2);
           if (this.v) this.say(`  ${$str(p.name)}'s Ziggs kills a Bomb on defence (+2)`);
           this.bomb_pop(i, bi, 1);
@@ -7268,7 +7299,7 @@ class Game {
                 x.loc = bi;
                 $cm(dfn, "append", x);
                 need = $sub(need, (x.might(this) + x.shield(this)));
-                { const $t205 = $gi($gi(this.bf, bi), "bombs"), $t206 = i; $si($t205, $t206, ($gi($t205, $t206) + 1)); }
+                { const $t207 = $gi($gi(this.bf, bi), "bombs"), $t208 = i; $si($t207, $t208, ($gi($t207, $t208) + 1)); }
                 if (this.v) this.say(`  ${$str(p.name)} Satchel Charges ${$str(x.name)} in to block`);
               }
             }
@@ -7286,7 +7317,7 @@ class Game {
           if ((gain >= $min(need, 4))) {
             if ($T(this.cast(p, "Ntofo Strikes", 2, 1))) {
               if (!$T(this.answer_spell((1 - i), i, "Ntofo Strikes", "shield_dmg", t_))) {
-                { const $t207 = src; $t207.shield_b = ($t207.shield_b + 2); }
+                { const $t209 = src; $t209.shield_b = ($t209.shield_b + 2); }
                 this.deal(t_, v_, "Ntofo Strikes");
                 need = $sub(need, gain);
                 if (this.v) this.say(`  ${$str(p.name)} Ntofo Strikes ${$str(t_.name)} on defence`);
@@ -7351,9 +7382,14 @@ class Game {
         if ((c === "Hextech Ray")) {
           this.deal(t, 3, c);
         } else if ((c === "Bellows Breath")) {
-          v = (this.can_pay(p, 1, 0) ? 2 : 1);
+          v = ($T(($T($gi(BFO, 0)) ? this.can_pay(p, 1, 1, c) : this.can_pay(p, 1, 0))) ? 2 : 1);
           if ($eq(v, 2)) {
-            this.pay(p, 1, 0);
+            if ($T($gi(BFO, 0))) {
+              this.pay(p, 1, 1, c);
+              $cm(p.spl, "pop");
+            } else {
+              this.pay(p, 1, 0);
+            }
           }
           for (e of $it($sl($sorted(live, $kw({"key": ((x) => x.might(this))})), null, 3))) {
             this.deal(e, v, c);
@@ -7367,9 +7403,9 @@ class Game {
             }
           }
         } else if ((c === "Smoke Screen")) {
-          { const $t208 = t; $t208.temp = $sub($t208.temp, $min(4, (m0 - 1))); }
+          { const $t210 = t; $t210.temp = $sub($t210.temp, $min(4, (m0 - 1))); }
         } else if ((c === "Stupefy")) {
-          { const $t209 = t; $t209.temp = ($t209.temp - 1); }
+          { const $t211 = t; $t211.temp = ($t211.temp - 1); }
           this.draw(p);
         } else if ((c === "Temporal Breach")) {
           for (e of $it(t.eq)) {
@@ -7385,7 +7421,7 @@ class Game {
       }
       if ((!$T(a30) && $in("Decree of Focus", p.hand) && (need > 0) && this.can_pay(p, 1, 0, "Decree of Focus") && (() => { for (const u of $it(att)) { if ($in(u.name, FURY)) return true; } return false; })())) {
         if ($T(this.cast(p, "Decree of Focus", 1, 0))) {
-          { const $t210 = $max(dfn, $kw({"key": ((x) => x.might(this))})); $t210.temp = ($t210.temp + 4); }
+          { const $t212 = $max(dfn, $kw({"key": ((x) => x.might(this))})); $t212.temp = ($t212.temp + 4); }
           need = (need - 4);
           if (this.v) this.say(`  ${$str(p.name)} plays Decree of Focus`);
         }
@@ -7482,7 +7518,7 @@ class Game {
       if (($in("For Demacia!", p.hand) && ($len(dfn) >= 2) && this.can_pay(p, 3, 0, "For Demacia!") && (need > 0))) {
         if ($T(this.cast(p, "For Demacia!", 3, 0))) {
           for (u of $it(dfn)) {
-            { const $t211 = u; $t211.shield_b = ($t211.shield_b + 2); }
+            { const $t213 = u; $t213.shield_b = ($t213.shield_b + 2); }
           }
           need = (need - (4 * $len(dfn)));
           if (this.v) this.say(`  ${$str(p.name)} plays For Demacia!`);
@@ -7490,7 +7526,7 @@ class Game {
       }
       if ((!$T(a30) && $in("Ki Barrier", p.hand) && this.can_pay(p, 2, 1, "Ki Barrier") && (need > 0))) {
         if ($T(this.cast(p, "Ki Barrier", 2, 1))) {
-          { const $t212 = $max(dfn, $kw({"key": ((x) => x.might(this))})); $t212.ward = ($t212.ward + 7); }
+          { const $t214 = $max(dfn, $kw({"key": ((x) => x.might(this))})); $t214.ward = ($t214.ward + 7); }
           need = (need - 7);
         }
       }
@@ -7521,10 +7557,10 @@ class Game {
             v = u.might(this);
           }
           if ((c === "Block")) {
-            { const $t213 = u; $t213.shield_b = ($t213.shield_b + 3); }
+            { const $t215 = u; $t215.shield_b = ($t215.shield_b + 3); }
             u.tank_b = true;
           } else {
-            { const $t214 = u; $t214.temp = $iadd($t214.temp, v); }
+            { const $t216 = u; $t216.temp = $iadd($t216.temp, v); }
           }
           if (this.v) this.say(`  ${$str(p.name)} defends with ${$str(c)}`);
           need = $sub(need, v);
@@ -7547,11 +7583,11 @@ class Game {
             this.pay(p, 2, 0, c);
           }
           for (x of $it(two)) {
-            { const $t215 = x; $t215.temp = $iadd($t215.temp, ($T(rp) ? 2 : 1)); }
+            { const $t217 = x; $t217.temp = $iadd($t217.temp, ($T(rp) ? 2 : 1)); }
           }
           gain = $mul($len(two), ($T(rp) ? 2 : 1));
         } else {
-          { const $t216 = u; $t216.temp = ($t216.temp + 2); }
+          { const $t218 = u; $t218.temp = ($t218.temp + 2); }
           gain = 2;
           if (($T($gi(AUDIT, 0)) && (c === "Battle Preparations"))) {
             this.show_off(p);
@@ -7564,7 +7600,7 @@ class Game {
         need = $sub(need, ($T($gi(AUDIT, 0)) ? gain : 4));
       } else if ((c === "Mesmerize")) {
         u = $max(att, $kw({"key": ((x) => x.might(this))}));
-        { const $t217 = u; $t217.temp = ($t217.temp - 2); }
+        { const $t219 = u; $t219.temp = ($t219.temp - 2); }
         $cm(p.hand, "remove", c);
         this.pay(p, 1, 1, c);
         $cm(p.trash, "append", c);
@@ -7574,7 +7610,7 @@ class Game {
         x = (() => { let $s = 0; for (const u of $it(p.units)) { if ($T(u.exhausted)) { $s += $num(1); } } return $s; })();
         if ((x >= 2)) {
           u = $max(att, $kw({"key": ((y) => y.might(this))}));
-          { const $t218 = u; $t218.temp = $sub($t218.temp, x); }
+          { const $t220 = u; $t220.temp = $sub($t220.temp, x); }
           $cm(p.hand, "remove", c);
           this.pay(p, 3, 0, c);
           $cm(p.trash, "append", c);
@@ -7656,7 +7692,7 @@ class Game {
           this.kill(u, "combat");
         }
       } else {
-        { const $t219 = u; $t219.dmg = $iadd($t219.dmg, dmg); }
+        { const $t221 = u; $t221.dmg = $iadd($t221.dmg, dmg); }
         dmg = 0;
       }
       if ((dmg <= 0)) {
@@ -7711,7 +7747,7 @@ class Game {
         _pp = $gi(this.P, _j);
         if ($T($ga(_pp, "mine_back", 0))) {
           _tb = $gi($sorted($range(2), $kw({"key": ((b_) => (-$len(this.units_at((1 - _j), b_))))})), 0);
-          { const $t220 = $gi($gi(this.bf, _tb), "bombs"), $t221 = _j; $si($t220, $t221, $iadd($gi($t220, $t221), _pp.mine_back)); }
+          { const $t222 = $gi($gi(this.bf, _tb), "bombs"), $t223 = _j; $si($t222, $t223, $iadd($gi($t222, $t223), _pp.mine_back)); }
           _pp.mine_back = 0;
         }
       }

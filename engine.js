@@ -296,7 +296,7 @@ function $delattr(o, n){ delete o[n]; }
 
 Object.assign($VFS, VFSDATA);
 
-var CARDS, line, n, e, p, t, f, MIGHT, KW, GEN, EQKW, GSP, DECK_KNOBS, VALUE_W, STYLES, LEARN, v, c, k, tok, _OFF, DRAGONS, LEG, BFS, REMOVAL, PUMP, REACT_PUMP, SHOWDOWN_PUMP, FLOW, AMBUSH, SMART, FUZZFIX, SIMUL, DIEWATCH, META25, SAVE_PUMP, CHAIN, BFO, BF_ONLY_MORE, VGATE, EZ_HIDE, RUNEPEN, ETB_REPLAY, GUIDE, IRAI, EZAI, KAI, W2, PB2, PB, MECHS, ORI, PLAYER_AI, REACT_VAL, DMG_KINDS, UNTARGETABLE, UNTARGETABLE_COMBAT, CHAOS, FURY, PROTECT, SAVE_FOR_REACT, LOOK_PLANS, VS_MARGIN, LOOK_MARGIN, LOOK_CARDS, LOOK_DEPTH, LOOK_SH, LOOK_KEYS, AI36, RESP, FEAT, BLUFF, READ, COLOR, PRO_ERR, BLUFF_COST, RES2, RES_K, DISC_FIX, EOT, EOT_DISC, V1B, VFLOW, SATCHEL, MOVES, AI29, AI29B, AUDIT, ANVIL_AI, ANVIL_OLD, RIP2, TIDE2, HAB, RULES33, RULES34, GAPS31, MEZB, AI20, AI30, TRICK_W, CONQ_V, TRICK_MARGIN, DEBUFF, DRAW_SPELL, BOMB_KILLERS, COMBAT_OK, PRE_PUMP, AZ, QUICKDRAW, BANISH, FEAT16, SETUP, _k, _v, DOMAINS, RUNE_SPLIT;
+var CARDS, line, n, e, p, t, f, MIGHT, KW, GEN, EQKW, GSP, DECK_KNOBS, VALUE_W, STYLES, LEARN, v, c, k, tok, _OFF, DRAGONS, LEG, BFS, REMOVAL, PUMP, REACT_PUMP, SHOWDOWN_PUMP, FLOW, AMBUSH, SMART, FUZZFIX, SIMUL, DIEWATCH, META25, SAVE_PUMP, CHAIN, BFO, BF_ONLY_MORE, VGATE, EZ_HIDE, RUNEPEN, ETB_REPLAY, SHOW, GUIDE, IRAI, EZAI, KAI, W2, PB2, PB, MECHS, ORI, PLAYER_AI, REACT_VAL, DMG_KINDS, UNTARGETABLE, UNTARGETABLE_COMBAT, CHAOS, FURY, PROTECT, SAVE_FOR_REACT, LOOK_PLANS, VS_MARGIN, LOOK_MARGIN, LOOK_CARDS, LOOK_DEPTH, LOOK_SH, LOOK_KEYS, AI36, RESP, FEAT, BLUFF, READ, COLOR, PRO_ERR, BLUFF_COST, RES2, RES_K, DISC_FIX, EOT, EOT_DISC, V1B, VFLOW, SATCHEL, MOVES, AI29, AI29B, AUDIT, ANVIL_AI, ANVIL_OLD, RIP2, TIDE2, HAB, RULES33, RULES34, GAPS31, MEZB, AI20, AI30, TRICK_W, CONQ_V, TRICK_MARGIN, DEBUFF, DRAW_SPELL, BOMB_KILLERS, COMBAT_OK, PRE_PUMP, AZ, QUICKDRAW, BANISH, FEAT16, SETUP, _k, _v, DOMAINS, RUNE_SPLIT;
 CARDS = new PyDict([]);
 for (line of $it($open("/home/claude/sim/cards.txt"))) {
   line = $cm(line, "strip");
@@ -382,6 +382,7 @@ VGATE = [true];
 EZ_HIDE = ["Wages of Pain", "Temporal Breach", "Guards!"];
 RUNEPEN = [1.0];
 ETB_REPLAY = new PySet(["Bewitching Spirit", "Ezreal, Prodigy", "Fizz, Trickster", "Lecturing Yordle", "Scuttle Crab", "Bilgewater Tracker", "Trifarian Captain"]);
+SHOW = [true];
 GUIDE = [true];
 IRAI = [true];
 EZAI = [true];
@@ -3248,6 +3249,19 @@ class Game {
     }
     return [bi, false];
   }
+  empty_showdown(i, bi, movers) {
+    let p, d;
+    if ((!$T($gi(SHOW, 0)) || $eq($gi($gi(this.bf, bi), "ctrl"), i))) {
+      return true;
+    }
+    p = $gi(this.P, i);
+    d = $gi(this.P, (1 - i));
+    if (this.v) this.say(`  ${$str(p.name)} moves into empty ${$str($gi($gi(this.bf, bi), "name"))} with ${$str((() => { const $r = []; for (const u of $it(movers)) { $r.push(u.name); } return $r; })())} (showdown)`);
+    if (!$T(this.slip(d))) {
+      this.fight_removal((1 - i), $list(movers), (() => { let $s = 0; for (const u of $it(movers)) { $s += $num((u.might(this) + 1)); } return $s; })());
+    }
+    return (() => { for (const u of $it(movers)) { if (($in(u, p.units) && $eq(u.loc, bi))) return true; } return false; })();
+  }
   contest_here(i, u, bi) {
     let p, res;
     p = $gi(this.P, i);
@@ -4776,7 +4790,7 @@ class Game {
     return (() => { let $s = 0; for (const u of $it(us)) { $s += $num((u.might(this) + u.shield(this))); } return $s; })();
   }
   attack_phase(i) {
-    let p, conquered, bi, b, foes, mine_here, has_tu, avail, n, u, forced, pump, opp, opp_react, choice, best_g, fixed, free_, r, comb, group, out, cost, denial, held, must, lead, tr_need, s_, must_now, key, d_, h0, thr0, res, p_now;
+    let p, conquered, bi, b, foes, mine_here, has_tu, avail, n, mv_, u, forced, pump, opp, opp_react, choice, best_g, fixed, free_, r, comb, group, out, cost, denial, held, must, lead, tr_need, s_, must_now, key, d_, h0, thr0, res, p_now;
     p = $gi(this.P, i);
     conquered = [];
     for (bi of $it($sorted($range(2), $kw({"key": ((b) => $eq($gi($gi(this.bf, b), "ctrl"), i))})))) {
@@ -4797,11 +4811,14 @@ class Game {
           }
           if ($T(avail)) {
             n = (((p.leg === "shen") && ($len(avail) >= 2)) ? 2 : 1);
-            for (u of $it($sl($sorted(avail, $kw({"key": ((x) => x.might(this))})), null, n))) {
+            mv_ = $sl($sorted(avail, $kw({"key": ((x) => x.might(this))})), null, n);
+            for (u of $it(mv_)) {
               u.loc = bi;
               u.exhausted = true;
             }
-            $cm(conquered, "append", bi);
+            if ($T(this.empty_showdown(i, bi, mv_))) {
+              $cm(conquered, "append", bi);
+            }
           }
         } else if ((!$T(mine_here) && $T(avail))) {
           u = $min(avail, $kw({"key": ((x) => x.might(this))}));
@@ -4963,7 +4980,9 @@ class Game {
           u = $min(avail, $kw({"key": ((x) => x.might(this))}));
           u.loc = bi;
           u.exhausted = true;
-          $cm(conquered, "append", bi);
+          if ($T(this.empty_showdown(i, bi, [u]))) {
+            $cm(conquered, "append", bi);
+          }
         }
       }
     }

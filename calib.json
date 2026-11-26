@@ -15,7 +15,8 @@
   "Master Yi": -0.4468749999999998,
   "Azir": 0.5500000000000004,
   "Akali": -0.10312500000000029,
-  "Ornn": -0.13750000000000048
+  "Ornn": -0.13750000000000048,
+  "Kai'Sa": 0.0
  },
  "shares": {
   "Kennen": 10.81,
@@ -33,7 +34,8 @@
   "Azir": 1.84,
   "Akali": 2.52,
   "Ornn": 1.24,
-  "Ambessa": 0.15
+  "Ambessa": 0.15,
+  "Kai'Sa": 14.0
  },
- "note": "Logit offsets fitted Nov 21 2026 (16 decks incl. Azir, Akali, Ornn; 200 games per matchup) so each legend's engine win rate against the real-weighted field matches riftbound.gg tournament win rates (since Radiance). Ambessa has no real data: offset = average of Fiora, Ziggs, K'Sante, Jarvan, Orianna."
+ "note": "Logit offsets fitted Nov 21 2026 (16 decks incl. Azir, Akali, Ornn; 200 games per matchup) so each legend's engine win rate against the real-weighted field matches riftbound.gg tournament win rates (since Radiance). Ambessa has no real data: offset = average of Fiora, Ziggs, K'Sante, Jarvan, Orianna. Nov 25: Kai'Sa added for the provisional post-ban meta with offset 0 (no adjustment; not yet fitted) and its pre-ban share of decks (14%)."
 }

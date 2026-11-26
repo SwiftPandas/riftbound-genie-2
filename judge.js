@@ -73,18 +73,19 @@ function analyse(name, c) {
 }
 
 /* ---------- finding cards in a question ---------- */
+const IDX = new WeakMap();   // the name index lives outside LIB (stored inside it, it showed up as an extra "card" in the library: found Nov 22)
 function index(LIB) {
-  if (LIB._idx) return LIB._idx;
+  if (IDX.has(LIB)) return IDX.get(LIB);
   const full = [], heads = {};
   for (const n of Object.keys(LIB)) {
-    if (n === '_idx') continue;
     const f = clean(n); const one = COMMONWORD.has(n);
     if (f.length >= 3) full.push([f, n, one]);
     if (n.includes(',')) { const h = clean(n.split(',')[0]); if (h.length >= 3) { (heads[h] = heads[h] || []).push(n); (heads[h + 's'] = heads[h + 's'] || []).push(n); } }
     if (f.length >= 4 && !one) full.push([f + 's', n, false]);   // plural or possessive: "bombs", "Elnuk Herds"
+    for (const a of (LIB[n].aka || [])) { const fa = clean(a); if (fa.length >= 3) full.push([fa, n, false]); }   // nicknames: "Matriarch of War", "Final Spark, Lux"
   }
   full.sort((a, b) => b[0].length - a[0].length);
-  return (LIB._idx = {full, heads});
+  const out = {full, heads}; IDX.set(LIB, out); return out;
 }
 // one-word card names that are also ordinary words ("block", "charm", "gust") only count as cards when the question
 // treats them as a card: capitalised, or right after cast / play / use / with / my / their / a / does / is ...
@@ -217,7 +218,7 @@ function removalAns(sp, t, ctx) {
     const dies = n >= Math.max(might, 1);
     res.kills = dies ? 'yes' : 'no'; res.damage = n; res.might = might;
     lines.push(`${esc(sp.name)} deals ${n} to ${esc(t.name)}${notes.length ? ' (' + notes.join(', ') + ')' : ''}, which has ${might} Might. ${dies ? `That's lethal (at least its Might), so it dies at the next cleanup.` : `That isn't lethal (it needs ${might}), so it survives, and the damage heals at the end of the turn.`}`);
-    lines.push(`Shield only adds Might while a unit is defending in combat, so outside combat it doesn't help against spell damage${t.shield ? ` (in combat, ${esc(t.name)} as a defender would have ${might + t.shield} Might)` : ''}.`);
+    if (t.shield) lines.push(`Shield only adds Might while a unit is defending in combat, so outside combat it doesn't help against spell damage${t.shield ? ` (in combat, ${esc(t.name)} as a defender would have ${might + t.shield} Might)` : ''}.`);
   } else if (e.kind === 'kill') {
     const ok = e.max == null || might <= e.max; res.kills = ok ? 'yes' : 'no';
     lines.push(ok ? `Yes: ${esc(sp.name)} kills it${e.max != null ? ` (${esc(t.name)} has ${might} Might, at most ${e.max})` : ''}. Killing isn't damage, so Shield and damage prevention don't stop it.` : `No: ${esc(sp.name)} can only kill a unit with ${e.max} Might or less, and ${esc(t.name)} has ${might}.`);
@@ -248,6 +249,10 @@ function sides(q, hits) {
   const dv = nq.search(/ (defends?|defending|blocks?|blocking) /);
   if (dv >= 0 && (verb < 0 || dv < verb)) { verb = dv; flip = true; }
   const att = [], dfn = [];
+  if (verb < 0) {
+    for (const h of hits) (/ (their|thier|enemy|enemies|opponents?|opponent's|opponents') $/.test(nq.slice(Math.max(0, h.at - 14), h.at + 1)) ? dfn : att).push(h);
+    return {att, dfn, verb, assumed: true};
+  }
   for (const h of hits) ((verb >= 0 && h.at < verb) !== flip ? att : dfn).push(h);
   return {att, dfn, verb};
 }
@@ -261,6 +266,7 @@ function mods(q, hits, LIB) {
     if (/buffed $/.test(before)) { o.plus += 1; o.notes.push('buff +1'); }
     const pm = before.match(/(\d+) might $/) || before.match(/plus (\d+) $/);
     if (pm) { o.plus += +pm[1]; o.notes.push('+' + pm[1]); }
+    out[h.name + '@' + h.at] = {plus: o.plus, stun: o.stun, notes: [...o.notes]};
     if (!out[h.name]) out[h.name] = o; else { out[h.name].plus += o.plus; out[h.name].stun = out[h.name].stun || o.stun; out[h.name].notes.push(...o.notes); }
   }
   // pump spells "Punch First on X"
@@ -268,7 +274,7 @@ function mods(q, hits, LIB) {
     const a = analyse(h.name, LIB[h.name]);
     if (!a || a.type !== 'Spell' || !a.effect || a.effect.kind !== 'pump') continue;
     const tgt = hits.find(u => u.at > h.at && LIB[u.name].t === 'Unit');
-    if (tgt && out[tgt.name]) { out[tgt.name].plus += a.effect.n; out[tgt.name].notes.push(`${h.name} ${a.effect.n > 0 ? '+' : ''}${a.effect.n}`); h.used = true; }
+    if (tgt && out[tgt.name]) { for (const k of [tgt.name, tgt.name + '@' + tgt.at]) if (out[k]) { out[k].plus += a.effect.n; out[k].notes.push(`${h.name} ${a.effect.n > 0 ? '+' : ''}${a.effect.n}`); } h.used = true; }
   }
   return out;
 }
@@ -302,29 +308,41 @@ function judge(q, ctx) {
       }
     }
   }
+  // looking never burns you out (CR 432.1.c); drawing/burning past the deck does
+  if (has(/ (predict|predicts|vision|look at|looking at|reveal|reveals|peek)/) && has(/ (burn out|burnout|burns out|burned out|run out|runs out|deck out|empty deck)/)) {
+    return out('burnout', P(`No. Looking at, revealing or predicting cards never makes you burn out, even if your deck has fewer cards than the number you look at (you just look at what's there). Only drawing, burning or otherwise moving cards out of a Main Deck that doesn't have enough causes a burn out (CR 432.1.c).`), {burnout: false});
+  }
   // burn out
-  if (has(/ (deck is empty|empty deck|no cards left|out of cards|run out of cards|runs out of cards|deck runs out|burn out|burnout|deck out|decked)/)) {
+  if (has(/ (more cards than|draw more than|burns out|burned out|deck is empty|empty deck|no cards left|out of cards|run out of cards|runs out of cards|deck runs out|burn out|burnout|deck out|decked)/)) {
     return out('burnout', P(`That's a burn out. When you have to draw (or burn, or otherwise take cards) from an empty Main Deck, shuffle your trash into a new Main Deck, then your opponent gains 1 point, and then you finish drawing. If your trash is empty too, you still burn out. The point your opponent gains can win them the game. Looking at or predicting cards never burns you out.`), {burnout: true});
   }
 
   // combat
-  if (units.length >= 2 && has(/ (attack|attacks|attacking|attacked|fight|fights|fighting|vs|versus|into|blocks?|defends?|defending|combat) /)) {
-    const {att, dfn} = sides(q, units); const md = mods(q, hits, LIB);
+  const unitHits = hits.filter(h => LIB[h.name].t === 'Unit');
+  if (unitHits.length >= 2 && has(/ (attack|attacks|attacking|attacked|fight|fights|fighting|vs|versus|into|blocks?|defends?|defending|combat|trade|trades|trading|traded|clash|clashes) /)) {
+    const sd = sides(q, units.length >= 2 ? units : unitHits); const {att, dfn} = sd; const md = mods(q, hits, LIB);
     if (att.length && dfn.length) {
-      const mk = h => ({name: h.name, a: analyse(h.name, LIB[h.name]), plus: md[h.name] ? md[h.name].plus : 0, stun: md[h.name] ? md[h.name].stun : false, notes: md[h.name] ? md[h.name].notes : []});
+      const twice = n => [...att, ...dfn].filter(x => x.name === n).length > 1;
+      const mk = h => { const m = (twice(h.name) && md[h.name + '@' + h.at]) || md[h.name]; return {name: h.name, a: analyse(h.name, LIB[h.name]), plus: m ? m.plus : 0, stun: m ? m.stun : false, notes: m ? m.notes : []}; };
       const A = att.map(mk), D = dfn.map(mk);
       for (const side of [A, D]) for (const src of side) if (src.a.aura) for (const u of side) if (u !== src) { u.plus += src.a.aura; u.notes.push(`+${src.a.aura} from ${src.name}`); }
       const r = combat(A, D);
       const line = (u, role) => `${esc(u.name)} ${unitMight(u, role)} Might (${u.a.might || 0} base${role === 'att' && u.a.assault ? `, +${u.a.assault} Assault` : ''}${role === 'def' && u.a.shield ? `, +${u.a.shield} Shield` : ''}${u.plus ? `, ${u.notes.join(', ')}` : ''}${u.stun ? ', stunned: deals no damage' : ''}${u.a.tank ? ', Tank' : ''}${u.a.backline ? ', Backline' : ''}${u.a.noCombatDamage ? ', deals no combat damage' : ''})`;
-      let t = P(`<b>Attackers:</b> ${A.map(u => line(u, 'att')).join('; ')}. Total damage ${r.attackTotal}.`) + P(`<b>Defenders:</b> ${D.map(u => line(u, 'def')).join('; ')}. Total damage ${r.defendTotal}.`);
+      let t = (sd.assumed ? P(`You didn't say who attacked, so I treated ${esc(list(att.map(h => h.name)))} as the attacker${att.length > 1 ? 's' : ''} (that matters for Assault and Shield).`) : '') + P(`<b>Attackers:</b> ${A.map(u => line(u, 'att')).join('; ')}. Total damage ${r.attackTotal}.`) + P(`<b>Defenders:</b> ${D.map(u => line(u, 'def')).join('; ')}. Total damage ${r.defendTotal}.`);
       t += P(`Both sides deal their damage at the same time. Each side assigns its total to the other side's units: Tank units must be given lethal damage first, Backline units last, and a unit must get lethal damage before the next one gets any. A unit dies if it gets damage at least equal to its Might (Assault counts while attacking, Shield while defending).`);
       t += P(`<b>Result:</b> ${r.defendersDie.length ? esc(list(r.defendersDie)) + ' die' + (r.defendersDie.length === 1 ? 's' : '') : 'no defender dies'}; ${r.attackersDie.length ? esc(list(r.attackersDie)) + ' die' + (r.attackersDie.length === 1 ? 's' : '') : 'no attacker dies'}. ${r.result[0].toUpperCase() + r.result.slice(1)}${r.result.startsWith('attacker wins') ? ' (worth 1 point if they haven\'t scored that battlefield this turn)' : ''}. Damage on survivors heals right after combat.`);
-      const trig = [];
+      const trig = [], after = [];
       for (const u of A) { if (u.a.onAttack) trig.push(`${esc(u.name)}: "${esc(u.a.onAttack)}"`); }
       for (const u of D) { if (u.a.onDefend) trig.push(`${esc(u.name)}: "${esc(u.a.onDefend)}"`); }
-      for (const u of [...A, ...D]) { if ([...r.attackersDie, ...r.defendersDie].includes(u.name) && u.a.deathknell) trig.push(`${esc(u.name)} dies → Deathknell: "${esc(u.a.deathknell)}"`); }
-      if (r.result.startsWith('attacker wins')) for (const u of A) { if (!r.attackersDie.includes(u.name) && u.a.onConquer) trig.push(`${esc(u.name)} conquers: "${esc(u.a.onConquer)}"`); }
-      if (trig.length) t += P(`<b>Triggers to remember</b> (they happen before damage, and can change the result): ${trig.join(' · ')}`);
+      if (trig.length) t += P(`<b>Triggers before damage</b> (when units attack or defend; they can change the result): ${trig.join(' · ')}`);
+      const dkA = A.filter(u => r.attackersDie.includes(u.name) && u.a.deathknell), dkD = D.filter(u => r.defendersDie.includes(u.name) && u.a.deathknell);
+      if (dkA.length || dkD.length) {
+        const dl = [...dkD, ...dkA].map(u => `${esc(u.name)}: "${esc(u.a.deathknell)}"`).join(' · ');
+        after.push(`<b>Deathknells after damage:</b> ${dl}. Every unit that took lethal damage dies at the same moment, so all these Deathknells trigger together and the dying units are already gone when they resolve: a Deathknell can only choose a unit that survived.` +
+          (dkA.length && dkD.length ? ` Both players have one, so the attacker (the turn player) puts theirs on the chain first and the defender's goes on top: <b>the defender's Deathknell resolves first</b> (the chain resolves newest first). Each player orders their own.` : ''));
+      }
+      if (r.result.startsWith('attacker wins')) { const cq = A.filter(u => !r.attackersDie.includes(u.name) && u.a.onConquer).map(u => `${esc(u.name)}: "${esc(u.a.onConquer)}"`); if (cq.length) after.push(`<b>Then conquer triggers:</b> ${cq.join(' · ')}`); }
+      for (const x of after) t += P(x);
       t += P(`Before damage there's a showdown: both players can still play Action and Reaction cards (pumps, stuns, removal), which would change these numbers.`);
       return out('combat', ambNote + t, {attackersDie: r.attackersDie, defendersDie: r.defendersDie, result: r.result, attackTotal: r.attackTotal, defendTotal: r.defendTotal});
     }
@@ -387,6 +405,7 @@ function present(q, ctx) {
   let main = 'judge';
   if (j.kind === 'none') main = faq ? 'faq' : 'none';
   else if (tok && faq && !['combat', 'removal'].includes(j.kind)) main = 'faq';
+  else if (j.kind === 'card' && faq && score >= 6) main = 'faq';   // a real rules question that names a card ("does a Deathknell trigger if Guardian Angel saves it?"); the card text still shows below
   else if ((j.kind === 'card' || j.kind === 'death') && j.cards.length) { const f = (ctx.FAQ || []).find(x => j.cards.some(n => x.t.toLowerCase().includes(n.split(',')[0].toLowerCase()))); if (f) { faq = f; main = 'faq'; } }
   else if (j.kind === 'card' && j.facts.fact === 'text' && faq && score >= 6 && !j.cards.some(n => q.toLowerCase().includes(n.toLowerCase().split(',')[0]))) main = 'faq';
   return {main, judge: j, faq, faq2: ranked.length > 1 && ranked[1][0] >= 3 ? ranked[1][1] : null};

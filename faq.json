@@ -15,29 +15,47 @@
  {
   "t": "How do I score points?",
   "k": [
-   "score",
-   "scoring",
+   "conquer",
+   "gain 1 point",
+   "gain a point",
+   "gain points",
+   "hold",
    "point",
    "points",
-   "conquer",
-   "hold"
+   "score",
+   "score 1 point",
+   "score a point",
+   "score x points",
+   "scoring"
   ],
-  "a": "Two ways, each 1 point: Conquer, which is taking control of a battlefield you haven't scored this turn, and Hold, which is still controlling a battlefield in your Beginning Phase. Each battlefield can score you only once per turn, by either method.\nThe final point is special: if you're 1 point from winning, a conquer only gives that last point if you've scored every battlefield this turn; otherwise you draw a card instead. Points from holding or from card effects don't have that limit.",
+  "a": "Two ways, each 1 point: Conquer, which is taking control of a battlefield you haven't scored this turn, and Hold, which is still controlling a battlefield in your Beginning Phase. Each battlefield can score you only once per turn, by either method.\nThe final point is special: if you're 1 point from winning, a conquer only gives that last point if you've scored every battlefield this turn; otherwise you draw a card instead. Points from holding or from card effects don't have that limit.\nCard text that says \"score 1 point\" (or gain points) just gives you points: it isn't a conquer or a hold, doesn't use up a battlefield's score for the turn, and isn't limited by the final-point rule (CR 470.2, 473.1.a.1).",
   "r": "CR 467-472"
  },
  {
   "t": "How do I win?",
   "k": [
-   "win",
-   "winning",
-   "victory",
-   "won",
-   "points to win",
-   "need to win",
+   "8 points each",
+   "both at 8",
+   "both get 8",
+   "both have 8",
+   "both have 8 points",
+   "both reach 8",
+   "draw game",
    "how many points",
-   "win the game"
+   "need to win",
+   "points to win",
+   "same points",
+   "same score",
+   "tie at 8",
+   "tied at 8",
+   "victory",
+   "who wins at 8",
+   "win",
+   "win the game",
+   "winning",
+   "won"
   ],
-  "a": "In a 1v1 duel you win when you have at least 8 points and more points than your opponent. It's checked at every cleanup, so it happens the moment it's true. Remember the final-point rule: the conquer that would take you to 8 only counts if you've scored every battlefield this turn (otherwise you draw a card), but a hold or a card effect can give the 8th point normally. If your deck runs out you Burn Out, which gives your opponent a point.",
+  "a": "In a 1v1 duel you win when you have at least 8 points and more points than your opponent. It's checked at every cleanup, so it happens the moment it's true. Remember the final-point rule: the conquer that would take you to 8 only counts if you've scored every battlefield this turn (otherwise you draw a card), but a hold or a card effect can give the 8th point normally. If your deck runs out you Burn Out, which gives your opponent a point. If both players are at 8 or more with the same score, nobody has won yet: play continues until one of you is ahead (CR 323.1, 474).",
   "r": "CR 194.2, 471-472, 485"
  },
  {
@@ -132,23 +150,55 @@
    "resolves",
    "in response",
    "stack",
-   "order"
+   "order",
+   "last in first out",
+   "first in last out",
+   "lifo",
+   "respond to a response",
+   "counter a counter",
+   "counter war",
+   "attack triggers",
+   "defend triggers",
+   "chain resolve",
+   "counter their",
+   "after they",
+   "they play",
+   "and i play",
+   "responded to my",
+   "my response",
+   "resolve before",
+   "resolves before",
+   "can i defy",
+   "can i hush",
+   "can i wind wall",
+   "defy their",
+   "hush their",
+   "wind wall their"
   ],
-  "a": "Cards and abilities go on the chain. While a chain exists only [Reaction] cards can be added. When everyone passes in a row, the newest item resolves first, then players can respond again before the next one. So the last thing played resolves first. Units, gear and resource-adding abilities resolve as soon as they finish being played and can't be responded to. If a spell's target is gone or no longer legal when it resolves, that part is skipped.",
-  "r": "CR 325-348, 358-359"
+  "a": "Cards and abilities go on the chain. While a chain exists only [Reaction] cards can be added. When everyone passes in a row, the newest item resolves first, then players can respond again before the next one. So the last thing played resolves first. Units, gear and resource-adding abilities resolve as soon as they finish being played and can't be responded to. If a spell's target is gone or no longer legal when it resolves, that part is skipped. You can respond to a response: if they counter your spell, you can counter their counter (a counter war), and again the newest card resolves first. Last in, first out: the first card played is the last to resolve. In combat, the attacker's \"when I attack\" triggers go on the chain first and the defender's \"when I defend\" triggers go on last, so the defender's resolve first; each player orders their own. After each item resolves, units with lethal damage die (together) before the next item resolves, and a trigger still resolves even if its unit has died.",
+  "r": "CR 325-348, 358-359, 383.3.d, 464"
  },
  {
   "t": "What happens when my unit dies?",
   "k": [
-   "die",
-   "dies",
    "dead",
    "death",
-   "killed",
+   "deathknell trigger if",
+   "die",
+   "dies",
+   "guardian angel",
+   "if my unit is saved",
    "kill",
-   "lethal"
+   "killed",
+   "lethal",
+   "replaced",
+   "saved",
+   "still trigger",
+   "tactical retreat",
+   "zhonya's",
+   "zhonyas"
   ],
-  "a": "A unit has lethal damage when it has at least 1 damage and at least as much damage as its Might. At the next cleanup its Deathknell / \"when I die\" abilities trigger, then it dies and goes to its owner's trash. A token stops existing when it leaves the board. Damage that isn't lethal heals at the end of each turn and after each combat. If the death is replaced (for example the unit is recalled instead), its Deathknell doesn't trigger.",
+  "a": "A unit has lethal damage when it has at least 1 damage and at least as much damage as its Might. At the next cleanup its Deathknell / \"when I die\" abilities trigger, then it dies and goes to its owner's trash. A token stops existing when it leaves the board. Damage that isn't lethal heals at the end of each turn and after each combat. If the death is replaced (for example the unit is recalled instead), its Deathknell doesn't trigger. Deathknell and other \"when I leave the board\" abilities are checked just before the unit leaves; if something saves it instead (Guardian Angel, Tactical Retreat, a recall), it never left, so they don't trigger (CR 383.2.c.3).",
   "r": "CR 142, 323, 805-829"
  },
  {
@@ -273,21 +323,25 @@
  {
   "t": "What happens if my deck runs out?",
   "k": [
-   "empty deck",
-   "run out",
    "burn out",
+   "burned out",
    "burnout",
-   "no cards",
+   "burns out",
    "deck out",
    "deck runs out",
-   "run out",
-   "runs out",
-   "out of cards",
-   "no cards left",
+   "draw more than",
    "empty deck",
-   "deck out"
+   "empty main deck",
+   "more cards than",
+   "no cards",
+   "no cards left",
+   "opponent burns out",
+   "out of cards",
+   "run out",
+   "run out of deck",
+   "runs out"
   ],
-  "a": "If you have to draw (or take) more cards than your Main Deck has, you Burn Out: you draw what you can, shuffle your trash in as your new deck, your opponent gains 1 point, then you finish drawing. Look, reveal and predict never cause a burn out.",
+  "a": "If you have to draw (or take) more cards than your Main Deck has, you Burn Out: you draw what you can, shuffle your trash in as your new deck, your opponent gains 1 point, then you finish drawing. Look, reveal and predict never cause a burn out. When your opponent burns out, you gain that point. If a player keeps burning out (the new deck is empty too), an opponent gains a point each time, and those points can win the game (CR 432.2, 432.3).",
   "r": "CR 413.4, 431"
  },
  {
@@ -345,15 +399,20 @@
  {
   "t": "What are the deck-building rules?",
   "k": [
-   "deck building",
-   "deckbuilding",
+   "any deck",
    "build a deck",
-   "deck size",
-   "how many copies",
+   "colorless",
    "copies",
-   "legal deck"
+   "deck building",
+   "deck size",
+   "deckbuilding",
+   "domainless",
+   "how many copies",
+   "legal deck",
+   "no color",
+   "no domain"
   ],
-  "a": "1 Champion Legend (its two colors are your Domain Identity), a Main Deck of at least 40 cards including your Chosen Champion, a Rune Deck of exactly 12 runes, and 3 battlefields for a duel (no two with the same name). Up to 3 copies of any card name, and at most 3 Signature cards in total. Every card must fit your legend's colors, and banned cards aren't allowed.",
+  "a": "1 Champion Legend (its two colors are your Domain Identity), a Main Deck of at least 40 cards including your Chosen Champion, a Rune Deck of exactly 12 runes, and 3 battlefields for a duel (no two with the same name). Up to 3 copies of any card name, and at most 3 Signature cards in total. Every card must fit your legend's colors, and banned cards aren't allowed. A card with no domain (colorless) can go in a deck of any colors (CR 103.2.b.5).",
   "r": "CR 101-103"
  },
  {
@@ -413,23 +472,30 @@
  {
   "t": "What happens when a Bomb blows up?",
   "k": [
-   "bomb",
-   "bombs",
+   "blew up",
    "blow up",
    "blows up",
-   "blew up",
+   "bomb",
+   "bomb disappears",
+   "bomb goes away",
+   "bomb goes off",
+   "bomb is removed",
+   "bomb pops",
+   "bomb token",
+   "bombs",
+   "bombs go away",
+   "bombs go off",
+   "detonate",
+   "detonation amplifier",
    "explode",
    "explodes",
    "exploding",
-   "detonate",
-   "satchel charge",
    "explosimian",
    "hexplosive minefield",
-   "short fused",
-   "detonation amplifier",
-   "bomb token"
+   "satchel charge",
+   "short fused"
   ],
-  "a": "A Bomb is a gear token. Like every token it costs nothing, has no color, and simply stops existing when it leaves the board (it never goes to your trash). It has Deploy, so it is always put at a battlefield, never in your base.\nA Bomb \"blows up\" when it dies. That happens when your opponent holds that battlefield (Deploy: when an opponent holds here, kill this; that's at the start of their turn when they score it), or when a card kills it: one of yours (Ziggs, Explosive when he defends, Hexplosive Minefield, Brittle Steel, Detonation Amplifier, Mordekaiser) or one of theirs (any \"kill a gear\" effect).\nWhen it dies, its Deathknell happens: you deal 2 damage to ONE enemy unit at that battlefield (you choose which; to choose a unit with Deflect you must pay one power of any color), and ALL your other Bombs at that same battlefield die too. Each of those has its own Deathknell, so each deals another 2 to an enemy unit there (the same one or a different one). Three Bombs at one battlefield = three hits of 2.\nBonuses: with Ziggs, Short-Fused on the board each Bomb hit deals 3. Detonation Amplifier at that battlefield, or Karthus, Eternal on your board, makes each Bomb's Deathknell happen an extra time (two hits per Bomb).\nIf there are no enemy units at that battlefield, the hits do nothing, but the Bombs are still gone. Damage that reaches a unit's Might kills it; other damage heals at the end of the turn.",
+  "a": "Short answer: when a Bomb goes away by dying (\"blowing up\"), its Deathknell deals 2 damage to one enemy unit at that battlefield, and it kills your other Bombs there, which each deal 2 more. If a Bomb goes away without dying (banished or returned to a hand), nothing happens: it's a token, so it simply stops existing and no damage is dealt.\nA Bomb is a gear token. Like every token it costs nothing, has no color, and simply stops existing when it leaves the board (it never goes to your trash). It has Deploy, so it is always put at a battlefield, never in your base.\nA Bomb \"blows up\" when it dies. That happens when your opponent holds that battlefield (Deploy: when an opponent holds here, kill this; that's at the start of their turn when they score it), or when a card kills it: one of yours (Ziggs, Explosive when he defends, Hexplosive Minefield, Brittle Steel, Detonation Amplifier, Mordekaiser) or one of theirs (any \"kill a gear\" effect).\nWhen it dies, its Deathknell happens: you deal 2 damage to ONE enemy unit at that battlefield (you choose which; to choose a unit with Deflect you must pay one power of any color), and ALL your other Bombs at that same battlefield die too. Each of those has its own Deathknell, so each deals another 2 to an enemy unit there (the same one or a different one). Three Bombs at one battlefield = three hits of 2.\nBonuses: with Ziggs, Short-Fused on the board each Bomb hit deals 3. Detonation Amplifier at that battlefield, or Karthus, Eternal on your board, makes each Bomb's Deathknell happen an extra time (two hits per Bomb).\nIf there are no enemy units at that battlefield, the hits do nothing, but the Bombs are still gone. Damage that reaches a unit's Might kills it; other damage heals at the end of the turn.",
   "r": "Bomb token text, Deploy, Deathknell, 182-187 tokens, 428"
  },
  {
@@ -586,5 +652,136 @@
   ],
   "a": "Abilities that add energy or power (exhausting or recycling a rune, Gold, Seals) work at Reaction speed and can't be responded to. You can use them in the middle of paying for a card.\nUnspent energy and power empty from your pool at the end of each turn, so only add what you need.",
   "r": "164, 357.1.a, 317"
+ },
+ {
+  "t": "What happens when things happen at the same time?",
+  "k": [
+   "apnap",
+   "at once",
+   "at the same time",
+   "both deathknells",
+   "both die",
+   "both trigger",
+   "deal damage at the same time",
+   "deathknell first",
+   "deathknell resolves first",
+   "deathknells at the same time",
+   "deathknells resolve",
+   "die at the same time",
+   "die together",
+   "non turn player",
+   "order do triggers",
+   "order of deathknells",
+   "order of triggers",
+   "resolve first",
+   "same time",
+   "simultaneous",
+   "simultaneous damage",
+   "simultaneous interactions",
+   "simultaneous trigger",
+   "simultaneous triggers",
+   "simultaneously",
+   "trigger at the same time",
+   "trigger order",
+   "triggers at the same time",
+   "triggers happen",
+   "triggers order",
+   "turn player",
+   "two deathknells",
+   "what resolves first",
+   "which deathknell",
+   "which deathknell resolves",
+   "which goes first",
+   "which resolves first",
+   "which trigger",
+   "who goes first",
+   "whose deathknell",
+   "whose trigger"
+  ],
+  "a": "Short answer: damage in a fight is dealt at the same time, everything that took lethal damage dies together, and when both players have triggers at the same time the turn player's go on the chain first, so the other player's resolve first.\nCombat damage: each side totals its Might and assigns it (the attacker assigns first, but nothing happens until both have assigned), then all of it is dealt at once. A unit that dies still deals its damage.\nDying together: at the next cleanup every unit with lethal damage dies at the same moment. Their Deathknells all trigger, but the dying units have already left the board when those Deathknells resolve, so a Deathknell can only choose a unit that survived.\nOrder: if one player has several triggers at once, that player picks their order. If both players do, the turn player puts all of theirs on the chain first and the other player puts theirs on top; the chain resolves newest first, so the non-turn player's triggers resolve first. In a normal attack that means the defender's Deathknells resolve before the attacker's.\n\"Alone\" and \"when another unit dies\" checks look at the moment of death: a friend dying at the same moment still counts as being there (Lonely Poro does not draw), and a unit that dies at the same time as another doesn't see that death (Pyke dying alongside an enemy unit makes no Gold).\nDamage prevention or \"would die\" effects (Zhonya's Hourglass, Guardian Angel): because the units die together, you choose which of your dying units such an effect saves.\nBombs: several of your Bombs at one battlefield die together, and each Bomb's Deathknell hits for 2.",
+  "r": [
+   "CR 303.2.a",
+   "CR 323",
+   "CR 383.3.d",
+   "CR 465",
+   "CR 808"
+  ]
+ },
+ {
+  "t": "What if a unit's Might goes below 0?",
+  "k": [
+   "negative might",
+   "below 0",
+   "below zero",
+   "less than 0",
+   "minus might",
+   "might below",
+   "under 0",
+   "negative",
+   "0 might"
+  ],
+  "a": "A unit's Might can go below 0 (for example from Disarm or a -Might effect), but anything that looks at its Might treats it as 0, and so does combat: a unit at -2 adds 0 to its side's damage, not -2 (CR 143.2.c). Its real value still counts for later math, so a +3 on a unit at -2 Might leaves it at 1. A 0-Might unit can't be killed by 0 damage: lethal damage is always at least 1.",
+  "r": [
+   "CR 143.2.c",
+   "CR 142.4.b"
+  ]
+ },
+ {
+  "t": "When can I use a unit's or gear's ability?",
+  "k": [
+   "ability during combat",
+   "use an ability",
+   "use ability",
+   "activate",
+   "activated ability",
+   "activated abilities",
+   "use my units ability",
+   "gear ability",
+   "exhaust ability",
+   "ability on my opponents turn",
+   "use its ability",
+   "use the ability",
+   "abilities in combat",
+   "ability in a showdown"
+  ],
+  "a": "Abilities written as \"cost: effect\" (for example \"[1], [Exhaust]: deal 1...\") are activated abilities. You can use them only in your own Main Phase when nothing else is happening: not during a showdown, a combat, or while something is on the chain, unless the ability has [Action] (then also in showdowns and combats) or [Reaction] (then any time, even in response) (CR 381). Abilities that start with \"When\" or \"At\" (and Deathknell) aren't used by you: they trigger by themselves, on anyone's turn. Abilities that add energy or power (runes, Gold, Seals) can be used whenever you need to pay (CR 357.1.a).",
+  "r": [
+   "CR 381",
+   "CR 357.1.a"
+  ]
+ },
+ {
+  "t": "Is \"deal 1 for each...\" one hit or several?",
+  "k": [
+   "for each",
+   "deal 1 for each",
+   "deal x for each",
+   "damage for each",
+   "one instance",
+   "one hit",
+   "several hits",
+   "bonus damage"
+  ],
+  "a": "One hit. \"Deal X for each ...\" adds everything up and deals it as a single instance of damage, so Bonus Damage or anything that cares about \"each time damage is dealt\" applies once (CR 418.8). Bonus Damage is added once per deal; if a spell deals damage to several units, each target gets the bonus.",
+  "r": [
+   "CR 418.8",
+   "CR 713"
+  ]
+ },
+ {
+  "t": "What happens when Orianna's legend animates a gear (The Ball)?",
+  "k": [
+   "orianna",
+   "animate",
+   "animates",
+   "animated",
+   "the ball",
+   "lady of clockwork",
+   "unit gear",
+   "gear becomes a unit",
+   "ball"
+  ],
+  "a": "Orianna, Lady of Clockwork: at the start of your Main Phase you may pay [1] to choose a friendly gear, in your base or at a battlefield (a deployed The Ball counts). It becomes a unit gear with Might equal to its Energy cost (The Ball: 5) and stays a unit until you choose another gear. Becoming a unit isn't a move, so The Ball's \"when you play or move this\" doesn't trigger then. If it's at a battlefield you don't control, it contests it: a showdown if no enemy units are there (you can conquer), or a fight with it as the attacker if there are. As a unit, The Ball has Ganking (it can move from battlefield to battlefield), and every time it moves you choose: draw 1 or deal 2 to enemy units there. It's still a gear (it counts for Patched Porobot and lets Orianna, Exquisite deal combat damage); if it's returned to hand or killed, The Ball card goes to your hand or trash.",
+  "r": "Orianna, Lady of Clockwork; The Ball; CR 323.10.a, 446"
  }
 ]

@@ -107,6 +107,8 @@ button:disabled{opacity:.5;cursor:default}
 .sc .bfs button{min-height:34px;padding:0 10px;font-size:12px;border-radius:999px;background:color-mix(in srgb,var(--bg) 60%,transparent)}
 .sc .bfs button.done{background:var(--pc);color:#fff;border-color:transparent;text-decoration:line-through}
 .sc .half.act{box-shadow:inset 0 0 0 4px var(--gold)}
+.sc .fp{max-width:88%;font-size:13px;line-height:1.35;text-align:center;padding:7px 12px;border-radius:12px;background:color-mix(in srgb,var(--gold) 16%,var(--panel));border:1.5px solid color-mix(in srgb,var(--gold) 60%,transparent);color:var(--ink)}
+.sc .fp[hidden]{display:none}.sc .fp b{color:var(--gold)}.sc .fp.ok{border-color:color-mix(in srgb,var(--calm) 70%,transparent);background:color-mix(in srgb,var(--calm) 14%,var(--panel))}.sc .fp.ok b{color:var(--calm)}
 .sc .half.act .pname::after{content:""}
 .sc .mid{flex-direction:column;gap:6px}.sc .midrow{display:flex;gap:6px;justify-content:center;align-items:center;flex-wrap:wrap}
 .sc .timer{font-variant-numeric:tabular-nums;font-weight:700;min-width:5.2em}
@@ -115,6 +117,7 @@ button:disabled{opacity:.5;cursor:default}
 .sc .ask[hidden]{display:none}
 .sc .ask>div{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;max-width:420px}
 .sc .ask.flip>div{transform:rotate(180deg)}
+.sc .ask button{white-space:normal;height:auto;min-height:44px;line-height:1.25;text-align:left;max-width:100%}
 .sc{position:relative}
 .hist{width:100%;border-collapse:collapse;font-size:14px}.hist td,.hist th{padding:6px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.hist th{color:var(--mute);font-weight:600}
 .hist .w{color:var(--calm);font-weight:700}.hist .l{color:var(--fury);font-weight:700}
@@ -155,7 +158,7 @@ button:disabled{opacity:.5;cursor:default}
   <h1>Riftbound Genie 2.0</h1>
   <div class="runes" aria-hidden="true"><i style="background:var(--fury)"></i><i style="background:var(--calm)"></i><i style="background:var(--mind)"></i><i style="background:var(--body)"></i><i style="background:var(--chaos)"></i><i style="background:var(--order)"></i></div>
   <p class="sub">Your Riftbound decks, matchups, rules answers and the meta, in your pocket. Works offline. Rules: Core Rules 1.5 (Radiance update, October 2026).</p>
-  <p class="sub" id="appver" style="font-size:12px;opacity:.7">App version: Nov 25, 7:39 PM (it updates itself when you open it online)</p>
+  <p class="sub" id="appver" style="font-size:12px;opacity:.7">App version: Nov 25, 8:16 PM (it updates itself when you open it online)</p>
   
   <div class="tabs" role="tablist">
     <button role="tab" aria-selected="true" data-v="mine">My decks</button>
@@ -304,6 +307,7 @@ button:disabled{opacity:.5;cursor:default}
       <div class="num" id="ps1">0</div><div class="of" id="pof1">of 8</div>
       <div class="pips" id="pp1"></div><div class="games" id="pg1"></div>
       <div class="bfs" id="pb1"></div>
+      <div class="fp" id="pfp1" role="status" hidden></div>
       <button class="minus" data-p="1" aria-label="Take a point away from player 2">−</button><button class="sw" data-p="1" aria-label="Change player 2 colour"></button>
       <div class="won"><b id="pw1">Wins!</b><span id="pwm1"></span><button class="go" data-next="1">Next game</button></div>
     </div>
@@ -316,6 +320,7 @@ button:disabled{opacity:.5;cursor:default}
       <div class="num" id="ps0">0</div><div class="of" id="pof0">of 8</div>
       <div class="pips" id="pp0"></div><div class="games" id="pg0"></div>
       <div class="bfs" id="pb0"></div>
+      <div class="fp" id="pfp0" role="status" hidden></div>
       <button class="minus" data-p="0" aria-label="Take a point away from player 1">−</button><button class="sw" data-p="0" aria-label="Change player 1 colour"></button>
       <div class="won"><b id="pw0">Wins!</b><span id="pwm0"></span><button class="go" data-next="1">Next game</button></div>
     </div>
@@ -394,6 +399,7 @@ function draw(){
     $('pw' + i).textContent = `${nm(i)} wins${S.match === i ? ' the match!' : '!'}`;
     $('pwm' + i).textContent = S.match === i ? `${S.g[i]}–${S.g[1 - i]} in games` : (S.bo > 1 ? `Games ${S.g[i]}–${S.g[1 - i]}` : '');
     h.querySelector('[data-next]').textContent = S.match >= 0 ? 'New match' : 'Next game';
+    const fp = fpInfo(i); $('pfp' + i).hidden = !fp; $('pfp' + i).classList.toggle('ok', !!fp && fp.ok); $('pfp' + i).innerHTML = fp ? '<b>Final point</b> · ' + esc(fp.t) : '';
   }
   $('scturn').textContent = S.turn > 0 ? `Turn ${S.turn} · ${nm(S.act)}` : 'Not started';
   $('scpass').textContent = S.turn > 0 ? 'End turn' : 'Start game'; $('scpass').disabled = S.over >= 0;
@@ -423,14 +429,39 @@ function add(i, d, bf){
   else if (S.over === i){ S.over = -1; S.g[i] -= 1; S.match = -1; S.games.pop(); }
   draw();
 }
+// Final point (CR 473.1.b): at 1 point from winning, a HOLD scores it, and so does a card that says "score 1 point";
+// a CONQUER scores it only if every other battlefield was already scored this turn, otherwise that player draws a card instead.
+function fpInfo(i){
+  if (S.over >= 0 || S.p[i] !== S.target - 1) return null;
+  const bn = k => S.bfn[k] || 'Battlefield ' + (k + 1);
+  const un = [0, 1].filter(k => !S.scored[i][k]);
+  if (!(S.turn > 0 && S.act === i)) return {ok: false, t: `1 point to win. A hold at the start of ${nm(i)}'s turn wins. A conquer wins only if every other battlefield was already scored that turn; if not, draw a card instead.`};
+  if (un.length === 2) return {ok: false, t: `Conquering now won't win: score the other battlefield first, or you only draw a card. A hold or a card that says "score 1 point" still wins.`};
+  if (un.length === 1) return {ok: true, t: `Conquer ${bn(un[0])} to win: every other battlefield is already scored this turn ✓`};
+  return {ok: false, t: 'Both battlefields are already scored this turn. Only a card that says "score 1 point" can win this turn.'};
+}
+function noFinal(i, k){ snap(); if (k != null) S.scored[i][k] = true; draw(); buzz([40, 60, 40]);
+  toast(`No final point: ${nm(i)} draws a card instead. Score every other battlefield first, then conquer.`, i); }
+function tryPoint(i){
+  if (S.over >= 0) return;
+  if (S.p[i] !== S.target - 1){ add(i, 1); return; }
+  const mine = S.turn > 0 && S.act === i, un = [0, 1].filter(k => !S.scored[i][k]);
+  const hint = !mine ? '' : un.length === 2 ? ' (No battlefield is marked scored this turn yet, so a conquer now would not count.)' : un.length === 1 ? ' (The other battlefield is already scored this turn ✓, so a conquer counts.)' : '';
+  ask(i, 'Final point check', `${nm(i)} is 1 point from winning. How was this point scored?${hint}`, [
+    ['A hold', () => add(i, 1), true],
+    ['Conquer, other battlefield already scored', () => add(i, 1), false],
+    ['Conquer, other battlefield not scored', () => noFinal(i, null), false],
+    ['A card: "score 1 point"', () => add(i, 1), false],
+    ['Cancel', () => {}, false]]);
+}
 function scoreBf(i, k){
   if (S.over >= 0) return;
   if (S.scored[i][k]){ ask(i, `${S.bfn[k]} already scored this turn`, 'Each battlefield can only score once per turn (by holding or conquering). Tap again to take that point back.', [['Take it back', () => add(i, -1, k), false], ['OK', () => {}, true]]); return; }
   if (S.p[i] === S.target - 1){
     const others = S.scored[i].every((s, j) => j === k || s);
     if (others){ add(i, 1, k); return; }
-    ask(i, 'Final point', `${nm(i)} is 1 point from winning. A hold scores it. A conquer only scores it if every battlefield has been scored this turn; otherwise you draw a card instead.`,
-      [['It was a hold', () => add(i, 1, k), true], ['Conquer: draw a card', () => { snap(); S.scored[i][k] = true; draw(); toast(`${nm(i)} draws a card instead of the final point`, i); }, false]]);
+    ask(i, 'Final point check', `${nm(i)} is 1 point from winning. A hold of ${S.bfn[k] || 'this battlefield'} wins. A conquer only wins if every other battlefield was already scored this turn, and the other one isn't yet, so a conquer here means drawing a card instead.`,
+      [['It was a hold', () => add(i, 1, k), true], ['It was a conquer', () => noFinal(i, k), false], ['Cancel', () => {}, false]]);
     return; }
   add(i, 1, k);
 }
@@ -463,8 +494,8 @@ function fillSel(){
 }
 for (const h of document.querySelectorAll('.sc .half')){
   const i = +h.dataset.p;
-  h.addEventListener('click', e => { const bf = e.target.closest('[data-bf]'); if (bf){ scoreBf(i, +bf.dataset.bf); return; } if (e.target.closest('button,input')) return; add(i, 1); });
-  h.addEventListener('keydown', e => { if (e.target !== h) return; if (e.key === 'Enter' || e.key === ' ' || e.key === '+'){ e.preventDefault(); add(i, 1); } if (e.key === '-' || e.key === 'Backspace'){ e.preventDefault(); add(i, -1); } });
+  h.addEventListener('click', e => { const bf = e.target.closest('[data-bf]'); if (bf){ scoreBf(i, +bf.dataset.bf); return; } if (e.target.closest('button,input,.fp')) return; tryPoint(i); });
+  h.addEventListener('keydown', e => { if (e.target !== h) return; if (e.key === 'Enter' || e.key === ' ' || e.key === '+'){ e.preventDefault(); tryPoint(i); } if (e.key === '-' || e.key === 'Backspace'){ e.preventDefault(); add(i, -1); } });
   h.querySelector('.minus').addEventListener('click', () => add(i, -1));
   h.querySelector('.sw').addEventListener('click', () => { S.col[i] = (S.col[i] + 1) % COLS.length; draw(); });
   h.querySelector('[data-next]').addEventListener('click', () => {

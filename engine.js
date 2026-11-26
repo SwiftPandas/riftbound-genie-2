@@ -7139,8 +7139,9 @@ class Game {
     return need;
   }
   defender_react(i, dfn, att, need) {
-    let p, a30, gears, bi, g, u, h, c, hb, th, dc, sw, t, lo, d, zx, base_, x, live, src, v_, ok_, t_, gain, cand, m0, kd, v, e, mine, lim, two, rp;
+    let p, bloc, a30, gears, bi, g, u, h, c, hb, th, dc, sw, t, lo, d, zx, base_, x, live, src, v_, ok_, t_, gain, cand, m0, kd, v, e, mine, lim, two, rp;
     p = $gi(this.P, i);
+    bloc = ($T(dfn) ? $gi(dfn, 0).loc : ($T(att) ? $gi(att, 0).loc : null));
     if ($T(this.slip(p))) {
       return;
     }
@@ -7378,7 +7379,7 @@ class Game {
           t.emp = 0;
           t.temp = 0;
         }
-        $ssl(att, null, null, (() => { const $r = []; for (const u of $it(att)) { if (($in(u, $gi(this.P, (1 - i)).units) && $eq(u.loc, $gi(dfn, 0).loc))) { $r.push(u); } } return $r; })());
+        $ssl(att, null, null, (() => { const $r = []; for (const u of $it(att)) { if (($in(u, $gi(this.P, (1 - i)).units) && $eq(u.loc, bloc))) { $r.push(u); } } return $r; })());
         need = (need - $sub(m0, ($in(t, att) ? t.might(this) : 0)));
         if (this.v) this.say(`  ${$str(p.name)} reacts with ${$str(c)}`);
       }

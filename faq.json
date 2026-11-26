@@ -783,5 +783,54 @@
   ],
   "a": "Orianna, Lady of Clockwork: at the start of your Main Phase you may pay [1] to choose a friendly gear, in your base or at a battlefield (a deployed The Ball counts). It becomes a unit gear with Might equal to its Energy cost (The Ball: 5) and stays a unit until you choose another gear. Becoming a unit isn't a move, so The Ball's \"when you play or move this\" doesn't trigger then. If it's at a battlefield you don't control, it contests it: a showdown if no enemy units are there (you can conquer), or a fight with it as the attacker if there are. As a unit, The Ball has Ganking (it can move from battlefield to battlefield), and every time it moves you choose: draw 1 or deal 2 to enemy units there. It's still a gear (it counts for Patched Porobot and lets Orianna, Exquisite deal combat damage); if it's returned to hand or killed, The Ball card goes to your hand or trash.",
   "r": "Orianna, Lady of Clockwork; The Ball; CR 323.10.a, 446"
+ },
+ {
+  "t": "How do Tornado Warrior and Steel Paws work together?",
+  "k": [
+   "tornado warrior",
+   "steel paws",
+   "empower something here",
+   "tornado",
+   "disempower"
+  ],
+  "a": "Tornado Warrior: when you play it from face down (Hidden), you may empower something at that battlefield, and it is disempowered at the end of the turn. Steel Paws has Empower [7] and +7 Might while Empowered, so flipping Tornado Warrior next to Steel Paws makes Paws a 7 for that turn without paying 7. It must be played from face down (a normal play does nothing) and only empowers something at the same battlefield. If you already paid to empower Steel Paws, Tornado Warrior adds nothing and Paws stays empowered."
+ },
+ {
+  "t": "Can Charm stop my opponent from scoring a hold?",
+  "k": [
+   "charm",
+   "move an enemy unit",
+   "deny hold",
+   "stop a hold",
+   "lone unit"
+  ],
+  "a": "Yes, often. Charm has no [Action] or [Reaction], so you can only play it in your own main phase with the Chain empty. Holds are scored at the start of your opponent's turn, before they can move. If their only unit at a battlefield they control is moved away (to their base), they no longer have a unit there, lose control, and score no hold there next turn. Charm can't choose a unit with Deflect unless you pay the extra cost, and can't choose a unit that can't be chosen (like Ruin Runner)."
+ },
+ {
+  "t": "How does Alpha Strike's damage work?",
+  "k": [
+   "alpha strike",
+   "split damage",
+   "damage equal to its might",
+   "split among"
+  ],
+  "a": "Alpha Strike ([Action]): choose a friendly unit; it deals damage equal to its Might, split however you like among enemy units at battlefields (not in base). Then you gain 1 XP for each unit that damage killed. It counts as damage from that unit, chosen by a spell, so units with Deflect cost extra to choose and units that can't be chosen are skipped. All units it kills die together in one cleanup."
+ },
+ {
+  "t": "How much does Sky Splitter cost?",
+  "k": [
+   "sky splitter",
+   "cost is reduced by the highest might"
+  ],
+  "a": "Sky Splitter costs 8 Energy minus the highest Might among units you control right now (never below 0), then deals 5 to a unit at a battlefield. With a 6-Might unit it costs 2; with no units it costs the full 8. Power costs are not reduced."
+ },
+ {
+  "t": "Does Thrill of the Hunt keep my unit's buffs and damage?",
+  "k": [
+   "thrill of the hunt",
+   "banish a friendly unit",
+   "plays it to any battlefield"
+  ],
+  "a": "No. Thrill of the Hunt ([Reaction]) banishes your unit, then you play it to any battlefield without paying its cost. It comes back as a new object: damage, buffs, 'this turn' bonuses and attached equipment are gone, and 'when you play me' effects happen again. It is played, not moved, so 'when I move' effects don't trigger. During a showdown it joins that fight."
  }
 ]

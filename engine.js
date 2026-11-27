@@ -296,7 +296,7 @@ function $delattr(o, n){ delete o[n]; }
 
 Object.assign($VFS, VFSDATA);
 
-var CARDS, line, n, e, p, t, f, MIGHT, KW, GEN, EQKW, GSP, DECK_KNOBS, VALUE_W, STYLES, LEARN, v, c, k, tok, _OFF, DRAGONS, LEG, BFS, REMOVAL, PUMP, REACT_PUMP, SHOWDOWN_PUMP, FLOW, AMBUSH, SMART, FUZZFIX, SIMUL, DIEWATCH, META25, SAVE_PUMP, CHAIN, BFO, BF_ONLY_MORE, VGATE, EZ_HIDE, RUNEPEN, ETB_REPLAY, JOINATK, YIALONE, ANTICON, ANTICON_T, ANTI, ANTI_P, SB26, PRERM, EOTRM, DENYTGT, PREDG, EZPING, BF26, PACK2, STARX, SATCH2, GEARKILL, DSTAR, SHURI, CARD26, HBLIND, FASTSPELL, HOLDFAST, STASHFIX, VEXMOVE, SHOW, GUIDE, IRAI, EZAI, KAI, W2, PB2, PB, MECHS, ORI, PLAYER_AI, REACT_VAL, DMG_KINDS, UNTARGETABLE, UNTARGETABLE_COMBAT, CHAOS, FURY, PROTECT, SAVE_FOR_REACT, LOOK_PLANS, VS_MARGIN, LOOK_MARGIN, LOOK_CARDS, LOOK_DEPTH, LOOK_SH, LOOK_KEYS, AI36, RESP, FEAT, BLUFF, READ, COLOR, PRO_ERR, BLUFF_COST, RES2, RES_K, DISC_FIX, EOT, EOT_DISC, V1B, VFLOW, SATCHEL, MOVES, AI29, AI29B, AUDIT, ANVIL_AI, ANVIL_OLD, RIP2, TIDE2, HAB, RULES33, RULES34, GAPS31, MEZB, AI20, AI30, TRICK_W, CONQ_V, TRICK_MARGIN, DEBUFF, DRAW_SPELL, BOMB_KILLERS, COMBAT_OK, PRE_PUMP, AZ, QUICKDRAW, BANISH, FEAT16, SETUP, _k, _v, DOMAINS, CALM, NOCOUNTER, RUNE_SPLIT;
+var CARDS, line, n, e, p, t, f, MIGHT, KW, GEN, EQKW, GSP, DECK_KNOBS, MLP, VALUE_W, STYLES, LEARN, v, c, k, tok, _OFF, DRAGONS, LEG, BFS, REMOVAL, PUMP, REACT_PUMP, SHOWDOWN_PUMP, FLOW, AMBUSH, SMART, FUZZFIX, SIMUL, DIEWATCH, META25, SAVE_PUMP, CHAIN, BFO, BF_ONLY_MORE, VGATE, EZ_HIDE, RUNEPEN, ETB_REPLAY, JOINATK, YIALONE, ANTICON, ANTICON_T, ANTI, ANTI_P, SB26, PRERM, EOTRM, DENYTGT, PREDG, EZPING, BF26, PACK2, STARX, BRUT26, AZV, VFEAT2, VS2, VS2_R, ACT, ACT_K, VS3, SATCH2, GEARKILL, DSTAR, SHURI, CARD26, HBLIND, FASTSPELL, HOLDFAST, STASHFIX, VEXMOVE, SHOW, GUIDE, IRAI, EZAI, KAI, W2, PB2, PB, MECHS, ORI, PLAYER_AI, REACT_VAL, DMG_KINDS, UNTARGETABLE, UNTARGETABLE_COMBAT, CHAOS, FURY, PROTECT, SAVE_FOR_REACT, LOOK_PLANS, VS_MARGIN, LOOK_MARGIN, LOOK_CARDS, LOOK_DEPTH, LOOK_SH, LOOK_KEYS, AI36, RESP, FEAT, BLUFF, READ, COLOR, PRO_ERR, BLUFF_COST, RES2, RES_K, DISC_FIX, EOT, EOT_DISC, V1B, VFLOW, SATCHEL, MOVES, AI29, AI29B, AUDIT, ANVIL_AI, ANVIL_OLD, RIP2, TIDE2, HAB, RULES33, RULES34, GAPS31, MEZB, AI20, AI30, TRICK_W, CONQ_V, TRICK_MARGIN, DEBUFF, DRAW_SPELL, BOMB_KILLERS, COMBAT_OK, PRE_PUMP, AZ, QUICKDRAW, BANISH, FEAT16, SETUP, _k, _v, DOMAINS, CALM, NOCOUNTER, RUNE_SPLIT;
 CARDS = new PyDict([]);
 for (line of $it($open("/home/claude/sim/cards.txt"))) {
   line = $cm(line, "strip");
@@ -311,6 +311,7 @@ GEN = $cm(KW, "pop", "__gen", new PyDict([]));
 EQKW = $cm(KW, "pop", "__eqkw", new PyDict([]));
 GSP = $cm(KW, "pop", "__spells", new PyDict([]));
 DECK_KNOBS = $cm(KW, "pop", "__deck_knobs", new PyDict([]));
+MLP = $cm(KW, "pop", "__mlp", null);
 VALUE_W = $cm(KW, "pop", "__value", null);
 STYLES = $cm(KW, "pop", "__styles", new PyDict([]));
 LEARN = [true];
@@ -397,6 +398,14 @@ EZPING = [true];
 BF26 = [true];
 PACK2 = [true];
 STARX = [true];
+BRUT26 = [true];
+AZV = [true];
+VFEAT2 = [true];
+VS2 = [true];
+VS2_R = [3];
+ACT = [false];
+ACT_K = [4];
+VS3 = [false];
 SATCH2 = [true];
 GEARKILL = [true];
 DSTAR = [true];
@@ -432,7 +441,7 @@ LOOK_MARGIN = [0.5];
 LOOK_CARDS = [6];
 LOOK_DEPTH = [null];
 LOOK_SH = [[2, 4, 6]];
-LOOK_KEYS = $sorted($bor((() => { const $r = new PySet(); for (const [_, v] of $it(LOOK_PLANS)) { for (const k of $it(v)) { $r.add(k); } } return $r; })(), new PySet(["la_skip", "la_skip2", "la_tgt"])));
+LOOK_KEYS = $sorted($bor((() => { const $r = new PySet(); for (const [_, v] of $it(LOOK_PLANS)) { for (const k of $it(v)) { $r.add(k); } } return $r; })(), new PySet(["la_skip", "la_skip2", "la_tgt", "force", "drec"])));
 AI36 = [true];
 RESP = [true];
 FEAT = new PyDict([["atk", false], ["rein", true], ["mull", false], ["deny", true], ["sweep", true]]);
@@ -1889,7 +1898,9 @@ class Game {
       this.pay(p, $gi(q, "e"), $max(0, $sub($gi(q, "p"), free)));
       $cm(p.loose_eq, "remove", best);
       $cm(u.eq, "append", best);
-      u.brut_tn = this.turn_no;
+      if (((best === "Brutalizer") || !$T($gi(BRUT26, 0)))) {
+        u.brut_tn = this.turn_no;
+      }
     }
   }
   ornn_look(p) {
@@ -3614,7 +3625,7 @@ class Game {
     if (this.v) this.say(`  ${$str(p.name)} scores ${$str(n)} (${$str(why)}) -> ${$str(p.points)}`);
   }
   main_plays(i) {
-    let p, foe, devm_, _, best, srcs, c, src, e, pw, t, val, sc_, score, thr, loss_, gain_, e0, p0, cg, u, g, kind_, u_, g_, pe, pec, pumps, mine, foes_, ok, v, _loop, pool, opts, k, cd, bare_, pp_, v0_, hv_, eqo_, keep_, ctrl, slots, extraE, rE, rP, hold_std, rdy_, b_, f_, sp_, r_, bc_, rv_, exposed_, fc_, rc_, vf_, vr_, prot_, c_, choice, full, bE, bc, bv, believable, exposed, items, drew, kind, cap, free_, dest_, rg, eqc, real, q, sc, before, rb, worth_, da, alt, freeE, cand, o, nu, rdy, tgt, openb, mv, x, tb, b, nb_, bi;
+    let p, foe, devm_, _, best, cands_, srcs, c, src, e, pw, t, val, sc_, score, thr, loss_, gain_, opts_, k_, e0, p0, cg, u, g, kind_, u_, g_, pe, pec, pumps, mine, foes_, ok, v, _loop, pool, opts, k, cd, bare_, pp_, v0_, n_eq_, hv_, eqo_, keep_, ctrl, slots, extraE, rE, rP, hold_std, rdy_, b_, f_, sp_, r_, bc_, rv_, exposed_, fc_, rc_, vf_, vr_, prot_, c_, choice, full, bE, bc, bv, believable, exposed, items, drew, kind, cap, free_, dest_, rg, eqc, real, q, sc, before, rb, worth_, da, alt, freeE, cand, o, nu, rdy, tgt, openb, mv, x, tb, b, nb_, bi;
     p = $gi(this.P, i);
     foe = $gi(this.P, (1 - i));
     this.flurry(i);
@@ -3639,6 +3650,7 @@ class Game {
     }
     for (_ of $it($range(3))) {
       best = null;
+      cands_ = [];
       srcs = (() => { const $r = []; for (const c of $it($set(p.hand))) { if (($in(c, REMOVAL) && (c !== "Dockside Lock-Up") && !($T($gi(SHURI, 0)) && (c === "Shuriken Flip")))) { $r.push([c, "hand", this.ecost(p, c), $gi($gi(CARDS, c), "p")]); } } return $r; })();
       if ($T($gi(SMART, 0))) {
         srcs = $iadd(srcs, (() => { const $r = []; for (const c of $it($set(p.trash))) { if (($in(c, FLOW) && $in(c, REMOVAL) && !($T($gi(SHURI, 0)) && (c === "Shuriken Flip")))) { $r.push([c, "flow", $gi($gi(FLOW, c), 0), $gi($gi(FLOW, c), 1)]); } } return $r; })());
@@ -3691,6 +3703,15 @@ class Game {
         if ((((val >= thr) || (score >= 5)) && ((best == null) || (score > $gi(best, 2))))) {
           best = [c, t, score, src, e, pw];
         }
+        if (($T($gi(ACT, 0)) && ((val >= thr) || (score >= 5)))) {
+          $cm(cands_, "append", [c, t, score, src, e, pw]);
+        }
+      }
+      if (($T($gi(ACT, 0)) && (best != null) && ($len(cands_) >= 1))) {
+        $cm(cands_, "sort", $kw({"key": ((x) => (-$gi(x, 2)))}));
+        opts_ = $add($sl(cands_, null, 3), [null]);
+        k_ = this.choice(i, "removal", $len(opts_));
+        best = $gi(opts_, k_);
       }
       if (!$T(best)) {
         break;
@@ -3848,6 +3869,10 @@ class Game {
           v0_ = $sub($add($add($gi(cd, "e"), $gi(cd, "p")), (($gi(cd, "t") === "Unit") ? 2 : 0)), $mul(this.runepen(p), pp_));
           if ((($gi(cd, "t") === "Unit") && $T($ga(p, "anticon", $gi(ANTICON, 0))))) {
             v0_ = $iadd(v0_, this.resilience(i, c));
+          }
+          if (($T($gi(AZV, 0)) && (c === "Arise!"))) {
+            n_eq_ = ((() => { let $s = 0; for (const x of $it(p.units)) { $s += $num($len(x.eq)); } return $s; })() + $len(p.loose_eq));
+            v0_ = $sub(($mul(2.5, n_eq_) + 2), $mul(this.runepen(p), pp_));
           }
           if (($T($gi(SB26, 0)) && $in(c, ["Angler Beast", "Tomb-Raider Barbara", "Pickpocket", "Ashe, Focused"]))) {
             v0_ = $iadd(v0_, this.sb_play_value(i, c));
@@ -4056,7 +4081,9 @@ class Game {
       this.pay(p, $gi(q, "e"), $gi(q, "p"));
       $cm(u.eq, "append", eqc);
       $cm(p.loose_eq, "remove", eqc);
-      u.brut_tn = this.turn_no;
+      if (((eqc === "Brutalizer") || !$T($gi(BRUT26, 0)))) {
+        u.brut_tn = this.turn_no;
+      }
       if ($T($gi(W2, 0))) {
         if (this.v) this.say(`  ${$str(p.name)} equips ${$str(eqc)} to ${$str(u.name)}`);
       }
@@ -4893,7 +4920,7 @@ class Game {
           $cm(p.loose_eq, "remove", c);
           b0 = tgt.might(this);
           $cm(tgt.eq, "append", c);
-          tgt.brut_tn = this.turn_no;
+          tgt.brut_tn = (((c === "Brutalizer") || !$T($gi(BRUT26, 0))) ? this.turn_no : $ga(tgt, "brut_tn", (-1)));
           this.mighty_check(i, tgt, b0);
         }
       } else if (($cm(c, "startswith", "Seal of") || (c === "Honeyfruit"))) {
@@ -5170,7 +5197,7 @@ class Game {
     return v;
   }
   attack_phase(i) {
-    let p, conquered, bi, b, foes, mine_here, has_tu, avail, n, mv_, u, forced, pump, opp, opp_react, choice, best_g, fixed, free_, r, comb, group, out, cost, denial, held, must, lead, tr_need, s_, must_now, key, d_, h0, thr0, res, p_now;
+    let p, conquered, bi, b, foes, mine_here, has_tu, avail, n, mv_, u, forced, pump, opp, opp_react, choice, best_g, fixed, free_, r, comb, group, out, cost, denial, held, must, lead, tr_need, s_, must_now, opts_, key, d_, h0, thr0, res, p_now;
     p = $gi(this.P, i);
     conquered = [];
     for (bi of $it($sorted($range(2), $kw({"key": ((b) => $eq($gi($gi(this.bf, b), "ctrl"), i))})))) {
@@ -5310,6 +5337,10 @@ class Game {
       must_now = ((p.ai >= 5) && $eq($gi(b, "ctrl"), (1 - i)) && (opp.points >= 7));
       if (($T(choice) && !$T(forced) && !$T(must_now) && $T(this.slip(p)))) {
         choice = null;
+      }
+      if (($T($gi(ACT, 0)) && $T(avail) && !$T(forced))) {
+        opts_ = $add($add([choice], ($T(choice) ? [null] : [])), (((choice == null) || ($len(choice) < $len(avail))) ? [$list(avail)] : []));
+        choice = $gi(opts_, this.choice(i, "attack", $len(opts_)));
       }
       if ($T(forced)) {
         choice = $add(forced, (() => { const $r = []; for (const u of $it($OR(choice, () => []))) { if (!$in(u, forced)) { $r.push(u); } } return $r; })());
@@ -7248,20 +7279,48 @@ class Game {
     let P_, O_, side;
     [P_, O_] = $it([$gi(this.P, me), $gi(this.P, (1 - me))]);
     side = (q, k) => {
-      let bfm, bsm, ctrl, eq, hv;
+      let bfm, bsm, ctrl, eq, hv, base_, rdy, hold_, nrm, nun, tok, big;
       bfm = (() => { let $s = 0; for (const u of $it(q.units)) { if ((u.loc !== "base")) { $s += $num(u.might(this)); } } return $s; })();
       bsm = (() => { let $s = 0; for (const u of $it(q.units)) { if ((u.loc === "base")) { $s += $num(u.might(this)); } } return $s; })();
       ctrl = (() => { let $s = 0; for (const b of $it(this.bf)) { if ($eq($gi(b, "ctrl"), k)) { $s += $num(1); } } return $s; })();
       eq = ((() => { let $s = 0; for (const u of $it(q.units)) { $s += $num($len(u.eq)); } return $s; })() + $len(q.loose_eq));
       hv = (() => { let $s = 0; for (const c of $it(q.hand)) { $s += $num($min(8, $add($cm($cm(CARDS, "get", c, new PyDict([])), "get", "e", 0), $cm($cm(CARDS, "get", c, new PyDict([])), "get", "p", 0)))); } return $s; })();
-      return [(q.points / 8.0), ((q.points >= 6) ? 1.0 : 0.0), ctrl, $mul(ctrl, ((q.points >= 6) ? 1.0 : 0.0)), (bfm / 10.0), (bsm / 10.0), $len(q.units), $len(q.hand), (hv / 20.0), (q.runes / 12.0), $len(q.hidden), ($add(q.gold, q.seal) / 3.0), eq, ($len(q.base_gear) + (() => { let $s = 0; for (const b of $it(this.bf)) { $s += $num($len($gi($gi(b, "gear"), k))); } return $s; })())];
+      base_ = [(q.points / 8.0), ((q.points >= 6) ? 1.0 : 0.0), ctrl, $mul(ctrl, ((q.points >= 6) ? 1.0 : 0.0)), (bfm / 10.0), (bsm / 10.0), $len(q.units), $len(q.hand), (hv / 20.0), (q.runes / 12.0), $len(q.hidden), ($add(q.gold, q.seal) / 3.0), eq, ($len(q.base_gear) + (() => { let $s = 0; for (const b of $it(this.bf)) { $s += $num($len($gi($gi(b, "gear"), k))); } return $s; })())];
+      if (!$T($gi(VFEAT2, 0))) {
+        return base_;
+      }
+      rdy = ((() => { let $s = 0; for (const u of $it(q.units)) { if (!$T(u.exhausted)) { $s += $num(u.might(this)); } } return $s; })() / 10.0);
+      hold_ = (() => { let $s = 0; for (const [bi_, b] of $it($enumerate(this.bf))) { if (($eq($gi(b, "ctrl"), k) && (() => { for (const u of $it(q.units)) { if ($eq(u.loc, bi_)) return true; } return false; })())) { $s += $num(1); } } return $s; })();
+      nrm = (() => { let $s = 0; for (const c of $it(q.hand)) { if ($in(c, REMOVAL)) { $s += $num(1); } } return $s; })();
+      nun = (() => { let $s = 0; for (const c of $it(q.hand)) { if (($cm($cm(CARDS, "get", c, new PyDict([])), "get", "t") === "Unit")) { $s += $num(1); } } return $s; })();
+      tok = (() => { let $s = 0; for (const u of $it(q.units)) { if ($T(u.token)) { $s += $num(1); } } return $s; })();
+      big = ($max($OR((() => { const $r = []; for (const u of $it(q.units)) { $r.push(u.might(this)); } return $r; })(), () => [0])) / 10.0);
+      return $add(base_, [rdy, hold_, nrm, nun, ($len(q.deck) / 40.0), tok, big]);
     };
     return $add($add($add([1.0], side(P_, me)), side(O_, (1 - me))), [(!$eq($ga(this, "tp", me), me) ? 1.0 : 0.0)]);
   }
   value(me) {
-    let f, d_, z;
+    let f, x_, h_, r_, a_, w_, j, z, d_;
     f = this.vfeat(me);
-    if (!$T(VALUE_W)) {
+    if (($T(MLP) && $T($gi(VFEAT2, 0)) && $eq($len(f), $gi(MLP, "n_in")))) {
+      x_ = (() => { const $r = []; for (const j of $it($range($len(f)))) { $r.push(($sub($gi(f, j), $gi($gi(MLP, "mu"), j)) / $gi($gi(MLP, "sd"), j))); } return $r; })();
+      h_ = [];
+      for (r_ of $it($range($len($gi(MLP, "b1"))))) {
+        a_ = $gi($gi(MLP, "b1"), r_);
+        w_ = $gi($gi(MLP, "W1"), r_);
+        for (j of $it($range($len(x_)))) {
+          a_ = $iadd(a_, $mul($gi(w_, j), $gi(x_, j)));
+        }
+        $cm(h_, "append", ((a_ > 0) ? a_ : 0.0));
+      }
+      z = $gi(MLP, "b2");
+      for (r_ of $it($range($len(h_)))) {
+        z = $iadd(z, $mul($gi($gi(MLP, "W2"), r_), $gi(h_, r_)));
+      }
+      z = $max((-30.0), $min(30.0, z));
+      return (1.0 / (1.0 + $exp((-z))));
+    }
+    if ((!$T(VALUE_W) || ($len(f) !== $len(VALUE_W)))) {
       d_ = (($sub($gi(f, 1), $gi(f, 15)) * 8) + ((0.15 * ($sub($add($gi(f, 5), $gi(f, 6)), $gi(f, 19)) - $gi(f, 20))) * 2));
       return (0.5 + $max((-0.45), $min(0.45, $mul(0.08, d_))));
     }
@@ -7284,17 +7343,21 @@ class Game {
     Unit.G = g;
     g.main_turn(cur);
     res = g.after_turn(cur);
-    if (((res == null) && !$T($gi(g.P, cur).extra))) {
+    if (((res == null) && !$T($gi(g.P, cur).extra) && !$T($gi(VS3, 0)))) {
       res = g.run((1 - cur), (this.turn_ix + 1), (this.turn_ix + 2));
     }
+    if (($T($gi(VS3, 0)) && (res == null))) {
+      g.tp = (1 - cur);
+    }
     Unit.G = this;
+    this._last_drec = $ga($gi(g.P, cur), "drec", null);
     if (((res != null) && !$eq(res, (-1)))) {
       return ($eq(res, cur) ? 1.0 : 0.0);
     }
     return g.value(cur);
   }
   value_search(cur) {
-    let p, R, seeds, plans, cands, sc, name_, plan, best, k, v;
+    let p, R, seeds, plans, cands, bi_, sc, name_, plan, more_, top_, best, sd_, bname, bplan, rec_, seen_, key_, n_, forces, ev_, cur_v, alt, fz, v_, k, v;
     p = $gi(this.P, cur);
     this._base_knobs(p);
     this._restore(p);
@@ -7307,18 +7370,94 @@ class Game {
     if ((() => { for (const c of $it(p.hand)) { if ($in(c, REMOVAL)) return true; } return false; })()) {
       $cm(plans, "append", ["second-best removal target", new PyDict([["la_tgt", 1]])]);
     }
+    if ($T($gi(VS2, 0))) {
+      for (bi_ of $it($range(2))) {
+        if ($T(this.units_at((1 - cur), bi_))) {
+          $cm(plans, "append", [`attack only ${$str($gi($gi(this.bf, bi_), "name"))}`, new PyDict([["la_bf", bi_]])]);
+        }
+      }
+    }
     sc = new PyDict([]);
     for ([name_, plan] of $it(plans)) {
       $si(sc, name_, ((() => { let $s = 0; for (const r of $it($range(R))) { $s += $num(this.vplayout(cur, plan, $gi(seeds, r))); } return $s; })() / R));
     }
+    more_ = [];
+    if (($T($gi(VS2, 0)) && ($len(plans) > 1))) {
+      top_ = $sl($sorted(plans, $kw({"key": ((np_) => (-$gi(sc, $gi(np_, 0))))})), null, 3);
+      if (!((() => { for (const [n_, _] of $it(top_)) { if ((n_ === "normal")) return true; } return false; })())) {
+        $cm(top_, "append", $gi(plans, 0));
+      }
+      more_ = (() => { const $r = []; for (const _ of $it($range($gi(VS2_R, 0)))) { $r.push(this.rng.random()); } return $r; })();
+      for ([name_, plan] of $it(top_)) {
+        $si(sc, name_, (($mul($gi(sc, name_), R) + (() => { let $s = 0; for (const s_ of $it(more_)) { $s += $num(this.vplayout(cur, plan, s_)); } return $s; })()) / (R + $len(more_))));
+      }
+      plans = top_;
+    }
     Unit.G = this;
     best = $max(plans, $kw({"key": ((np_) => $sub($gi(sc, $gi(np_, 0)), (($gi(np_, 0) === "normal") ? 0 : $gi(VS_MARGIN, 0))))}));
+    if (($T($gi(ACT, 0)) && $T($gi(VS2, 0)))) {
+      sd_ = $add(seeds, more_);
+      [bname, bplan] = $it(best);
+      this.vplayout(cur, $dict(bplan, $kw({"drec": []})), $gi(sd_, 0));
+      rec_ = $list($OR(this._last_drec, () => []));
+      seen_ = [];
+      for ([key_, n_] of $it(rec_)) {
+        if (!$in(key_, (() => { const $r = []; for (const [k, _] of $it(seen_)) { $r.push(k); } return $r; })())) {
+          $cm(seen_, "append", [key_, n_]);
+        }
+      }
+      forces = new PyDict([]);
+      ev_ = (fz) => {
+        return ((() => { let $s = 0; for (const s_ of $it(sd_)) { $s += $num(this.vplayout(cur, $dict(bplan, $kw({"force": $dict(fz)})), s_)); } return $s; })() / $len(sd_));
+      };
+      cur_v = ($T(seen_) ? ev_(forces) : 0);
+      for ([key_, n_] of $it($sl(seen_, null, $gi(ACT_K, 0)))) {
+        for (alt of $it($range(1, $min(n_, 4)))) {
+          fz = $dict(forces);
+          $si(fz, key_, alt);
+          v_ = ev_(fz);
+          if ((v_ > (cur_v + 0.02))) {
+            forces = fz;
+            cur_v = v_;
+          }
+        }
+      }
+      if ($T(forces)) {
+        best = [$add($add(bname, " + "), $cm(", ", "join", (() => { const $r = []; for (const [k, v] of $it($cm(forces, "items"))) { $r.push(`${$str(k)}=${$str(v)}`); } return $r; })())), $dict(bplan, $kw({"force": forces}))];
+        $si(sc, $gi(best, 0), cur_v);
+      }
+    }
     p.vs_last = $gi(best, 0);
     if (this.v) this.say($add($add(`  ${$str(p.name)} weighs plans: `, $cm(", ", "join", (() => { const $r = []; for (const [n, _] of $it(plans)) { $r.push(`${$str(n)} ${$fmt($gi(sc, n), ".2f")}`); } return $r; })())), ` -> ${$str($gi(best, 0))}`));
     for ([k, v] of $it($cm($gi(best, 1), "items"))) {
       $setattr(p, k, v);
     }
     p.la_restore = true;
+  }
+  choice(i, tag, n, default_ = 0) {
+    let p, cnt, k, key, rec, f;
+    p = $gi(this.P, i);
+    if ((n <= 1)) {
+      return default_;
+    }
+    cnt = $ga(p, "dcnt", null);
+    if (((cnt == null) || !$eq($ga(p, "dcnt_tn", (-1)), this.turn_no))) {
+      cnt = new PyDict([]);
+      p.dcnt = cnt;
+      p.dcnt_tn = this.turn_no;
+    }
+    k = $cm(cnt, "get", tag, 0);
+    $si(cnt, tag, (k + 1));
+    key = $add($add(tag, "#"), $str(k));
+    rec = $ga(p, "drec", null);
+    if ((rec != null)) {
+      $cm(rec, "append", [key, n]);
+    }
+    f = $ga(p, "force", null);
+    if (($T(f) && $in(key, f))) {
+      return $min((n - 1), $gi(f, key));
+    }
+    return default_;
   }
   _base_knobs(p) {
     if (($ga(p, "la_base", null) == null)) {

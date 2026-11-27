@@ -296,7 +296,7 @@ function $delattr(o, n){ delete o[n]; }
 
 Object.assign($VFS, VFSDATA);
 
-var CARDS, line, n, e, p, t, f, MIGHT, KW, GEN, EQKW, GSP, DECK_KNOBS, MLP, VALUE_W, STYLES, LEARN, v, c, k, tok, _OFF, DRAGONS, LEG, BFS, REMOVAL, PUMP, REACT_PUMP, SHOWDOWN_PUMP, FLOW, AMBUSH, SMART, FUZZFIX, SIMUL, DIEWATCH, META25, SAVE_PUMP, CHAIN, BFO, BF_ONLY_MORE, VGATE, EZ_HIDE, RUNEPEN, ETB_REPLAY, JOINATK, YIALONE, ANTICON, ANTICON_T, ANTI, ANTI_P, SB26, PRERM, EOTRM, DENYTGT, PREDG, EZPING, BF26, PACK2, STARX, BRUT26, AZV, VFEAT2, VS2, VS2_R, ACT, ACT_K, VS3, SATCH2, GEARKILL, DSTAR, SHURI, CARD26, HBLIND, FASTSPELL, HOLDFAST, STASHFIX, VEXMOVE, SHOW, GUIDE, IRAI, EZAI, KAI, W2, PB2, PB, MECHS, ORI, PLAYER_AI, REACT_VAL, DMG_KINDS, UNTARGETABLE, UNTARGETABLE_COMBAT, CHAOS, FURY, PROTECT, SAVE_FOR_REACT, LOOK_PLANS, VS_MARGIN, LOOK_MARGIN, LOOK_CARDS, LOOK_DEPTH, LOOK_SH, LOOK_KEYS, AI36, RESP, FEAT, BLUFF, READ, COLOR, PRO_ERR, BLUFF_COST, RES2, RES_K, DISC_FIX, EOT, EOT_DISC, V1B, VFLOW, SATCHEL, MOVES, AI29, AI29B, AUDIT, ANVIL_AI, ANVIL_OLD, RIP2, TIDE2, HAB, RULES33, RULES34, GAPS31, MEZB, AI20, AI30, TRICK_W, CONQ_V, TRICK_MARGIN, DEBUFF, DRAW_SPELL, BOMB_KILLERS, COMBAT_OK, PRE_PUMP, AZ, QUICKDRAW, BANISH, FEAT16, SETUP, _k, _v, DOMAINS, CALM, NOCOUNTER, RUNE_SPLIT;
+var CARDS, line, n, e, p, t, f, MIGHT, KW, GEN, EQKW, GSP, DECK_KNOBS, MLP, VALUE_W, STYLES, LEARN, v, c, k, tok, _OFF, DRAGONS, LEG, BFS, REMOVAL, PUMP, REACT_PUMP, SHOWDOWN_PUMP, FLOW, AMBUSH, SMART, FUZZFIX, SIMUL, DIEWATCH, META25, SAVE_PUMP, CHAIN, BFO, BF_ONLY_MORE, VGATE, EZ_HIDE, RUNEPEN, ETB_REPLAY, JOINATK, YIALONE, ANTICON, ANTICON_T, ANTI, ANTI_P, SB26, PRERM, EOTRM, DENYTGT, PREDG, EZPING, BF26, PACK2, STARX, BRUT26, AZV, VFEAT2, VS2, VS2_R, ACT, ACT_K, ACT_DEV, VS3, SATCH2, GEARKILL, DSTAR, SHURI, CARD26, HBLIND, FASTSPELL, HOLDFAST, STASHFIX, VEXMOVE, SHOW, GUIDE, IRAI, EZAI, KAI, W2, PB2, PB, MECHS, ORI, PLAYER_AI, REACT_VAL, DMG_KINDS, UNTARGETABLE, UNTARGETABLE_COMBAT, CHAOS, FURY, PROTECT, SAVE_FOR_REACT, LOOK_PLANS, VS_MARGIN, LOOK_MARGIN, LOOK_CARDS, LOOK_DEPTH, LOOK_SH, LOOK_KEYS, AI36, RESP, FEAT, BLUFF, READ, COLOR, PRO_ERR, BLUFF_COST, RES2, RES_K, DISC_FIX, EOT, EOT_DISC, V1B, VFLOW, SATCHEL, MOVES, AI29, AI29B, AUDIT, ANVIL_AI, ANVIL_OLD, RIP2, TIDE2, HAB, RULES33, RULES34, GAPS31, MEZB, AI20, AI30, TRICK_W, CONQ_V, TRICK_MARGIN, DEBUFF, DRAW_SPELL, BOMB_KILLERS, COMBAT_OK, PRE_PUMP, AZ, QUICKDRAW, BANISH, FEAT16, SETUP, _k, _v, DOMAINS, CALM, NOCOUNTER, RUNE_SPLIT;
 CARDS = new PyDict([]);
 for (line of $it($open("/home/claude/sim/cards.txt"))) {
   line = $cm(line, "strip");
@@ -403,8 +403,9 @@ AZV = [true];
 VFEAT2 = [true];
 VS2 = [true];
 VS2_R = [3];
-ACT = [false];
+ACT = [true];
 ACT_K = [4];
+ACT_DEV = [true];
 VS3 = [false];
 SATCH2 = [true];
 GEARKILL = [true];
@@ -3625,7 +3626,7 @@ class Game {
     if (this.v) this.say(`  ${$str(p.name)} scores ${$str(n)} (${$str(why)}) -> ${$str(p.points)}`);
   }
   main_plays(i) {
-    let p, foe, devm_, _, best, cands_, srcs, c, src, e, pw, t, val, sc_, score, thr, loss_, gain_, opts_, k_, e0, p0, cg, u, g, kind_, u_, g_, pe, pec, pumps, mine, foes_, ok, v, _loop, pool, opts, k, cd, bare_, pp_, v0_, n_eq_, hv_, eqo_, keep_, ctrl, slots, extraE, rE, rP, hold_std, rdy_, b_, f_, sp_, r_, bc_, rv_, exposed_, fc_, rc_, vf_, vr_, prot_, c_, choice, full, bE, bc, bv, believable, exposed, items, drew, kind, cap, free_, dest_, rg, eqc, real, q, sc, before, rb, worth_, da, alt, freeE, cand, o, nu, rdy, tgt, openb, mv, x, tb, b, nb_, bi;
+    let p, foe, devm_, _, best, cands_, srcs, c, src, e, pw, t, val, sc_, score, thr, loss_, gain_, opts_, k_, e0, p0, cg, u, g, kind_, u_, g_, pe, pec, pumps, mine, foes_, ok, v, _loop, pool, opts, k, cd, bare_, pp_, v0_, n_eq_, hv_, eqo_, keep_, ctrl, slots, extraE, rE, rP, hold_std, rdy_, b_, f_, sp_, r_, bc_, rv_, exposed_, fc_, rc_, vf_, vr_, prot_, c_, choice, full, bE, bc, bv, believable, exposed, alts_, items, drew, kind, cap, free_, dest_, rg, eqc, real, q, sc, before, rb, worth_, da, alt, freeE, cand, o, nu, rdy, tgt, openb, mv, x, tb, b, nb_, bi;
     p = $gi(this.P, i);
     foe = $gi(this.P, (1 - i));
     this.flurry(i);
@@ -3953,6 +3954,10 @@ class Game {
           choice = bc;
           { const $t88 = p; $t88.bluffs = ($t88.bluffs + 1); }
         }
+      }
+      if (($T($gi(ACT, 0)) && $T($gi(ACT_DEV, 0)) && $T(choice) && $eq(_loop, 0))) {
+        alts_ = $add($add([choice], (() => { const $r = []; for (const y of $it($sl($sorted(choice, $kw({"key": ((kk) => (-$gi($gi(CARDS, $gi(pool, $gi(kk, 0))), "e")))})), null, 2))) { $r.push((() => { const $r = []; for (const x of $it(choice)) { if ((x !== y)) { $r.push(x); } } return $r; })()); } return $r; })()), [[]]);
+        choice = $gi(alts_, this.choice(i, "develop", $len(alts_)));
       }
       if (!$T(choice)) {
         break;
@@ -5197,7 +5202,7 @@ class Game {
     return v;
   }
   attack_phase(i) {
-    let p, conquered, bi, b, foes, mine_here, has_tu, avail, n, mv_, u, forced, pump, opp, opp_react, choice, best_g, fixed, free_, r, comb, group, out, cost, denial, held, must, lead, tr_need, s_, must_now, opts_, key, d_, h0, thr0, res, p_now;
+    let p, conquered, bi, b, foes, mine_here, has_tu, avail, n, k_, mv_, u, forced, pump, opp, opp_react, choice, best_g, fixed, free_, r, comb, group, out, cost, denial, held, must, lead, tr_need, s_, must_now, opts_, key, d_, h0, thr0, res, p_now;
     p = $gi(this.P, i);
     conquered = [];
     for (bi of $it($sorted($range(2), $kw({"key": ((b) => $eq($gi($gi(this.bf, b), "ctrl"), i))})))) {
@@ -5220,6 +5225,14 @@ class Game {
           }
           if ($T(avail)) {
             n = (((p.leg === "shen") && ($len(avail) >= 2)) ? 2 : 1);
+            if (($T($gi(ACT, 0)) && $T($gi(ACT_DEV, 0)))) {
+              k_ = this.choice(i, "take", (($len(avail) >= 2) ? 3 : 2));
+              if (($eq(k_, 1) && ($len(avail) >= 2))) {
+                n = 2;
+              } else if ($eq(k_, (($len(avail) >= 2) ? 2 : 1))) {
+                continue;
+              }
+            }
             if (($T($ga(p, "anti", $gi(ANTI, 0))) && $eq(n, 1) && ($len(avail) >= 2) && (this.kill_threat(i) >= $gi(ANTI_P, 0)))) {
               n = 2;
             }
